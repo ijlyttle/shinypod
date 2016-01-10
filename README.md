@@ -1,4 +1,4 @@
-# shinypod
+# shinypod 0.0.99
 
 This is a repository for reusable shiny modules.
 
