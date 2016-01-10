@@ -1,11 +1,11 @@
-read_delim_side <- function(id){
+read_delim_ui <- function(id){
 
   ns <- shiny::NS(id)
 
-  tag_side <- shiny::tagList()
+  ui <- shiny::tagList()
 
   # specify file
-  tag_side$file <-
+  ui$file <-
     shiny::fileInput(
       inputId = ns("file"),
       label = "File",
@@ -13,7 +13,7 @@ read_delim_side <- function(id){
     )
 
   # specify delim
-  tag_side$delim <-
+  ui$delim <-
     shiny::selectizeInput(
       inputId = ns("delim"),
       label = "Delimiter",
@@ -21,7 +21,7 @@ read_delim_side <- function(id){
     )
 
   # specify decimal
-  tag_side$decimal_mark <-
+  ui$decimal_mark <-
     shiny::selectizeInput(
       inputId = ns("decimal_mark"),
       label = "Decimal mark",
@@ -32,7 +32,7 @@ read_delim_side <- function(id){
   tz_choice <- c("UTC", lubridate::olson_time_zones())
 
   # timezone to parse
-  tag_side$tz_parse <-
+  ui$tz_parse <-
     shiny::selectizeInput(
       inputId = ns("tz_parse"),
       label = shiny::tags$span(
@@ -45,7 +45,7 @@ read_delim_side <- function(id){
       choices = tz_choice
     )
 
-  tag_side$tz_parse_modal <-
+  ui$tz_parse_modal <-
     shinyBS::bsModal(
       id = ns("tz_parse_modal"),
       title = "Timezones",
@@ -59,10 +59,10 @@ read_delim_side <- function(id){
     )
 
   # timezone to display
-  tag_side$tz_display <-
+  ui$tz_display <-
     shiny::selectizeInput(
       inputId = ns("tz_display"),
-      label = htmltools::tags$span(
+      label = shiny::tags$span(
         shiny::tags$a(
           id = ns("tz_display_link"),
           "Timezone to display",
@@ -72,7 +72,7 @@ read_delim_side <- function(id){
       choices = tz_choice
     )
 
-  tag_side$tz_display_modal <-
+  ui$tz_display_modal <-
     shinyBS::bsModal(
       id = ns("tz_display_modal"),
       title = "Timezones",
@@ -85,30 +85,21 @@ read_delim_side <- function(id){
       )
     )
 
-  tag_side
-}
-
-read_delim_main <- function(id){
-
-  ns <- shiny::NS(id)
-
-  tag_main <- shiny::tagList()
-
   # text output
-  tag_main$text <-
+  ui$text <-
     shiny::htmlOutput(
       outputId = ns("text"),
       container = pre_scroll
     )
 
   # data-frame output
-  tag_main$data <-
+  ui$data <-
     shiny::htmlOutput(
       outputId = ns("data"),
       container = pre_scroll
     )
 
-  tag_main
+  ui
 }
 
 read_delim_server <- function(
@@ -233,5 +224,5 @@ read_delim_server <- function(
 
 
   # returns a dataframe
-  list(data = rct_data)
+  rct_data
 }
