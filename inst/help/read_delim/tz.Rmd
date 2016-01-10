@@ -1,0 +1,156 @@
+---
+output: html_fragment
+---
+
+```{r echo=FALSE, message=FALSE}
+library("knitr")
+library("lubridate", quietly = TRUE)
+library("magrittr")
+
+opts_chunk$set(comment = "", echo = FALSE)
+
+fn_parse <- function(x, tz_parse, tz_display){
+
+  dtm <- lubridate::ymd_hms(x, tz = tz_parse)
+  dtm <- lubridate::with_tz(dtm, tzone = tz_display)
+
+  dtm
+}
+
+format_tz <- function(x){
+  paste0(format(x), " (", lubridate::tz(x), ")")
+}
+```
+
+```{r intro}
+str_time <- "2015-09-27 21:45:00"
+
+tz_parse <- "America/Chicago"
+tz_display <- "Europe/Paris"
+```
+
+#### Short answer
+
+- **Timezone to parse**: describes the timezone used to write to the file. The timestamps and the parsing timezone *define* the instants in time.
+- **Timezone to display**: This is used to specify the display of these instants in time, but will *not* change the value of these instants.
+
+The default behavior of this app is to set the **display** timezone to value of the **parsing** timezone.
+
+#### Long answer
+
+There are two steps to processing text-based timestamps:
+
+1. Determining the instants in time to which the timestamps refer.
+2. Displaying those instants in time the way that you wish.
+
+Let's say your friend tells you that when she saw the peak of the ["blood moon" eclipse](http://news.nationalgeographic.com/2015/09/150924-super-total-lunar-eclipse-moon-sky-watching-viewing/), the clock read:
+
+```{r}
+str_time %>% cat()
+```
+
+Knowing only what the clock read is not enough information to determine the instant in time when the eclipse happened; you need to know *where* the clock was.
+
+In this case, let's say your friend was in Chicago. Now we have enough information to fix the instant in time. We can **parse** the timestamp to describe the instant, by referring to the timezone by the place name "`r tz_parse`".
+
+```{r}
+str_time %>% fn_parse(tz_parse, tz_parse) %>% format_tz() %>% cat()
+```
+
+Timezones are named either "UTC" (also known as GMT, or Zulu) or after locations inside each particular timezone, for example "America/Chicago", rather than the more-familiar "Central Time", or "US Central Time".
+
+Let's say that you are in Paris, and you would like to see what *your* clock would **display** at this instant in time. We would then apply the timezone reference named "`r tz_display`":
+
+```{r}
+str_time %>% fn_parse(tz_parse, tz_display) %>% format_tz() %>% cat()
+```
+
+In order to **parse** and **display** the instants of time, we use these two separate contexts for the timezone.
+
+Please note: normally, the timezone will not be printed - we do so here to help illustrate the concepts. More examples are provided to demonstrate some different cases.
+
+#### Example 1
+
+```{r ex_1}
+tz_parse <- "Europe/London"
+tz_display <- tz_parse
+
+str_time <- "2015-01-02 03:00:00"
+```
+
+Your file describes the energy usage at a facility in the United Kingdom. The timestamps are written using the local (UK) timezone; you wish to display the time in the local timezone.
+
+In the file, one of the timestamps may be written as:
+
+```{r ex_1_str}
+str_time %>% cat()
+```
+
+In this case, use:
+
+- **Timezone to parse**: "`r tz_parse`"
+- **Timezone to display**: "`r tz_display`"
+
+The parsed timestamp will be displayed as:
+
+```{r ex_1_dtm}
+str_time %>% fn_parse(tz_parse, tz_display) %>% format_tz() %>% cat()
+```
+
+#### Example 2
+
+```{r ex_2}
+tz_parse <- "UTC"
+tz_display <- "Asia/Seoul"
+
+str_time <- "2015-04-05 06:00:00"
+```
+
+Your file describes weather observations in South Korea. The timestamps are written using UTC; you wish to display the time in the local (South Korean) timezone.
+
+In the file, one of the timestamps may be written as:
+
+```{r ex_2_str}
+str_time %>% cat()
+```
+
+In this case, use:
+
+- **Timezone to parse**: "`r tz_parse`"
+- **Timezone to display**: "`r tz_display`"
+
+The parsed timestamp will display as:
+
+```{r ex_2_dtm}
+str_time %>% fn_parse(tz_parse, tz_display) %>% format_tz() %>% cat()
+```
+
+#### Example 3
+
+```{r ex_3}
+tz_parse <- "UTC"
+tz_display <- "America/Chicago"
+
+str_time <- "2015-07-08T09:00:00-0500"
+```
+
+Your file describes the energy-generation rate of a wind farm in Iowa (USA). The timestamps are written using [ISO-8601 format](https://en.wikipedia.org/wiki/ISO_8601); you wish to display the time in the local (Iowa) timezone. The closest major center in the same timezone is Chicago.
+
+In the file, one of the timestamps may be written as:
+
+```{r ex_3_str}
+str_time %>% cat()
+```
+
+In this case, use:
+
+- **Timezone to parse**: *does not matter*
+- **Timezone to display**: "`r tz_display`"
+
+The parsed timestamp will display as:
+
+```{r ex_3_dtm}
+str_time %>% fn_parse(tz_parse, tz_display) %>% format_tz() %>% cat()
+```
+
+You may wonder why it does not matter what you specify as the parsing timezone. The ISO-8601 format is designed such that the timestamp is always parsed using "UTC". In this case, it will not matter what we specify as the parsing timezone; only the display timezone is operative.

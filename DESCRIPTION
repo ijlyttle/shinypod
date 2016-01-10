@@ -1,0 +1,20 @@
+Package: shinypod
+Type: Package
+Title: Reusable shiny modules
+Version: 0.0.99
+Authors@R: c(
+    person(given = "Ian", family = "Lyttle", email = "ian.lyttle@schneider-electric.com", role = c("aut", "cre")),
+    person(given = "Alex", family = "Shum", email = "alex@ALShum.com", role = c("aut"))
+  )
+URL: https://github.com/ijlyttle/shinypod
+BugReports: https://github.com/ijlyttle/shinypod/issues
+Description: Reusable shiny modules
+License: MIT + file LICENSE
+LazyData: TRUE
+Imports: shiny,
+    shinyjs,
+    shinyBS
+Suggests:
+    readr,
+    lubridate,
+    dplyr

@@ -1,0 +1,66 @@
+<div id="short-answer" class="section level4">
+<h4>Short answer</h4>
+<ul>
+<li><strong>Timezone to parse</strong>: describes the timezone used to write to the file. The timestamps and the parsing timezone <em>define</em> the instants in time.</li>
+<li><strong>Timezone to display</strong>: This is used to specify the display of these instants in time, but will <em>not</em> change the value of these instants.</li>
+</ul>
+<p>The default behavior of this app is to set the <strong>display</strong> timezone to value of the <strong>parsing</strong> timezone.</p>
+</div>
+<div id="long-answer" class="section level4">
+<h4>Long answer</h4>
+<p>There are two steps to processing text-based timestamps:</p>
+<ol style="list-style-type: decimal">
+<li>Determining the instants in time to which the timestamps refer.</li>
+<li>Displaying those instants in time the way that you wish.</li>
+</ol>
+<p>Let’s say your friend tells you that when she saw the peak of the <a href="http://news.nationalgeographic.com/2015/09/150924-super-total-lunar-eclipse-moon-sky-watching-viewing/">“blood moon” eclipse</a>, the clock read:</p>
+<pre><code>2015-09-27 21:45:00</code></pre>
+<p>Knowing only what the clock read is not enough information to determine the instant in time when the eclipse happened; you need to know <em>where</em> the clock was.</p>
+<p>In this case, let’s say your friend was in Chicago. Now we have enough information to fix the instant in time. We can <strong>parse</strong> the timestamp to describe the instant, by referring to the timezone by the place name “America/Chicago”.</p>
+<pre><code>2015-09-27 21:45:00 (America/Chicago)</code></pre>
+<p>Timezones are named either “UTC” (also known as GMT, or Zulu) or after locations inside each particular timezone, for example “America/Chicago”, rather than the more-familiar “Central Time”, or “US Central Time”.</p>
+<p>Let’s say that you are in Paris, and you would like to see what <em>your</em> clock would <strong>display</strong> at this instant in time. We would then apply the timezone reference named “Europe/Paris”:</p>
+<pre><code>2015-09-28 04:45:00 (Europe/Paris)</code></pre>
+<p>In order to <strong>parse</strong> and <strong>display</strong> the instants of time, we use these two separate contexts for the timezone.</p>
+<p>Please note: normally, the timezone will not be printed - we do so here to help illustrate the concepts. More examples are provided to demonstrate some different cases.</p>
+</div>
+<div id="example-1" class="section level4">
+<h4>Example 1</h4>
+<p>Your file describes the energy usage at a facility in the United Kingdom. The timestamps are written using the local (UK) timezone; you wish to display the time in the local timezone.</p>
+<p>In the file, one of the timestamps may be written as:</p>
+<pre><code>2015-01-02 03:00:00</code></pre>
+<p>In this case, use:</p>
+<ul>
+<li><strong>Timezone to parse</strong>: “Europe/London”</li>
+<li><strong>Timezone to display</strong>: “Europe/London”</li>
+</ul>
+<p>The parsed timestamp will be displayed as:</p>
+<pre><code>2015-01-02 03:00:00 (Europe/London)</code></pre>
+</div>
+<div id="example-2" class="section level4">
+<h4>Example 2</h4>
+<p>Your file describes weather observations in South Korea. The timestamps are written using UTC; you wish to display the time in the local (South Korean) timezone.</p>
+<p>In the file, one of the timestamps may be written as:</p>
+<pre><code>2015-04-05 06:00:00</code></pre>
+<p>In this case, use:</p>
+<ul>
+<li><strong>Timezone to parse</strong>: “UTC”</li>
+<li><strong>Timezone to display</strong>: “Asia/Seoul”</li>
+</ul>
+<p>The parsed timestamp will display as:</p>
+<pre><code>2015-04-05 15:00:00 (Asia/Seoul)</code></pre>
+</div>
+<div id="example-3" class="section level4">
+<h4>Example 3</h4>
+<p>Your file describes the energy-generation rate of a wind farm in Iowa (USA). The timestamps are written using <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 format</a>; you wish to display the time in the local (Iowa) timezone. The closest major center in the same timezone is Chicago.</p>
+<p>In the file, one of the timestamps may be written as:</p>
+<pre><code>2015-07-08T09:00:00-0500</code></pre>
+<p>In this case, use:</p>
+<ul>
+<li><strong>Timezone to parse</strong>: <em>does not matter</em></li>
+<li><strong>Timezone to display</strong>: “America/Chicago”</li>
+</ul>
+<p>The parsed timestamp will display as:</p>
+<pre><code>2015-07-08 09:00:00 (America/Chicago)</code></pre>
+<p>You may wonder why it does not matter what you specify as the parsing timezone. The ISO-8601 format is designed such that the timestamp is always parsed using “UTC”. In this case, it will not matter what we specify as the parsing timezone; only the display timezone is operative.</p>
+</div>
