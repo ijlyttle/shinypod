@@ -1,3 +1,4 @@
+#' @export
 read_delim_ui <- function(id){
 
   ns <- shiny::NS(id)
@@ -102,6 +103,7 @@ read_delim_ui <- function(id){
   ui
 }
 
+#' @export
 read_delim_server <- function(
   input, output, session,
   delim = ",",
@@ -184,19 +186,17 @@ read_delim_server <- function(
 
       shinyjs::toggle(
         id = ns("decimal_mark"),
-        condition = df_has_numeric(rct_data())
+        condition = (length(df_names_inherits(rct_data(), "numeric")) > 0)
       )
 
       shinyjs::toggle(
         id = ns("tz_parse"),
-        condition = df_has_time_non_8601(
-          rct_data(), rct_txt(), delim = input$delim
-        )
+        condition = df_has_time_non_8601(rct_txt(), delim = input$delim)
       )
 
       shinyjs::toggle(
         id = ns("tz_display"),
-        condition = df_has_time(rct_data())
+        condition = (length(df_names_inherits(rct_data(), "POSIXct")) > 0)
       )
 
       h <- rct_txt()

@@ -8,10 +8,10 @@ shinyUI(
     useShinyjs(),
     sidebarLayout(
       sidebarPanel(
-        read_delim_side("foo")
+        read_delim_sidebar_side("foo")
       ),
       mainPanel(
-        read_delim_main("foo")
+        read_delim_sidebar_main("foo")
       )
     )
   )

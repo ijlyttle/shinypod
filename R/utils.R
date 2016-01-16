@@ -1,4 +1,4 @@
-#' function for scrollable pre-formatted text
+#' html for scrollable pre-formatted text
 #'
 #' This is used as the \code{container} argument in \code{shiny::htmlOutput}
 #'
@@ -22,7 +22,7 @@ pre_scroll <- function(...){
 #' @return dataframe
 #'
 #' @examples
-#' df_with_tz(coltypes_sample, tz = "America/Chicago")
+#' df_with_tz(wx_ames, tz = "UTC")
 #'
 #' @export
 #
@@ -40,32 +40,23 @@ df_with_tz <- function(df, tz = "UTC"){
   df
 }
 
-# returns TRUE if dataframe has any numeric columns
-df_has_numeric <- function(df){
-  x <- lapply(df, dplyr::type_sum)
-  x <- unlist(x)
-
-  x <- any(x %in% c("dbl", "int"))
-
-  x
-}
-
-# returns TRUE if dataframe has any POSIXct columns
-df_has_time <- function(df){
-  x <- lapply(df, dplyr::type_sum)
-  x <- unlist(x)
-
-  x <- any(x %in% c("time"))
-
-  x
-}
-
 # returns TRUE if the dataframe parsed using the text has any POSIXct columns
 # not parsed from ISO-8601
 #
-df_has_time_non_8601 <- function(df, txt, delim){
+# detects if any time columns in dataframe
+#
+# @param txt character, text used to make the dataframe
+# @param delim character, delimiter
+#
+# @return logical, indicating if there are any non ISO-8601 time columns
+#
+df_has_time_non_8601 <- function(txt, delim){
 
-  if (df_has_time(df)) {
+  df <- readr::read_delim(txt, delim = delim)
+
+  has_posixct <- (length(df_names_inherits(df, "POSIXct")))
+
+  if (has_posixct) {
 
     # identify time columns of dataframe
     col_sum <- lapply(df, dplyr::type_sum)
@@ -92,6 +83,7 @@ df_has_time_non_8601 <- function(df, txt, delim){
   x
 }
 
+# detects if a character string is in ISO-8601 format
 is_time_8601 <- function(x){
 
   # \\d{4}    exactly 4 digits
@@ -119,4 +111,22 @@ is_time_8601 <- function(x){
   regex_8601 <- paste0("^", regex_8601_date, "[T ]", regex_8601_time, regex_8601_zone, "$")
 
   stringr::str_detect(x, regex_8601)
+}
+
+#' Get the names of all the columns of the dataframe
+#' that inherit from the supplied class name
+#'
+#' @param df     dataframe
+#' @param what   character, vector of class we wish to find
+#'
+#' @return character vector
+#' @export
+#
+df_names_inherits <- function(df, what){
+
+  inherits_class <- vapply(df, inherits, logical(1), what = what)
+
+  names_class <- names(inherits_class)[inherits_class]
+
+  names_class
 }

@@ -1,4 +1,5 @@
-read_delim_side <- function(id){
+#' @export
+read_delim_sidebar_side <- function(id){
 
   ui <- read_delim_ui(id)
 
@@ -13,7 +14,8 @@ read_delim_side <- function(id){
   ui[elements]
 }
 
-read_delim_main <- function(id){
+#' @export
+read_delim_sidebar_main <- function(id){
 
   ui <- read_delim_ui(id)
 
