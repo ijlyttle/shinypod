@@ -1,0 +1,43 @@
+---
+title: "Ames Weather - rWunderground"
+author: "Ian Lyttle"
+date: "September 29, 2015"
+output: html_document
+---
+
+```{r library}
+library("rwunderground")
+library("lubridate")
+library("readr")
+```
+
+```{r directory}
+dir_write <- file.path("..", "inst", "extdata")
+```
+
+```{r dates}
+date_start <- as.Date(ymd("2014-01-01"))
+date_end <- as.Date(ymd("2014-01-31"))
+
+fmt <- stamp_date("20140325")
+```
+
+```{r wx_all}
+wx_all <- history_range(
+  location = set_location(territory = "Iowa", city = "Ames"),
+  date_start = fmt(date_start),
+  date_end = fmt(date_end),
+  use_metric = TRUE,
+  key = Sys.getenv("WU_KEY")
+)
+```
+
+```{r wx_write}
+write_csv(
+  wx_all,
+  path = file.path(dir_write, "wx_ames.csv")
+)
+```
+
+
+

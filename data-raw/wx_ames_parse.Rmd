@@ -1,0 +1,37 @@
+---
+title: "Ames Weather - rWunderground"
+author: "Ian Lyttle"
+date: "September 29, 2015"
+output: html_document
+---
+
+```{r library}
+library("rwunderground")
+library("lubridate")
+library("readr")
+library("dplyr")
+```
+
+```{r directory}
+dir_read <- file.path("..", "inst", "extdata")
+```
+
+```{r wx_read}
+wx_ames <-
+  read_csv(
+    file = file.path(dir_read, "wx_ames.csv"),
+    locale = locale(tz = "America/Chicago")
+  ) %>%
+  mutate(
+    fog = as.logical(fog),
+    rain = as.logical(rain),
+    snow = as.logical(snow),
+    hail = as.logical(hail),
+    thunder = as.logical(thunder),
+    tornado = as.logical(tornado)
+  )
+```
+
+```{r}
+devtools::use_data(wx_ames, overwrite = TRUE)
+```
