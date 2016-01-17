@@ -22,14 +22,7 @@ wx_ames <-
     file = file.path(dir_read, "wx_ames.csv"),
     locale = locale(tz = "America/Chicago")
   ) %>%
-  mutate(
-    fog = as.logical(fog),
-    rain = as.logical(rain),
-    snow = as.logical(snow),
-    hail = as.logical(hail),
-    thunder = as.logical(thunder),
-    tornado = as.logical(tornado)
-  )
+  mutate(heat_index = as.numeric(heat_index))
 ```
 
 ```{r}
