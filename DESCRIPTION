@@ -19,5 +19,6 @@ Suggests:
     readr,
     lubridate,
     dplyr,
-    stringr
+    stringr,
+    testthat
 RoxygenNote: 5.0.1

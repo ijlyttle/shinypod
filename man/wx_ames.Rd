@@ -19,12 +19,12 @@
   \item{heat_index}{double, head-index temperature, °C}
   \item{precip}{double, precipitation since previous observation, mm}
   \item{cond}{character, description of conditions}
-  \item{fog}{logical, indicates if fog is present}
-  \item{rain}{logical, indicates if it is raining is present}
-  \item{snow}{logical, indicates if it is snowing}
-  \item{hail}{logical, indicates if it is hailing}
-  \item{thunder}{logical, indicates if thunder is present}
-  \item{tornado}{logical, indicates if a tornado is present}
+  \item{fog}{integer, indicates if fog is present}
+  \item{rain}{integer, indicates if it is raining is present}
+  \item{snow}{integer, indicates if it is snowing}
+  \item{hail}{integer, indicates if it is hailing}
+  \item{thunder}{integer, indicates if thunder is present}
+  \item{tornado}{integer, indicates if a tornado is present}
 }}
 \source{
 \url{http://www.wunderground.com/}
