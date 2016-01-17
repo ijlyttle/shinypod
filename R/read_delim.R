@@ -1,4 +1,31 @@
+#' UI elements for delimited-file reader.
+#'
+#' Used to define the UI elements within the \code{read_delim} shiny module.
+#'
+#' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
+#'
+#' \describe{
+#'  \item{file}{\code{shiny::\link[shiny]{fileInput}}, used to specify file}
+#'  \item{delim}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify delimiter character}
+#'  \item{decimal_mark}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify decimal mark}
+#'  \item{tz_parse}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify timezone to parse}
+#'  \item{tz_parse_modal}{\code{shinyBS::\link[shinyBS]{bsModal}}, used explain timezone-parsing}
+#'  \item{tz_display}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify timezone to display}
+#'  \item{tz_display_modal}{\code{shinyBS::\link[shinyBS]{bsModal}}, used explain timezone-parsing}
+#'  \item{text}{\code{shiny::\link[shiny]{htmlOutput}}, used to display first few lines of text from file}
+#'  \item{data}{\code{shiny::\link[shiny]{htmlOutput}}, used to display first few lines of the parsed dataframe}
+#' }
+#'
+#' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
+#'
+#' @family read_delim module functions
+#
+#' @param id, character used to specify namesapce, see \code{shiny::\link[shiny]{NS}}
+#'
+#' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
+#'
 #' @export
+#
 read_delim_ui <- function(id){
 
   ns <- shiny::NS(id)
@@ -103,7 +130,34 @@ read_delim_ui <- function(id){
   ui
 }
 
+
+#' Server function for delimted-file reader.
+#'
+#' Used to define the server within the \code{read_delim} shiny module.
+#'
+#' @family read_delim module functions
+#
+#' @param input   standard \code{shiny} input
+#' @param output  standard \code{shiny} output
+#' @param session standard \code{shiny} session
+#' @param delim   character, default for parsing delimiter
+#' @param decimal_mark character, default for decimal mark
+#'
+#' @return a \code{shiny::\link[shiny]{reactive}} containing a tbl_df of the parsed text
+#'
+#' @examples
+#' shinyServer(function(input, output, session) {
+#'
+#'   rct_data <- callModule(
+#'     module = read_delim_server,
+#'     id = "foo"
+#'   )
+#'
+#'   observe(print(rct_data()))
+#' })
+#'
 #' @export
+#
 read_delim_server <- function(
   input, output, session,
   delim = ",",

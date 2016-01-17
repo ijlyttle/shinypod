@@ -28,14 +28,14 @@ pre_scroll <- function(...){
 #
 df_with_tz <- function(df, tz = "UTC"){
 
-  is_datetime <- vapply(df, inherits, logical(1), "POSIXct")
+  names_datetime <- df_names_inherits(df, "POSIXct")
 
   fn_set_tz <- function(x){
     attr(x, "tzone") <- tz
     x
   }
 
-  df[is_datetime] <- lapply(df[is_datetime], fn_set_tz)
+  df[names_datetime] <- lapply(df[names_datetime], fn_set_tz)
 
   df
 }
