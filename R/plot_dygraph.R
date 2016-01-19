@@ -1,3 +1,8 @@
+# Design Questions:
+# 1. Should the different functions be separate or packaged together?
+# 2. The server function: should it be a proper function -- should it have a proper return value and not just modify the environment?
+# 3. Server function: should each reactive data source be it's own function input?  Or should it be packaged in a reactive list?
+
 dygraph_input <- function(id) {
   ns <- NS(id)
 
