@@ -6,7 +6,7 @@
 dygraph_input <- function(id) {
   ns <- NS(id)
 
-  tagList(
+  shiny::tagList(
     # time
     shiny::uiOutput(ns("controller_time_out")),
 
@@ -54,6 +54,36 @@ dygraph_server <- function(
     )
 
     var_num
+  })
+
+  rct_dyg <- reactive({
+    var_time <- selection$time
+    var_y1 <- selection$Y1
+    var_y2 <- selection$Y2
+
+    shiny::validate(
+      shiny::need(var_time, "Graph cannot display without a time-variable"),
+      shiny::need(c(var_y1, var_y2), "Graph cannot display without any y-variables")
+    )
+
+    # create the mts object
+    vec_time <- rct_data()[[var_time]]
+    df_num <- rct_data()[c(var_y1, var_y2)]
+
+    dy_xts <- xts::xts(df_num, order.by = vec_time, lubridate::tz(vec_time))
+
+    dyg <- dygraphs::dygraph(dy_xts)
+    #dyg <- do.call(dygraphs::dyOptions, c(list(dyg), rctval_dyopt[[item_dyopt]]))
+    dyg <- dygraphs::dyAxis(dyg, "x", label = var_time)
+    dyg <- dygraphs::dyAxis(dyg, "y", label = paste(var_y1, collapse = ", "))
+    dyg <- dygraphs::dyAxis(dyg, "y2", label = paste(var_y2, collapse = ", "))
+
+    # put stuff on y2 axis
+    for(v in var_y2) {
+      dyg <- dygraphs::dySeries(dyg, v, axis = "y2")
+    }
+
+    dyg
   })
 
   selection <- reactiveValues(
@@ -124,36 +154,7 @@ dygraph_server <- function(
     })
 
   # dygraph
-  output[["view_dygraph"]] <- dygraphs::renderDygraph({
-  #return(reactive({
-    var_time <- selection$time
-    var_y1 <- selection$Y1
-    var_y2 <- selection$Y2
+  output[["view_dygraph"]] <- dygraphs::renderDygraph({rct_dyg()})
 
-    shiny::validate(
-      shiny::need(var_time, "Graph cannot display without a time-variable"),
-      shiny::need(c(var_y1, var_y2), "Graph cannot display without any y-variables")
-    )
-
-    # create the mts object
-    vec_time <- rct_data()[[var_time]]
-    df_num <- rct_data()[c(var_y1, var_y2)]
-
-    dy_xts <- xts::xts(df_num, order.by = vec_time, lubridate::tz(vec_time))
-
-    dyg <- dygraphs::dygraph(dy_xts)
-    #dyg <- do.call(dygraphs::dyOptions, c(list(dyg), rctval_dyopt[[item_dyopt]]))
-    dyg <- dygraphs::dyAxis(dyg, "x", label = var_time)
-    dyg <- dygraphs::dyAxis(dyg, "y", label = paste(var_y1, collapse = ", "))
-    dyg <- dygraphs::dyAxis(dyg, "y2", label = paste(var_y2, collapse = ", "))
-
-    # put stuff on y2 axis
-    for(v in var_y2) {
-      dyg <- dygraphs::dySeries(dyg, v, axis = "y2")
-    }
-
-    dyg
-  #}))
-
-  })
+  return(rct_dyg)
 }
