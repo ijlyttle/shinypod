@@ -36,6 +36,7 @@ shinyServer(function(input, output, session) {
 
 }
 \seealso{
-Other read_delim.module.functions: \code{\link{read_delim_ui}}
+Other read_delim.module.functions: \code{\link{read_delim_ui_input}},
+  \code{\link{read_delim_ui_output}}
 }
 

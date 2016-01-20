@@ -1,6 +1,6 @@
-#' UI elements for delimited-file reader.
+#' UI input elements for delimited-file reader.
 #'
-#' Used to define the UI elements within the \code{read_delim} shiny module.
+#' Used to define the UI input elements within the \code{read_delim} shiny module.
 #'
 #' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 #'
@@ -12,6 +12,115 @@
 #'  \item{tz_parse_modal}{\code{shinyBS::\link[shinyBS]{bsModal}}, used explain timezone-parsing}
 #'  \item{tz_display}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify timezone to display}
 #'  \item{tz_display_modal}{\code{shinyBS::\link[shinyBS]{bsModal}}, used explain timezone-parsing}
+#' }
+#'
+#' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
+#'
+#' @family read_delim module functions
+#
+#' @param id, character used to specify namesapce, see \code{shiny::\link[shiny]{NS}}
+#'
+#' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
+#'
+#' @export
+#
+read_delim_ui_input <- function(id){
+
+  ns <- shiny::NS(id)
+
+  ui_input <- shiny::tagList()
+
+  # specify file
+  ui_input$file <-
+    shiny::fileInput(
+      inputId = ns("file"),
+      label = "File",
+      accept = c("text/csv", ".csv", "text/comma-separated-values", "text/plain")
+    )
+
+  # specify delim
+  ui_input$delim <-
+    shiny::selectizeInput(
+      inputId = ns("delim"),
+      label = "Delimiter",
+      choices = c(Comma = ",", Semicolon = ";", Tab = "\t")
+    )
+
+  # specify decimal
+  ui_input$decimal_mark <-
+    shiny::selectizeInput(
+      inputId = ns("decimal_mark"),
+      label = "Decimal mark",
+      choices = c(Point = ".", Comma = ",")
+    )
+
+  # specify timezones
+  tz_choice <- c("UTC", lubridate::olson_time_zones())
+
+  # timezone to parse
+  ui_input$tz_parse <-
+    shiny::selectizeInput(
+      inputId = ns("tz_parse"),
+      label = shiny::tags$span(
+        shiny::tags$a(
+          id = ns("tz_parse_link"),
+          "Timezone to parse",
+          shiny::icon("info-circle")
+        )
+      ),
+      choices = tz_choice
+    )
+
+  ui_input$tz_parse_modal <-
+    shinyBS::bsModal(
+      id = ns("tz_parse_modal"),
+      title = "Timezones",
+      trigger = ns("tz_parse_link"),
+      size = "large",
+      shiny::HTML(
+        readr::read_lines(
+          system.file("help", "read_delim", "tz.html", package = "shinypod")
+        )
+      )
+    )
+
+  # timezone to display
+  ui_input$tz_display <-
+    shiny::selectizeInput(
+      inputId = ns("tz_display"),
+      label = shiny::tags$span(
+        shiny::tags$a(
+          id = ns("tz_display_link"),
+          "Timezone to display",
+          shiny::icon("info-circle")
+        )
+      ),
+      choices = tz_choice
+    )
+
+  ui_input$tz_display_modal <-
+    shinyBS::bsModal(
+      id = ns("tz_display_modal"),
+      title = "Timezones",
+      trigger = ns("tz_display_link"),
+      size = "large",
+      shiny::HTML(
+        readr::read_lines(
+          system.file("help", "read_delim", "tz.html", package = "shinypod")
+        )
+      )
+    )
+
+  ui_input
+}
+
+#' UI output elements for delimited-file reader.
+#'
+#' Used to define the UI output elements within the \code{read_delim} shiny module.
+#'
+#' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
+#'
+#' \describe{
 #'  \item{text}{\code{shiny::\link[shiny]{htmlOutput}}, used to display first few lines of text from file}
 #'  \item{data}{\code{shiny::\link[shiny]{htmlOutput}}, used to display first few lines of the parsed dataframe}
 #' }
@@ -26,110 +135,28 @@
 #'
 #' @export
 #
-read_delim_ui <- function(id){
+read_delim_ui_output <- function(id){
 
   ns <- shiny::NS(id)
 
-  ui <- shiny::tagList()
-
-  # specify file
-  ui$file <-
-    shiny::fileInput(
-      inputId = ns("file"),
-      label = "File",
-      accept = c("text/csv", ".csv", "text/comma-separated-values", "text/plain")
-    )
-
-  # specify delim
-  ui$delim <-
-    shiny::selectizeInput(
-      inputId = ns("delim"),
-      label = "Delimiter",
-      choices = c(Comma = ",", Semicolon = ";", Tab = "\t")
-    )
-
-  # specify decimal
-  ui$decimal_mark <-
-    shiny::selectizeInput(
-      inputId = ns("decimal_mark"),
-      label = "Decimal mark",
-      choices = c(Point = ".", Comma = ",")
-    )
-
-  # specify timezones
-  tz_choice <- c("UTC", lubridate::olson_time_zones())
-
-  # timezone to parse
-  ui$tz_parse <-
-    shiny::selectizeInput(
-      inputId = ns("tz_parse"),
-      label = shiny::tags$span(
-        shiny::tags$a(
-          id = ns("tz_parse_link"),
-          "Timezone to parse",
-          shiny::icon("info-circle")
-        )
-      ),
-      choices = tz_choice
-    )
-
-  ui$tz_parse_modal <-
-    shinyBS::bsModal(
-      id = ns("tz_parse_modal"),
-      title = "Timezones",
-      trigger = ns("tz_parse_link"),
-      size = "large",
-      shiny::HTML(
-        readr::read_lines(
-          system.file("help", "read_delim", "tz.html", package = "shinypod")
-        )
-      )
-    )
-
-  # timezone to display
-  ui$tz_display <-
-    shiny::selectizeInput(
-      inputId = ns("tz_display"),
-      label = shiny::tags$span(
-        shiny::tags$a(
-          id = ns("tz_display_link"),
-          "Timezone to display",
-          shiny::icon("info-circle")
-        )
-      ),
-      choices = tz_choice
-    )
-
-  ui$tz_display_modal <-
-    shinyBS::bsModal(
-      id = ns("tz_display_modal"),
-      title = "Timezones",
-      trigger = ns("tz_display_link"),
-      size = "large",
-      shiny::HTML(
-        readr::read_lines(
-          system.file("help", "read_delim", "tz.html", package = "shinypod")
-        )
-      )
-    )
+  ui_output <- shiny::tagList()
 
   # text output
-  ui$text <-
+  ui_output$text <-
     shiny::htmlOutput(
       outputId = ns("text"),
       container = pre_scroll
     )
 
   # data-frame output
-  ui$data <-
+  ui_output$data <-
     shiny::htmlOutput(
       outputId = ns("data"),
       container = pre_scroll
     )
 
-  ui
+  ui_output
 }
-
 
 #' Server function for delimted-file reader.
 #'
