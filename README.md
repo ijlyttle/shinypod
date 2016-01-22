@@ -9,20 +9,19 @@ We have reusable modules for:
 
 ## Installation
 
-This is based on the dev version of shiny. To install:
+This package is not on CRAN; it is based on the new CRAN (0.13.0) version of shiny. To install:
 
 ```R
-devtools::install_github("rstudio/shiny")
 devtools::install_github("ijlyttle/shinypod")
 ```
 
 ## Philosophy
 
-For each module foo, we have `foo_ui()` and `foo_server()`.
+For each module foo, we have `foo_ui_input()`, `foo_ui_output()`, and `foo_server()`.
 
-For each module foo, we also have a couple of functions that return ui arrangements for a sidebar layout: `foo_ui_sidebar_side()` and `foo_ui_sidebar_main()`, each of which calls `foo_ui()`.
+For each module foo, we also have a couple of functions that return ui arrangements for a sidebar layout: `foo_ui_sidebar_side()` and `foo_ui_sidebar_main()`.
 
-The thought is for `foo_ui()` return a simple `shiny::tagList`, and for `foo_ui_sidebar_side()` and `foo_ui_sidebar_main()` to (possibly) return more-customized html.
+The thought is for the fundamental functions, `foo_ui_input()` and `foo_ui_output()`, each to return a simple `shiny::tagList`, and for `foo_ui_sidebar_side()` and `foo_ui_sidebar_main()` to return more-customized html, having called the fundamental functions.
 
 ## Example
 
