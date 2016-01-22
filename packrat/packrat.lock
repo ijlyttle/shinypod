@@ -1,12 +1,17 @@
 PackratFormat: 1.4
 PackratVersion: 0.4.6.1
-RVersion: 3.2.2
+RVersion: 3.2.3
 Repos: CRAN=https://cran.rstudio.com/
 
 Package: BH
 Source: CRAN
 Version: 1.60.0-1
 Hash: 889445e87a2acd4cc58440957f3b0d1a
+
+Package: DBI
+Source: CRAN
+Version: 0.3.1
+Hash: 096699d1ac1cf530acfc646a0c90ee5d
 
 Package: R6
 Source: CRAN
@@ -17,6 +22,11 @@ Package: Rcpp
 Source: CRAN
 Version: 0.12.2
 Hash: 1928c2b7372e3f033217335f3fad25a3
+
+Package: assertthat
+Source: CRAN
+Version: 0.1
+Hash: 0afb92b59b02593c70ff8046700ba9d3
 
 Package: bitops
 Source: CRAN
@@ -34,6 +44,12 @@ Version: 1.17.1
 Hash: 97cb6f6293cd18d17df77a6383cc6763
 Requires: bitops
 
+Package: crayon
+Source: CRAN
+Version: 1.3.1
+Hash: b61d34886cf0f4b4fc4e4f52ea249390
+Requires: memoise
+
 Package: curl
 Source: CRAN
 Version: 0.9.4
@@ -50,6 +66,12 @@ Package: digest
 Source: CRAN
 Version: 0.6.9
 Hash: fd55d5a024f160fc001a5ece1e27782d
+
+Package: dplyr
+Source: CRAN
+Version: 0.4.3
+Hash: 4675a5a17414d99598c92dcca485dbc1
+Requires: BH, DBI, R6, Rcpp, assertthat, lazyeval, magrittr
 
 Package: evaluate
 Source: CRAN
@@ -101,6 +123,11 @@ Version: 1.12
 Hash: bbb197833ff9b57c328c0fc9f924cb92
 Requires: digest, evaluate, formatR, highr, markdown, stringr, yaml
 
+Package: lazyeval
+Source: CRAN
+Version: 0.1.10
+Hash: 9679f1ac7f6bc07bc79755f34cd15e1f
+
 Package: lubridate
 Source: CRAN
 Version: 1.5.0
@@ -134,6 +161,11 @@ Source: CRAN
 Version: 0.4.6-1
 Hash: 29eacc43b096c5b1a82c8d54a49b030b
 
+Package: praise
+Source: CRAN
+Version: 1.0.0
+Hash: 77da8f1df873a4b91e5c4a68fe2fb1b6
+
 Package: readr
 Source: CRAN
 Version: 0.2.2
@@ -164,14 +196,10 @@ Hash: c006a9eaa80a091dcd87bb4003887b12
 Requires: curl, xml2
 
 Package: shiny
-Source: github
-Version: 0.12.2.9009
-Hash: d2b5ccd3a8469ebed7d24c260da97fa7
+Source: CRAN
+Version: 0.13.0
+Hash: b4e074e7ffd1281dc9eaa83f91ee6e86
 Requires: R6, digest, htmltools, httpuv, jsonlite, mime, xtable
-GithubRepo: shiny
-GithubUsername: rstudio
-GithubRef: master
-GithubSha1: f2410abc484da36cec26665271c42a09cc430a46
 
 Package: shinyBS
 Source: CRAN
@@ -195,6 +223,12 @@ Source: CRAN
 Version: 1.0.0
 Hash: 2676dd5f88890910962b733b0f9540e1
 Requires: magrittr, stringi
+
+Package: testthat
+Source: CRAN
+Version: 0.11.0
+Hash: e10882241e569f584fb1f8c19599a13f
+Requires: crayon, digest, praise
 
 Package: whisker
 Source: CRAN

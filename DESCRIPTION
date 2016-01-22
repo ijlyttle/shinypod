@@ -11,11 +11,11 @@ BugReports: https://github.com/ijlyttle/shinypod/issues
 Description: Reusable shiny modules
 License: MIT + file LICENSE
 LazyData: TRUE
-Imports: 
-    shiny,
+Imports:
+    shiny (>= 0.13.1),
     shinyjs,
     shinyBS
-Suggests: 
+Suggests:
     readr,
     lubridate,
     dplyr,
