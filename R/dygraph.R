@@ -214,22 +214,32 @@ dygraph_server <- function(
   # basic dygraph
   rct_dyg <- reactive({
 
-    rct_data()
-
     var_time <- input[["time"]]
     var_y1 <- input[["y1"]]
     var_y2 <- input[["y2"]]
 
     shiny::validate(
-      shiny::need(var_time, "Graph cannot display without a time-variable"),
-      shiny::need(c(var_y1, var_y2), "Graph cannot display without any y-variables")
+      shiny::need(
+        var_time %in% names(rct_data()),
+        "Graph cannot display without a time-variable"
+      ),
+      shiny::need(
+        c(var_y1, var_y2) %in% names(rct_data()),
+        "Graph cannot display without any y-variables"
+      )
     )
 
     # create the mts object
     vec_time <- rct_data()[[var_time]]
     df_num <- rct_data()[c(var_y1, var_y2)]
 
-    dy_xts <- xts::xts(df_num, order.by = vec_time, lubridate::tz(vec_time))
+    # if no tz, use UTC
+    tz <- lubridate::tz(vec_time)
+    if (identical(tz, "")) {
+      tz <- "UTC"
+    }
+
+    dy_xts <- xts::xts(df_num, order.by = vec_time, tzone = tz)
 
     dyg <- dygraphs::dygraph(dy_xts)
     dyg <- dygraphs::dyAxis(dyg, "x", label = var_time)
