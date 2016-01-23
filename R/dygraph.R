@@ -134,15 +134,6 @@ dygraph_server <- function(
 
   ns <- session$ns
 
-  ### inputs ###
-  ##############
-
-  # taken from ggvis
-  # if (!shiny::is.reactive(data)) {
-  #   static_data <- data
-  #   data <- function() static_data
-  # }
-
   ### reactives ###
   #################
 
