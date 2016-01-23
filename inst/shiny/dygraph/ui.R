@@ -1,10 +1,11 @@
 library("shiny")
 library("shinyBS")
 library("shinyjs")
+library("shinypod")
 library("dygraphs")
 library("dplyr")
 
-ui <- fluidPage(
+fluidPage(
   useShinyjs(),
   titlePanel("Read csv and dygraph"),
   sidebarLayout(
@@ -19,18 +20,3 @@ ui <- fluidPage(
     )
   )
 )
-
-server <- function(input, output, session) {
-
-  rct_data <- callModule(read_delim_server, "csv")
-
-  rct_dyg <- callModule(dygraph_server, "dyg", data = rct_data)
-
-  output$csv_dyg <- renderDygraph({
-    rct_dyg() %>%
-    dyOptions(useDataTimezone = TRUE)
-  })
-
-}
-
-shinyApp(ui, server)
