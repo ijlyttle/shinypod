@@ -1,6 +1,6 @@
 #' html for scrollable pre-formatted text
 #'
-#' This is used as the \code{container} argument in \code{shiny::htmlOutput}
+#' This is used as the \code{container} argument in  \code{shiny::\link[shiny]{htmlOutput}}
 #'
 #' @param ... expression used to fill text
 #'
@@ -132,8 +132,26 @@ df_names_inherits <- function(df, what){
 }
 
 
+#' determine the proper selection
+#'
+#' Used for \code{shiny::\link[shiny]{selectInput}} to allow you to
+#' update its selection when its choices change.
+#'
+#' @param value    character vector, current value of an input
+#' @param choices  character vector, new choices for an input
+#' @param index    integer, if \code{value} is not in defualt \code{choices},
+#'   uses this index of \code{choices}.
+#'
+#' @return character vector of proposed selection
+#' @examples
+#'   update_selected("a", c("a", "b", "c"))
+#'   update_selected("a", NULL)
+#'   update_selected("d", c("a", "b", "c"))
+#'   update_selected("d", c("a", "b", "c"), index = 1)
+#'
 #' @export
-get_selected <- function(value, choices, index_default = NULL){
+#
+update_selected <- function(value, choices, index = NULL){
 
   if (is.null(choices)){
 
@@ -142,16 +160,16 @@ get_selected <- function(value, choices, index_default = NULL){
 
   } else {
 
-    # see if our current value is on our choices
+    # see if our current value is one of our choices
     selected <- value[value %in% choices]
 
     if (length(selected) == 0){
       # no - look at defaults
 
-      if (is.null(index_default)){
+      if (is.null(index)){
         selected <- NULL
       } else {
-        selected <- choices[index_default]
+        selected <- choices[index]
       }
 
     }

@@ -13,6 +13,6 @@ pre_scroll(...)
 \item{...}{expression used to fill text}
 }
 \description{
-This is used as the \code{container} argument in \code{shiny::htmlOutput}
+This is used as the \code{container} argument in  \code{shiny::\link[shiny]{htmlOutput}}
 }
 

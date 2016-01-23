@@ -256,7 +256,7 @@ dygraph_server <- function(
         session,
         inputId = "time",
         choices = rct_var_time(),
-        selected = get_selected(input[["time"]], rct_var_time(), index_default = 1)
+        selected = update_selected(input[["time"]], rct_var_time(), index = 1)
       )
     }
   )
@@ -269,7 +269,7 @@ dygraph_server <- function(
         session,
         inputId = "y1",
         choices = rct_choice_y1(),
-        selected = get_selected(input[["y1"]], rct_choice_y1(), index_default = 1)
+        selected = update_selected(input[["y1"]], rct_choice_y1(), index = 1)
       )
     }
   )
@@ -282,7 +282,7 @@ dygraph_server <- function(
         session,
         inputId = "y2",
         choices = rct_choice_y2(),
-        selected = get_selected(input[["y2"]], rct_choice_y2(), index_default = 0)
+        selected = update_selected(input[["y2"]], rct_choice_y2(), index = NULL)
       )
     }
   )
