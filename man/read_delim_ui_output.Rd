@@ -26,7 +26,8 @@ This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 The purpose is to specify the UI elements - another set of functions can be used to specify layout.
 }
 \seealso{
-Other read_delim.module.functions: \code{\link{read_delim_server}},
+Other read_delim module functions: \code{\link{dygraph_server}},
+  \code{\link{read_delim_server}},
   \code{\link{read_delim_ui_input}}
 }
 

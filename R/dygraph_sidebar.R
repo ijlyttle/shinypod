@@ -1,4 +1,4 @@
-#' Sidebar layout for read_delim module
+#' Sidebar layout for dygraph module
 #'
 #' These functions return the ui elements for a side panel and a main panel.
 #'
@@ -13,25 +13,25 @@
 #'   fluidPage(
 #'     shinyjs::useShinyjs(),
 #'     sidebarLayout(
-#'       sidebarPanel(read_delim_sidebar_side("foo")),
-#'       mainPanel(read_delim_sidebar_main("foo"))
+#'       sidebarPanel(dygraph_sidebar_side("foo")),
+#'       mainPanel(dygraph_sidebar_main("foo"))
 #'     )
 #'   )
 #' )
 #'
 #' @export
 #
-read_delim_sidebar_side <- function(id){
+dygraph_sidebar_side <- function(id){
 
-  read_delim_ui_input(id)
+  dygraph_ui_input(id)
+
 }
 
-#' @rdname read_delim_sidebar_side
+#' @rdname dygraph_sidebar_side
 #' @export
 #
-read_delim_sidebar_main <- function(id){
+dygraph_sidebar_main <- function(id){
 
-  read_delim_ui_output(id)
+  dygraph_ui_misc(id)
+
 }
-
-

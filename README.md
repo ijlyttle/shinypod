@@ -23,6 +23,12 @@ For each module foo, we also have a couple of functions that return ui arrangeme
 
 The thought is for the fundamental functions, `foo_ui_input()` and `foo_ui_output()`, each to return a simple `shiny::tagList`, and for `foo_ui_sidebar_side()` and `foo_ui_sidebar_main()` to return more-customized html, having called the fundamental functions.
 
+Design Questions:
+1. Should the different functions be separate or packaged together?
+2. The server function: should it be a proper function -- should it have a proper return value and not just modify the environment?
+3. Server function: should each reactive data source be it's own function input?  Or should it be packaged in a reactive list?
+
+
 ## Example
 
 Let's say you wanted to be able to upload and parse a csv file, and have the dataframe be returned by a reactive function.

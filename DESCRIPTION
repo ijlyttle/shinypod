@@ -12,7 +12,7 @@ Description: Reusable shiny modules
 License: MIT + file LICENSE
 LazyData: TRUE
 Imports:
-    shiny (>= 0.13.1),
+    shiny (>= 0.13.0),
     shinyjs,
     shinyBS
 Suggests:

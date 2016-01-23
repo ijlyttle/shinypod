@@ -73,6 +73,12 @@ Version: 0.4.3
 Hash: 4675a5a17414d99598c92dcca485dbc1
 Requires: BH, DBI, R6, Rcpp, assertthat, lazyeval, magrittr
 
+Package: dygraphs
+Source: CRAN
+Version: 0.6
+Hash: b02fc4b803daadd33556094a1dce1186
+Requires: htmlwidgets, magrittr, xts, zoo
+
 Package: evaluate
 Source: CRAN
 Version: 0.8
@@ -99,6 +105,12 @@ Source: CRAN
 Version: 0.3
 Hash: 7ccc01f4d22d73d0d9b0d2a7781e7ff6
 Requires: digest
+
+Package: htmlwidgets
+Source: CRAN
+Version: 0.5
+Hash: 0aa33e8666baac6fcff4e376789b9c2e
+Requires: htmltools, jsonlite, yaml
 
 Package: httpuv
 Source: CRAN
@@ -246,7 +258,18 @@ Source: CRAN
 Version: 1.8-0
 Hash: 3816a222bb6837b3344d230b54b4c3cc
 
+Package: xts
+Source: CRAN
+Version: 0.9-7
+Hash: fb3f81d7a2fa2323879b6b49722ddc5e
+Requires: zoo
+
 Package: yaml
 Source: CRAN
 Version: 2.1.13
 Hash: 4854ccabebc225e8a7309fb4a74980de
+
+Package: zoo
+Source: CRAN
+Version: 1.7-12
+Hash: 8ce4a89536cba4fa6023190959de5658

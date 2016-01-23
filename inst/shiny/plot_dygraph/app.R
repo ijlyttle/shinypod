@@ -2,38 +2,37 @@ library("shiny")
 library("shinyBS")
 library("shinyjs")
 library("dygraphs")
-library("magrittr")
-
-app_id = "test_app_1"
-
+library("dplyr")
 
 ui <- fluidPage(
   useShinyjs(),
+  titlePanel("Read csv and dygraph"),
   sidebarLayout(
     sidebarPanel(
-      h4("Dygraph"),
-      read_delim_sidebar_side("test_app_2"),
-      dygraph_input(app_id)
+      read_delim_sidebar_side("csv"),
+      tags$hr(),
+      dygraph_sidebar_side("dyg")
     ),
     mainPanel(
-      h3("Dygraph"),
-      dygraph_output(app_id),
-      dygraphs::dygraphOutput("view_dygraph2")
+      read_delim_sidebar_main("csv"),
+      dygraph_sidebar_main("dyg"),
+      dygraphOutput("csv_dyg")
     )
   )
 )
 
 server <- function(input, output, session) {
-  rct_data <- callModule(read_delim_server, "test_app_2")
-  dyg <- callModule(dygraph_server, app_id, 
-    plot_df = rct_data())
 
+  rct_data <- callModule(read_delim_server, "csv")
 
-  output$view_dygraph2 <-  dygraphs::renderDygraph({
-    #dyg()
-    dyg() %>% dygraphs::dyOptions(useDataTimezone = TRUE)
+  observe(print(rct_data()))
+
+  rct_dyg <- callModule(dygraph_server, "dyg", data = rct_data)
+
+  output$csv_dyg <- renderDygraph({
+    rct_dyg() %>%
+    dyOptions(useDataTimezone = TRUE)
   })
-
 
 }
 
