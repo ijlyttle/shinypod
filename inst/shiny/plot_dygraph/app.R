@@ -15,7 +15,6 @@ ui <- fluidPage(
     ),
     mainPanel(
       read_delim_sidebar_main("csv"),
-      dygraph_sidebar_main("dyg"),
       dygraphOutput("csv_dyg")
     )
   )
@@ -24,8 +23,6 @@ ui <- fluidPage(
 server <- function(input, output, session) {
 
   rct_data <- callModule(read_delim_server, "csv")
-
-  observe(print(rct_data()))
 
   rct_dyg <- callModule(dygraph_server, "dyg", data = rct_data)
 

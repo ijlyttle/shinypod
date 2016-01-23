@@ -5,9 +5,9 @@
 #' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 #'
 #' \describe{
-#'  \item{time}{\code{shiny::\link[shiny]{selectInput}}, used to specify time variable}
-#'  \item{y1}{\code{shiny::\link[shiny]{selectInput}}, used to specify time variable}
-#'  \item{y2}{\code{shiny::\link[shiny]{selectInput}}, used to specify time variable}
+#'  \item{time}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify time variable}
+#'  \item{y1}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify y1-axis variable}
+#'  \item{y2}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify y2-axis variable}
 #' }
 #'
 #' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
@@ -26,18 +26,39 @@ dygraph_ui_input <- function(id) {
 
   ui_input <- shiny::tagList()
 
-  ui_input$time <- shiny::uiOutput(ns("time_out"))
+  ui_input$time <-
+    selectizeInput(
+      inputId = ns("time"),
+      label = "Time",
+      choices = NULL,
+      selected = NULL,
+      multiple = FALSE
+    )
 
-  ui_input$y1 <- shiny::uiOutput(ns("y1_out"))
+  ui_input$y1 <-
+    selectizeInput(
+      inputId = ns("y1"),
+      label = "Y1 axis",
+      choices = NULL,
+      selected = NULL,
+      multiple = TRUE
+    )
 
-  ui_input$y2 <- shiny::uiOutput(ns("y2_out"))
+  ui_input$y2 <-
+    selectizeInput(
+      inputId = ns("y2"),
+      label = "Y2 axis",
+      choices = NULL,
+      selected = NULL,
+      multiple = TRUE
+    )
 
   ui_input
 }
 
-#' UI output elements for delimited-file reader.
+#' UI output elements for dygraph module.
 #'
-#' Used to define the UI output elements within the \code{read_delim} shiny module.
+#' Used to define the UI output elements within the \code{dygraph} shiny module.
 #'
 #' Because there are no outputs,
 #' this function returns an empty \code{shiny::\link[shiny]{tagList}}.
@@ -90,30 +111,20 @@ dygraph_ui_misc <- function(id) {
 }
 
 
-#' Server function for delimted-file reader.
+#' Server function for dygraph module.
 #'
-#' Used to define the server within the \code{read_delim} shiny module.
+#' Used to define the server within the \code{dygraph} shiny module.
 #'
 #' @family read_delim module functions
 #
 #' @param input   standard \code{shiny} input
 #' @param output  standard \code{shiny} output
 #' @param session standard \code{shiny} session
-#' @param delim   character, default for parsing delimiter
-#' @param decimal_mark character, default for decimal mark
+#' @param data    data frame or \code{shiny::\link[shiny]{reactive}} that returns a data frame
 #'
-#' @return a \code{shiny::\link[shiny]{reactive}} containing a tbl_df of the parsed text
+#' @return a \code{shiny::\link[shiny]{reactive}} that returns a dygraph
 #'
 #' @examples
-#' shinyServer(function(input, output, session) {
-#'
-#'   rct_data <- callModule(
-#'     module = dygraph_server,
-#'     id = "foo"
-#'   )
-#'
-#'   observe(print(rct_data()))
-#' })
 #'
 #' @export
 #
@@ -121,50 +132,93 @@ dygraph_server <- function(
   input, output, session,
   data) {
 
-  # Make sure data is reactive
-  if (!shiny::is.reactive(data)) {
-    static_data <- data
-    data <- function() static_data
-  }
+  ns <- session$ns
 
-  # reactives
+  ### inputs ###
+  ##############
+
+  # taken from ggvis
+  # if (!shiny::is.reactive(data)) {
+  #   static_data <- data
+  #   data <- function() static_data
+  # }
+
+  ### reactives ###
+  #################
+
+  # dataset
   rct_data <- reactive({
 
+    if (shiny::is.reactive(data)) {
+      static_data <- data()
+    } else {
+      static_data <- data
+    }
+
     shiny::validate(
-      shiny::need(data(), "No data")
+      shiny::need(static_data, "Cannot display graph: no data")
     )
 
-    data()
+    static_data
   })
 
+  # names of time variables
   rct_var_time <- reactive({
+
+    shinyjs::hide(ns("time"))
+
     var_time <- df_names_inherits(rct_data(), c("POSIXct"))
 
     shiny::validate(
       shiny::need(var_time, "Cannot display graph: dataset has no time variables")
     )
 
+    shinyjs::show(ns("time"))
+
     var_time
 
   })
 
+  # names of numeric variables
   rct_var_num <- reactive({
+
+    shinyjs::hide(ns("y1"))
+    shinyjs::hide(ns("y2"))
+
     var_num <- df_names_inherits(rct_data(), c("numeric", "integer"))
 
     shiny::validate(
       shiny::need(var_num, "Cannot display graph: dataset has no numeric variables")
     )
 
+    shinyjs::show(ns("y1"))
+    shinyjs::show(ns("y2"))
+
     var_num
   })
 
+  # names of variables available to y1-axis control
+  rct_choice_y1 <- reactive({
+    choice_y1 <- setdiff(rct_var_num(), input[["y2"]])
+
+    choice_y1
+  })
+
+  # names of variables available to y2-axis control
+  rct_choice_y2 <- reactive({
+    choice_y2 <- setdiff(rct_var_num(), input[["y1"]])
+
+    choice_y2
+  })
+
+  # basic dygraph
   rct_dyg <- reactive({
 
-    shiny::req(rct_data())
+    rct_data()
 
-    var_time <- selection$time
-    var_y1 <- selection$Y1
-    var_y2 <- selection$Y2
+    var_time <- input[["time"]]
+    var_y1 <- input[["y1"]]
+    var_y2 <- input[["y2"]]
 
     shiny::validate(
       shiny::need(var_time, "Graph cannot display without a time-variable"),
@@ -178,7 +232,6 @@ dygraph_server <- function(
     dy_xts <- xts::xts(df_num, order.by = vec_time, lubridate::tz(vec_time))
 
     dyg <- dygraphs::dygraph(dy_xts)
-    #dyg <- do.call(dygraphs::dyOptions, c(list(dyg), rctval_dyopt[[item_dyopt]]))
     dyg <- dygraphs::dyAxis(dyg, "x", label = var_time)
     dyg <- dygraphs::dyAxis(dyg, "y", label = paste(var_y1, collapse = ", "))
     dyg <- dygraphs::dyAxis(dyg, "y2", label = paste(var_y2, collapse = ", "))
@@ -191,75 +244,47 @@ dygraph_server <- function(
     dyg
   })
 
-  selection <- reactiveValues(
-    time = NULL,
-    Y1 = NULL,
-    Y2 = NULL
-  )
+  ### observers ###
+  #################
 
-  # observers
-  shiny::observe({
-    selection$time <- input[["controller_time"]]
-    selection$Y1 <- input[["controller_y1"]]
-    selection$Y2 <- input[["controller_y2"]]
-  })
-
-  # when the y-variables change,
-  #   if there are y-varaiables available to select,
-  #     and there are no y-variables selected:
-  #     then - put the first y-variable on the Y1 axis
+  # update choices for time variable
   shiny::observeEvent(
-    eventExpr = rct_var_num(),
+    eventExpr = rct_var_time(),
     handlerExpr = {
-      if (is.null(selection$Y1) &&
-          is.null(selection$Y2)   ){
-        selection$Y1 <- rct_var_num()[[1]]
-      }
+      updateSelectInput(
+        session,
+        inputId = "time",
+        choices = rct_var_time(),
+        selected = get_selected(input[["time"]], rct_var_time(), index_default = 1)
+      )
     }
   )
 
-  # outputs
-
-  # select time variable
-  output[["time_out"]] <-
-    renderUI({
-      ns <- session$ns
-      selectizeInput(
-        inputId = ns("controller_time"),
-        label = "Time",
-        choices = rct_var_time(),
-        selected = selection$time
+  # update choices for y1 variable
+  shiny::observeEvent(
+    eventExpr = rct_choice_y1(),
+    handlerExpr = {
+      updateSelectInput(
+        session,
+        inputId = "y1",
+        choices = rct_choice_y1(),
+        selected = get_selected(input[["y1"]], rct_choice_y1(), index_default = 1)
       )
-    })
+    }
+  )
 
-  # select Y1 variable
-  output[["y1_out"]] <-
-    renderUI({
-      ns <- session$ns
-      selectizeInput(
-        inputId = ns("controller_y1"),
-        label = "Y1 axis",
-        choices = setdiff(rct_var_num(), input[["controller_y2"]]),
-        multiple = TRUE,
-        selected = selection$Y1
+  # update choices for y2 variable
+  shiny::observeEvent(
+    eventExpr = rct_choice_y2(),
+    handlerExpr = {
+      updateSelectInput(
+        session,
+        inputId = "y2",
+        choices = rct_choice_y2(),
+        selected = get_selected(input[["y2"]], rct_choice_y2(), index_default = 0)
       )
-    })
-
-  # select Y2 variable
-  output[["y2_out"]] <-
-    renderUI({
-      ns <- session$ns
-      selectizeInput(
-        inputId = ns("controller_y2"),
-        label = "Y2 axis",
-        choices = setdiff(rct_var_num(), input[["controller_y1"]]),
-        multiple = TRUE,
-        selected = selection$Y2
-      )
-    })
-
-  # dygraph
-  output[["view_dygraph"]] <- dygraphs::renderDygraph({rct_dyg()})
+    }
+  )
 
   return(rct_dyg)
 }

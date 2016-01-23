@@ -130,3 +130,35 @@ df_names_inherits <- function(df, what){
 
   names_class
 }
+
+
+#' @export
+get_selected <- function(value, choices, index_default = NULL){
+
+  if (is.null(choices)){
+
+    # we have no choices, select NULL
+    selected <- NULL
+
+  } else {
+
+    # see if our current value is on our choices
+    selected <- value[value %in% choices]
+
+    if (length(selected) == 0){
+      # no - look at defaults
+
+      if (is.null(index_default)){
+        selected <- NULL
+      } else {
+        selected <- choices[index_default]
+      }
+
+    }
+
+  }
+
+  selected
+}
+
+

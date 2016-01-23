@@ -5,19 +5,11 @@
 #' The side elements are the inputs; the main elements are the outputs.
 #'
 #' @param id character, used to identify a namespace
+#' @param help logical, indicates if help panels to be displayed
 #'
 #' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
 #'
 #' @examples
-#' shinyUI(
-#'   fluidPage(
-#'     shinyjs::useShinyjs(),
-#'     sidebarLayout(
-#'       sidebarPanel(dygraph_sidebar_side("foo")),
-#'       mainPanel(dygraph_sidebar_main("foo"))
-#'     )
-#'   )
-#' )
 #'
 #' @export
 #
@@ -30,8 +22,12 @@ dygraph_sidebar_side <- function(id){
 #' @rdname dygraph_sidebar_side
 #' @export
 #
-dygraph_sidebar_main <- function(id){
+dygraph_sidebar_main <- function(id, help =  TRUE){
 
-  dygraph_ui_misc(id)
+  if (help){
+    dygraph_ui_misc(id)
+  } else {
+    shiny::tagList()
+  }
 
 }

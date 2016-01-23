@@ -7,10 +7,12 @@
 \usage{
 dygraph_sidebar_side(id)
 
-dygraph_sidebar_main(id)
+dygraph_sidebar_main(id, help = TRUE)
 }
 \arguments{
 \item{id}{character, used to identify a namespace}
+
+\item{help}{logical, indicates if help panels to be displayed}
 }
 \value{
 a \code{shiny::\link[shiny]{tagList}} containing UI elements
@@ -22,15 +24,6 @@ These functions return the ui elements for a side panel and a main panel.
 The side elements are the inputs; the main elements are the outputs.
 }
 \examples{
-shinyUI(
-  fluidPage(
-    shinyjs::useShinyjs(),
-    sidebarLayout(
-      sidebarPanel(dygraph_sidebar_side("foo")),
-      mainPanel(dygraph_sidebar_main("foo"))
-    )
-  )
-)
 
 }
 

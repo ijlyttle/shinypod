@@ -2,7 +2,7 @@
 % Please edit documentation in R/dygraph.R
 \name{dygraph_ui_output}
 \alias{dygraph_ui_output}
-\title{UI output elements for delimited-file reader.}
+\title{UI output elements for dygraph module.}
 \usage{
 dygraph_ui_output(id)
 }
@@ -13,7 +13,7 @@ dygraph_ui_output(id)
 a \code{shiny::\link[shiny]{tagList}}
 }
 \description{
-Used to define the UI output elements within the \code{read_delim} shiny module.
+Used to define the UI output elements within the \code{dygraph} shiny module.
 }
 \details{
 Because there are no outputs,

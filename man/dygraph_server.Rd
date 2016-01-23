@@ -2,7 +2,7 @@
 % Please edit documentation in R/dygraph.R
 \name{dygraph_server}
 \alias{dygraph_server}
-\title{Server function for delimted-file reader.}
+\title{Server function for dygraph module.}
 \usage{
 dygraph_server(input, output, session, data)
 }
@@ -13,26 +13,15 @@ dygraph_server(input, output, session, data)
 
 \item{session}{standard \code{shiny} session}
 
-\item{delim}{character, default for parsing delimiter}
-
-\item{decimal_mark}{character, default for decimal mark}
+\item{data}{data frame or \code{shiny::\link[shiny]{reactive}} that returns a data frame}
 }
 \value{
-a \code{shiny::\link[shiny]{reactive}} containing a tbl_df of the parsed text
+a \code{shiny::\link[shiny]{reactive}} that returns a dygraph
 }
 \description{
-Used to define the server within the \code{read_delim} shiny module.
+Used to define the server within the \code{dygraph} shiny module.
 }
 \examples{
-shinyServer(function(input, output, session) {
-
-  rct_data <- callModule(
-    module = dygraph_server,
-    id = "foo"
-  )
-
-  observe(print(rct_data()))
-})
 
 }
 \seealso{

@@ -19,9 +19,9 @@ Used to define the UI input elements within the \code{dygraph} shiny module.
 This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 
 \describe{
- \item{time}{\code{shiny::\link[shiny]{selectInput}}, used to specify time variable}
- \item{y1}{\code{shiny::\link[shiny]{selectInput}}, used to specify time variable}
- \item{y2}{\code{shiny::\link[shiny]{selectInput}}, used to specify time variable}
+ \item{time}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify time variable}
+ \item{y1}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify y1-axis variable}
+ \item{y2}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify y2-axis variable}
 }
 
 The purpose is to specify the UI elements - another set of functions can be used to specify layout.
