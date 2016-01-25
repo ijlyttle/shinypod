@@ -3,7 +3,6 @@ library("shinyBS")
 library("shinyjs")
 library("shinypod")
 library("dygraphs")
-library("dplyr")
 
 fluidPage(
   useShinyjs(),

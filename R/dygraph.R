@@ -27,30 +27,36 @@ dygraph_ui_input <- function(id) {
   ui_input <- shiny::tagList()
 
   ui_input$time <-
-    selectizeInput(
-      inputId = ns("time"),
-      label = "Time",
-      choices = NULL,
-      selected = NULL,
-      multiple = FALSE
+    shinyjs::hidden(
+      shiny::selectizeInput(
+        inputId = ns("time"),
+        label = "Time",
+        choices = NULL,
+        selected = NULL,
+        multiple = FALSE
+      )
     )
 
   ui_input$y1 <-
-    selectizeInput(
-      inputId = ns("y1"),
-      label = "Y1 axis",
-      choices = NULL,
-      selected = NULL,
-      multiple = TRUE
+    shinyjs::hidden(
+      shiny::selectizeInput(
+        inputId = ns("y1"),
+        label = "Y1 axis",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE
+      )
     )
 
   ui_input$y2 <-
-    selectizeInput(
-      inputId = ns("y2"),
-      label = "Y2 axis",
-      choices = NULL,
-      selected = NULL,
-      multiple = TRUE
+    shinyjs::hidden(
+      shiny::selectizeInput(
+        inputId = ns("y2"),
+        label = "Y2 axis",
+        choices = NULL,
+        selected = NULL,
+        multiple = TRUE
+      )
     )
 
   ui_input
@@ -156,15 +162,11 @@ dygraph_server <- function(
   # names of time variables
   rct_var_time <- reactive({
 
-    shinyjs::hide(ns("time"))
-
     var_time <- df_names_inherits(rct_data(), c("POSIXct"))
 
     shiny::validate(
       shiny::need(var_time, "Cannot display graph: dataset has no time variables")
     )
-
-    shinyjs::show(ns("time"))
 
     var_time
 
@@ -173,17 +175,11 @@ dygraph_server <- function(
   # names of numeric variables
   rct_var_num <- reactive({
 
-    shinyjs::hide(ns("y1"))
-    shinyjs::hide(ns("y2"))
-
     var_num <- df_names_inherits(rct_data(), c("numeric", "integer"))
 
     shiny::validate(
       shiny::need(var_num, "Cannot display graph: dataset has no numeric variables")
     )
-
-    shinyjs::show(ns("y1"))
-    shinyjs::show(ns("y2"))
 
     var_num
   })
@@ -227,6 +223,19 @@ dygraph_server <- function(
 
   ### observers ###
   #################
+
+  # shows and hides controls based on the availabilty and nature of data
+  shiny::observe({
+
+    has_time <- length(df_names_inherits(rct_data(), c("POSIXct"))) > 0
+    has_num <- length(df_names_inherits(rct_data(), c("numeric", "integer")) > 0)
+
+    shinyjs::toggle("time", condition = has_time)
+    shinyjs::toggle("y1", condition = has_num)
+    shinyjs::toggle("y2", condition = has_num)
+
+  })
+
 
   # update choices for time variable
   shiny::observeEvent(
