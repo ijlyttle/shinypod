@@ -7,7 +7,7 @@ library("dplyr")
 
 fluidPage(
   useShinyjs(),
-  titlePanel("Read csv and dygraph"),
+  titlePanel("CSV parser and dygraph"),
   sidebarLayout(
     sidebarPanel(
       read_delim_sidebar_side("csv"),

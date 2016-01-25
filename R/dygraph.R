@@ -220,27 +220,7 @@ dygraph_server <- function(
       )
     )
 
-    # create the mts object
-    vec_time <- rct_data()[[var_time]]
-    df_num <- rct_data()[c(var_y1, var_y2)]
-
-    # if no tz, use UTC
-    tz <- lubridate::tz(vec_time)
-    if (identical(tz, "")) {
-      tz <- "UTC"
-    }
-
-    dy_xts <- xts::xts(df_num, order.by = vec_time, tzone = tz)
-
-    dyg <- dygraphs::dygraph(dy_xts)
-    dyg <- dygraphs::dyAxis(dyg, "x", label = var_time)
-    dyg <- dygraphs::dyAxis(dyg, "y", label = paste(var_y1, collapse = ", "))
-    dyg <- dygraphs::dyAxis(dyg, "y2", label = paste(var_y2, collapse = ", "))
-
-    # put stuff on y2 axis
-    for(i in seq_along(var_y2)) {
-      dyg <- dygraphs::dySeries(dyg, var_y2[i], axis = "y2")
-    }
+    dyg <- .dygraph(rct_data(), var_time, var_y1, var_y2)
 
     dyg
   })
@@ -289,3 +269,34 @@ dygraph_server <- function(
 
   return(rct_dyg)
 }
+
+
+# function that builds basic dygraph
+# .dygraph(wx_ames, "date", "temp", "hum")
+.dygraph <- function(data, var_time, var_y1, var_y2){
+
+  # create the mts object
+  vec_time <- data[[var_time]]
+  df_num <- data[c(var_y1, var_y2)]
+
+  # if no tz, use UTC
+  tz <- lubridate::tz(vec_time)
+  if (identical(tz, "")) {
+    tz <- "UTC"
+  }
+
+  dy_xts <- xts::xts(df_num, order.by = vec_time, tzone = tz)
+
+  dyg <- dygraphs::dygraph(dy_xts)
+  dyg <- dygraphs::dyAxis(dyg, "x", label = var_time)
+  dyg <- dygraphs::dyAxis(dyg, "y", label = paste(var_y1, collapse = ", "))
+  dyg <- dygraphs::dyAxis(dyg, "y2", label = paste(var_y2, collapse = ", "))
+
+  # put stuff on y2 axis
+  for(i in seq_along(var_y2)) {
+    dyg <- dygraphs::dySeries(dyg, var_y2[i], axis = "y2")
+  }
+
+  dyg
+}
+

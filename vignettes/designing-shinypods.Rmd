@@ -1,0 +1,20 @@
+---
+title: "Design of Shinypods"
+author: "Ian Lyttle & Alex Shum"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Design of Shinypods}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+- `foo_ui_input()` 
+- `foo_ui_output()`
+- `foo_ui_misc()`
+- `foo_server()`
+
+- `foo_sidebar_side()`
+- `foo_sidebar_main()`
+
+
