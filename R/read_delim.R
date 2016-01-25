@@ -261,24 +261,18 @@ read_delim_server <- function(
       )
 
       shinyjs::show(ns("delim"))
-      shinyjs::show(ns("decimal_mark"))
-      shinyjs::show(ns("tz_parse"))
-      shinyjs::show(ns("tz_display"))
 
-      shinyjs::toggle(
-        id = ns("decimal_mark"),
-        condition = (length(df_names_inherits(rct_data(), "numeric")) > 0)
-      )
+      if (length(df_names_inherits(rct_data(), "numeric")) > 0){
+        shinyjs::show(ns("decimal_mark"))
+      }
 
-      shinyjs::toggle(
-        id = ns("tz_parse"),
-        condition = df_has_time_non_8601(rct_txt(), delim = input$delim)
-      )
+      if (df_has_time_non_8601(rct_txt(), delim = input$delim)){
+        shinyjs::show(ns("tz_parse"))
+      }
 
-      shinyjs::toggle(
-        id = ns("tz_display"),
-        condition = (length(df_names_inherits(rct_data(), "POSIXct")) > 0)
-      )
+      if (length(df_names_inherits(rct_data(), "POSIXct")) > 0){
+        shinyjs::show(ns("tz_display"))
+      }
 
       h <- rct_txt()
       h <- readr::read_lines(h, n_max = 7)

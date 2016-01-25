@@ -22,7 +22,9 @@ There are four essential functions: three for the UI and one for the server. Let
 
 ### Convention
 
-The functions `dygraph_sidebar_side()` and `dygraph_sidebar_main()` draw upon the elemental ui functions: `dygraph_ui_input()`, `dygraph_ui_output()` and `dygraph_ui_misc()`.s
+The functions `dygraph_sidebar_side()` and `dygraph_sidebar_main()` draw upon the elemental ui functions: `dygraph_ui_input()`, `dygraph_ui_output()` and `dygraph_ui_misc()`.
+
+Let's look at the code for 
 
 
 ## Presentation layer

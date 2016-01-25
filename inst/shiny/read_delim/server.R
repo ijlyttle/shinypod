@@ -1,7 +1,4 @@
 library("shiny")
-library("shinyjs")
-library("shinyBS")
-library("dplyr")
 library("shinypod")
 
 shinyServer(function(input, output, session) {
