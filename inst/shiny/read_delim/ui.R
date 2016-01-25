@@ -5,7 +5,7 @@ library("shinypod")
 
 shinyUI(
   fluidPage(
-    useShinyjs(),
+    useShinyjs(debug = TRUE),
     titlePanel("CSV parser"),
     sidebarLayout(
       sidebarPanel(

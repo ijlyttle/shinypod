@@ -40,36 +40,45 @@ read_delim_ui_input <- function(id){
 
   # specify delim
   ui_input$delim <-
-    shiny::selectizeInput(
-      inputId = ns("delim"),
-      label = "Delimiter",
-      choices = c(Comma = ",", Semicolon = ";", Tab = "\t")
+    shinyjs::hidden(
+      shiny::selectizeInput(
+        inputId = ns("delim"),
+        label = "Delimiter",
+        choices = c(Comma = ",", Semicolon = ";", Tab = "\t")
+      )
     )
+
 
   # specify decimal
   ui_input$decimal_mark <-
-    shiny::selectizeInput(
-      inputId = ns("decimal_mark"),
-      label = "Decimal mark",
-      choices = c(Point = ".", Comma = ",")
+    shinyjs::hidden(
+      shiny::selectizeInput(
+        inputId = ns("decimal_mark"),
+        label = "Decimal mark",
+        choices = c(Point = ".", Comma = ",")
+      )
     )
+
 
   # specify timezones
   tz_choice <- c("UTC", lubridate::olson_time_zones())
 
   # timezone to parse
   ui_input$tz_parse <-
-    shiny::selectizeInput(
-      inputId = ns("tz_parse"),
-      label = shiny::tags$span(
-        shiny::tags$a(
-          id = ns("tz_parse_link"),
-          "Timezone to parse",
-          shiny::icon("info-circle")
-        )
-      ),
-      choices = tz_choice
+    shinyjs::hidden(
+      shiny::selectizeInput(
+        inputId = ns("tz_parse"),
+        label = shiny::tags$span(
+          shiny::tags$a(
+            id = ns("tz_parse_link"),
+            "Timezone to parse",
+            shiny::icon("info-circle")
+          )
+        ),
+        choices = tz_choice
+      )
     )
+
 
   ui_input$tz_parse_modal <-
     shinyBS::bsModal(
@@ -86,16 +95,18 @@ read_delim_ui_input <- function(id){
 
   # timezone to display
   ui_input$tz_display <-
-    shiny::selectizeInput(
-      inputId = ns("tz_display"),
-      label = shiny::tags$span(
-        shiny::tags$a(
-          id = ns("tz_display_link"),
-          "Timezone to display",
-          shiny::icon("info-circle")
-        )
-      ),
-      choices = tz_choice
+    shinyjs::hidden(
+      shiny::selectizeInput(
+        inputId = ns("tz_display"),
+        label = shiny::tags$span(
+          shiny::tags$a(
+            id = ns("tz_display_link"),
+            "Timezone to display",
+            shiny::icon("info-circle")
+          )
+        ),
+        choices = tz_choice
+      )
     )
 
   ui_input$tz_display_modal <-
@@ -244,31 +255,22 @@ read_delim_server <- function(
     df
   })
 
-  ## observer ##
-  ##############
+  ## observers ##
+  ###############
+
   shiny::observe({
 
-    shinyjs::hide(ns("delim"))
-    shinyjs::hide(ns("decimal_mark"))
-    shinyjs::hide(ns("tz_parse"))
-    shinyjs::hide(ns("tz_display"))
+    # shows and hides controls based on the availabilty and nature of data
 
-    shiny::req(rct_txt())
-    shiny::req(rct_data())
+    has_data <- !is.null(rct_data())
+    has_numeric <- length(df_names_inherits(rct_data(), "numeric")) > 0
+    has_time_non_8601 <- df_has_time_non_8601(rct_txt(), delim = input$delim)
+    has_time <- length(df_names_inherits(rct_data(), "POSIXct")) > 0
 
-    shinyjs::show(ns("delim"))
-
-    if (length(df_names_inherits(rct_data(), "numeric")) > 0){
-      shinyjs::show(ns("decimal_mark"))
-    }
-
-    if (df_has_time_non_8601(rct_txt(), delim = input$delim)){
-      shinyjs::show(ns("tz_parse"))
-    }
-
-    if (length(df_names_inherits(rct_data(), "POSIXct")) > 0){
-      shinyjs::show(ns("tz_display"))
-    }
+    shinyjs::toggle("delim", condition = has_data)
+    shinyjs::toggle("decimal_mark", condition = has_numeric)
+    shinyjs::toggle("tz_parse", condition = has_time_non_8601)
+    shinyjs::toggle("tz_display", condition = has_time)
 
   })
 
