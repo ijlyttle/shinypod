@@ -35,14 +35,3 @@ read_delim_sidebar_main <- function(id){
 }
 
 
-#' @rdname read_delim_sidebar_side
-#' @export
-#
-read_delim_sidebar <- function(id){
-
-  list(
-    side = read_delim_sidebar_side(id),
-    main = read_delim_sidebar_main(id)
-  )
-}
-
