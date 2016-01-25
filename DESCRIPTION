@@ -17,8 +17,10 @@ Imports:
     shinyBS,
     readr,
     lubridate,
+    withr,
     dplyr,
-    stringr,
+    stringr
+Suggests:
     testthat,
     knitr,
     rmarkdown

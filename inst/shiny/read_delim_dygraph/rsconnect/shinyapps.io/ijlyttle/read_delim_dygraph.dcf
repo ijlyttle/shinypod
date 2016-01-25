@@ -2,6 +2,6 @@ name: read_delim_dygraph
 account: ijlyttle
 server: shinyapps.io
 appId: 80158
-bundleId: 358384
+bundleId: 358394
 url: https://ijlyttle.shinyapps.io/read_delim_dygraph/
-when: 1453747438.09932
+when: 1453748230.78259

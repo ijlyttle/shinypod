@@ -293,7 +293,7 @@ read_delim_server <- function(
     renderUI({
 
       h <-
-        devtools::with_options(
+        withr::with_options(
           list(width = 10000, dpylr.width = Inf, dplyr.print_min = 6),
           capture.output(print(rct_data()))
         )
