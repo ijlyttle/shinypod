@@ -1,4 +1,5 @@
 library("shiny")
+library("shinyBS")
 library("shinyjs")
 library("shinypod")
 

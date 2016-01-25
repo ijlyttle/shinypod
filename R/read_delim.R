@@ -244,35 +244,45 @@ read_delim_server <- function(
     df
   })
 
+  ## observer ##
+  ##############
+  shiny::observe({
+
+    shinyjs::hide(ns("delim"))
+    shinyjs::hide(ns("decimal_mark"))
+    shinyjs::hide(ns("tz_parse"))
+    shinyjs::hide(ns("tz_display"))
+
+    shiny::req(rct_txt())
+    shiny::req(rct_data())
+
+    shinyjs::show(ns("delim"))
+
+    if (length(df_names_inherits(rct_data(), "numeric")) > 0){
+      shinyjs::show(ns("decimal_mark"))
+    }
+
+    if (df_has_time_non_8601(rct_txt(), delim = input$delim)){
+      shinyjs::show(ns("tz_parse"))
+    }
+
+    if (length(df_names_inherits(rct_data(), "POSIXct")) > 0){
+      shinyjs::show(ns("tz_display"))
+    }
+
+  })
+
+
   ## outputs ##
   #############
 
   # sets the output for the raw text
   output$text <-
-    renderUI({
-
-      shinyjs::hide(ns("delim"))
-      shinyjs::hide(ns("decimal_mark"))
-      shinyjs::hide(ns("tz_parse"))
-      shinyjs::hide(ns("tz_display"))
+    shiny::renderUI({
 
       shiny::validate(
         shiny::need(rct_txt(), "File did not load properly")
       )
-
-      shinyjs::show(ns("delim"))
-
-      if (length(df_names_inherits(rct_data(), "numeric")) > 0){
-        shinyjs::show(ns("decimal_mark"))
-      }
-
-      if (df_has_time_non_8601(rct_txt(), delim = input$delim)){
-        shinyjs::show(ns("tz_parse"))
-      }
-
-      if (length(df_names_inherits(rct_data(), "POSIXct")) > 0){
-        shinyjs::show(ns("tz_display"))
-      }
 
       h <- rct_txt()
       h <- readr::read_lines(h, n_max = 7)
@@ -284,7 +294,7 @@ read_delim_server <- function(
 
   # sets the output for the parsed dataframe
   output$data <-
-    renderUI({
+    shiny::renderUI({
 
       h <-
         withr::with_options(
@@ -292,7 +302,7 @@ read_delim_server <- function(
           capture.output(print(rct_data()))
         )
       h <- paste(h, collapse = "<br/>")
-      h <- htmltools::HTML(h)
+      h <- shiny::HTML(h)
 
       h
     })
