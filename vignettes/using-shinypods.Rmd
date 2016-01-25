@@ -9,11 +9,17 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Shiny modules can make it much easier to design and build more-complex shiny apps. 
+```{r prelim, echo=FALSE}
+cat_r_file <- function(file){
+  cat("```R", readLines(file), "```", sep = "\n")  
+}
+```
+
+Shiny modules make it much easier to design and build complex shiny apps. 
 
 Imagine that you are designing an app that requires the user to upload a csv file to be parsed into a data frame. You will wish to use the data frame elsewhere in the app. Instead of writing the parser  from scratch, you can use a set of **shinypod** functions in your app.
 
-Shinypod is simply an implementaton of a set of design guidelines to allow you to use, remix, and even build your own shiny modules. An advantage of using such guidelings is that we can all use each others' shinypods more quickly and reliably.
+Shinypod is simply an implementaton of a set of design guidelines to allow you to use, remix, and even build your own shiny modules. An advantage of using such guidelines is that we can all use each others' shinypods more quickly and reliably.
 
 Before getting started, you are referred to RStudio's [article on shiny modules](http://shiny.rstudio.com/articles/modules.html).
 
@@ -23,49 +29,25 @@ This package, shinypod, offers functions that you can use to put a CSV parser in
 
 Let's look at a `ui.R` file:
 
-```{r parse_ui, eval=FALSE}
-library("shiny")
-library("shinyjs")
-library("shinyBS")
-library("shinypod")
-
-shinyUI(
-  fluidPage(
-    useShinyjs(),
-    titlePanel("CSV parser"),
-    sidebarLayout(
-      sidebarPanel(
-        read_delim_sidebar_side("csv")
-      ),
-      mainPanel(
-        read_delim_sidebar_main("csv")
-      )
-    )
-  )
-)
+```{r read_delim_ui, comment="", echo=FALSE, results = "asis"}
+cat_r_file(system.file("shiny", "read_delim", "ui.R", package = "shinypod"))
 ```
 
 And a `server.R` file:
 
-```{r parse_server, eval=FALSE}
-library("shiny")
-library("shinyjs")
-library("shinyBS")
-library("shinypod")
-
-shinyServer(function(input, output, session) {
-
-  rct_data <- callModule(module = read_delim_server, id = "csv")
-})
+```{r read_delim_server, comment="", echo=FALSE, results = "asis"}
+cat_r_file(system.file("shiny", "read_delim", "server.R", package = "shinypod"))
 ```
 
 For this implementation we call upon three functions.
 
-- `foo_sidebar_side()`
-- `foo_sidebar_main()`
-- `foo_server()`
+- `read_delim_sidebar_side()`
+- `read_delim_sidebar_main()`
+- `read_delim_server()`
 
-The first two functions each return a named `shiny::tagList` of UI elements that can be used in a sidebar layout. The side panel contains the inputs, and the main panel contains the outputs. 
+The first two functions each return a named `shiny::tagList` of UI elements that can be used in a sidebar layout. The side panel contains the inputs, and the main panel contains the outputs.
+
+Other UI arrangements are possible; you are referred to the "remixing-shinypods" vignette.
 
 The third function is used in the server function to return a reactive element. This reactive returns the parsed dataframe. 
 
@@ -81,56 +63,18 @@ Dygraphs are especially handy for visualizing time series. Often, time-series da
 
 We can build onto our previous example by adding a dyraph shinypod.
 
-Here's a `ui.R` file:
+Let's look at a `ui.R` file:
 
-```{r parse_dy_ui, eval=FALSE}
-library("shiny")
-library("shinyBS")
-library("shinyjs")
-library("shinypod")
-library("dygraphs")
-library("dplyr")
-
-fluidPage(
-  useShinyjs(),
-  titlePanel("CSV parser and dygraph"),
-  sidebarLayout(
-    sidebarPanel(
-      read_delim_sidebar_side("csv"),
-      tags$hr(),
-      dygraph_sidebar_side("dyg")
-    ),
-    mainPanel(
-      read_delim_sidebar_main("csv"),
-      dygraphOutput("csv_dyg")
-    )
-  )
-)
+```{r read_delim_dygraph_ui, comment="", echo=FALSE, results = "asis"}
+cat_r_file(system.file("shiny", "read_delim_dygraph", "ui.R", package = "shinypod"))
 ```
 
-Here's a `server.R` file:
+And a `server.R` file:
 
-```{r parse_ui_server, eval=FALSE}
-library("shiny")
-library("shinyBS")
-library("shinyjs")
-library("shinypod")
-library("dygraphs")
-library("dplyr")
-
-function(input, output, session) {
-
-  rct_data <- callModule(read_delim_server, "csv")
-
-  rct_dyg <- callModule(dygraph_server, "dyg", data = rct_data)
-
-  output$csv_dyg <- renderDygraph({
-    rct_dyg() %>%
-      dyOptions(useDataTimezone = TRUE)
-  })
-
-}
+```{r read_delim_dygraph_server, comment="", echo=FALSE, results = "asis"}
+cat_r_file(system.file("shiny", "read_delim_dygraph", "server.R", package = "shinypod"))
 ```
+
 
 A few things to note:
 

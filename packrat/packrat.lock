@@ -13,10 +13,27 @@ Source: CRAN
 Version: 0.3.1
 Hash: 096699d1ac1cf530acfc646a0c90ee5d
 
+Package: PKI
+Source: CRAN
+Version: 0.1-3
+Hash: aca3e459c659b6d8266538520f72ba19
+Requires: base64enc
+
 Package: R6
 Source: CRAN
 Version: 2.1.1
 Hash: 20a88b2c9c84aecff2702789a4d102f5
+
+Package: RCurl
+Source: CRAN
+Version: 1.95-4.7
+Hash: 7756ed9df5d79ca87bc9e93f85d89b87
+Requires: bitops
+
+Package: RJSONIO
+Source: CRAN
+Version: 1.3-0
+Hash: fb672e20eb6f3010a3639f855d8ef6de
 
 Package: Rcpp
 Source: CRAN
@@ -27,6 +44,11 @@ Package: assertthat
 Source: CRAN
 Version: 0.1
 Hash: 0afb92b59b02593c70ff8046700ba9d3
+
+Package: base64enc
+Source: CRAN
+Version: 0.1-3
+Hash: c590d29e555926af053055e23ee79efb
 
 Package: bitops
 Source: CRAN
@@ -218,6 +240,16 @@ Source: CRAN
 Version: 0.61
 Hash: 4644935bd93e62a0b82686b26af7efc2
 Requires: htmltools, shiny
+
+Package: shinyapps
+Source: github
+Version: 0.4.1.8
+Hash: f38f9648e454c6c6cc460c9d13b1cd2c
+Requires: PKI, RCurl, RJSONIO, digest, packrat, rstudioapi, yaml
+GithubRepo: shinyapps
+GithubUsername: rstudio
+GithubRef: master
+GithubSha1: 4dd3a9d6a9afc1314afc03298cb37c7d9917d9a0
 
 Package: shinyjs
 Source: CRAN
