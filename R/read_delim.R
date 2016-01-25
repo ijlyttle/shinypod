@@ -258,9 +258,8 @@ read_delim_server <- function(
   ## observers ##
   ###############
 
+  # shows and hides controls based on the availabilty and nature of data
   shiny::observe({
-
-    # shows and hides controls based on the availabilty and nature of data
 
     has_data <- !is.null(rct_data())
     has_numeric <- length(df_names_inherits(rct_data(), "numeric")) > 0
@@ -273,6 +272,18 @@ read_delim_server <- function(
     shinyjs::toggle("tz_display", condition = has_time)
 
   })
+
+  # updates the display tz if the parse tz changes
+  shiny::observeEvent(
+    eventExpr = input$tz_parse,
+    handlerExpr = {
+      shiny::updateSelectInput(
+        session,
+        inputId = "tz_display",
+        selected = input$tz_parse
+      )
+    }
+  )
 
 
   ## outputs ##
