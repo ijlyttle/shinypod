@@ -53,7 +53,7 @@ The third function is used in the server function to return a reactive element. 
 
 To use all three, all you have to do is call each of the three functions using the same `id`, in this case `"csv"` - this is to keep the shiny namespace tidy.
 
-You can see this app in action [here].
+If you like, try out the [deployed app](https://ijlyttle.shinyapps.io/read_delim/).
 
 ## Second example - CSV parser with dygraph
 
@@ -82,7 +82,8 @@ A few things to note:
 - we supply the reactive returned by the `read_delim_server()` function as an argument to the `dygraph_server()` function. This is how the data is moved around.
 - the `dygraph_server()` function returns a reactive that returns a dygraph. We use this to build the output for the app. Note also that the dygraph shinypod returns a basic dygraph; we can use functions from the dygraphs package to customize it.
 
-Here's a [link] to a working example.
+If you like, try out the [deployed app](https://ijlyttle.shinyapps.io/read_delim_dygraph/).
+
 
 
 

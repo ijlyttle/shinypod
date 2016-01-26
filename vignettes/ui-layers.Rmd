@@ -1,0 +1,79 @@
+---
+title: "Elemental and Presentation UI Layers"
+author: "Ian Lyttle & Alex Shum"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Design of Shinypods}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r prelim, echo=FALSE}
+library("shinypod")
+
+cat_r_file <- function(file){
+  cat("```R", readLines(file), "```", sep = "\n")  
+}
+
+cat_r_fn <- function(fn){
+  cat("```R", capture.output(eval(fn)), "```", sep = "\n")  
+}
+```
+
+In this vignette, we go into a little more detail of the structure of a shinypod.
+
+## Essentials
+
+There are three essential functions for the UI. Let's consider the dygraph shinypod:
+
+- `dygraph_ui_input()` returns a named `shiny::tagList` of input elements
+- `dygraph_ui_output()` returns a named `shiny::tagList` of output elements
+- `dygraph_ui_misc()` returns a named `shiny::tagList` of miscellaneous elements, like help guides.
+
+### Convention
+
+The functions `dygraph_sidebar_side()` and `dygraph_sidebar_main()` draw upon the elemental ui functions: `dygraph_ui_input()`, `dygraph_ui_output()` and `dygraph_ui_misc()`.
+
+Let's look at the code for `dygraph_ui_input()`:
+
+```{r dygraph_ui_input, comment="", echo=FALSE, results = "asis"}
+cat_r_fn(dygraph_ui_input)
+```
+
+We see that this returns a named `tagList` of HTML elements.
+
+Similarly for `dygraph_ui_output()`:
+
+```{r dygraph_ui_output, comment="", echo=FALSE, results = "asis"}
+cat_r_fn(dygraph_ui_output)
+```
+
+This returns an empty `tagList`, but we keep the function for completeness.
+
+Finally for `dygraph_ui_misc()`:
+
+```{r dygraph_ui_misc, comment="", echo=FALSE, results = "asis"}
+cat_r_fn(dygraph_ui_misc)
+```
+
+## Presentation layer
+
+On top of the elemental layer, we make a presentation layer that consists of the functions:
+
+- `dygraph_sidebar_side()`
+- `dygraph_sidebar_main()`
+
+Here's `dygraph_sidebar_side()`:
+
+```{r dygraph_sidebar_side, comment="", echo=FALSE, results = "asis"}
+cat_r_fn(dygraph_sidebar_side)
+```
+
+Here's `dygraph_sidebar_main()`:
+
+```{r dygraph_sidebar_main, comment="", echo=FALSE, results = "asis"}
+cat_r_fn(dygraph_sidebar_main)
+```
+
+These are the functions that you would use - in putting togther a shiny app, I would suggest using these presentation functions.

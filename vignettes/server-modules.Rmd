@@ -1,5 +1,5 @@
 ---
-title: "Design of Shinypods"
+title: "Server Modules"
 author: "Ian Lyttle & Alex Shum"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
