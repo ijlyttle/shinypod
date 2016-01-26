@@ -9,12 +9,242 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-- `foo_ui_input()` 
-- `foo_ui_output()`
-- `foo_ui_misc()`
-- `foo_server()`
+This vignette derives from the RStudio [article on Shiny modules](http://shiny.rstudio.com/articles/modules.html).
 
-- `foo_sidebar_side()`
-- `foo_sidebar_main()`
+## Structure of a server module
 
+### Formals
+
+```R
+dygraph_server <- function(
+  input, output, session,
+  data)
+```
+
+The first three arguments are the standard server arguments: `input`, `output`, and `session`. 
+
+Any additional arguments are passed from the server when `callModule` is invoked. If we design the module correctly, we can allow additional arguments to be static or reactive.
+
+This is the case with `data` that is expected to be either:
+
+- a dataframe
+- a reactive that returns a dataframe
+
+### Reactives
+
+#### Data
+
+```R
+# dataset
+rct_data <- reactive({
+
+  # the `data` argument can contain either:
+  #  - a reactive that returns a data frame
+  #  - a data frame 
+  #
+  # in either case, we want to examine the dataframe
+  #
+  if (shiny::is.reactive(data)) {
+    static_data <- data()
+  } else {
+    static_data <- data
+  }
+
+  # make sure this is a data frame
+  shiny::validate(
+    shiny::need(is.data.frame(static_data), "Cannot display graph: no data")
+  )
+
+  # this reactive returns the data frame
+  static_data
+})
+```
+
+This reactive, `rct_data`, is the **only** function or expression that uses the `data` argument; anything "downstream" will use `rct_data()`.
+
+#### Available variables
+
+Each of the inputs for this pod is a control used to specify which variables to display on a given axis.
+
+```R
+# names of time variables
+rct_var_time <- reactive({
+
+  var_time <- df_names_inherits(rct_data(), c("POSIXct"))
+
+  shiny::validate(
+    shiny::need(var_time, "Cannot display graph: dataset has no time variables")
+  )
+
+  var_time
+})
+
+# names of numeric variables
+rct_var_num <- reactive({
+
+  var_num <- df_names_inherits(rct_data(), c("numeric", "integer"))
+
+  shiny::validate(
+    shiny::need(var_num, "Cannot display graph: dataset has no numeric variables")
+  )
+
+  var_num
+})
+```
+
+The function `df_names_inherits()` returns a vector of names, these are the names of columns in the data frame that inherit from the supplied classes.
+
+We use the functions here to find what are the available time and numeric variables, so as to populate the choices for the inputs.
+
+One thing to keep in mind is that if a variable is chosen for the y1 axis, it should not be available to the y2 axis. Hence, we have reactives that supply the names of the varaibles available to each axis.
+
+```R
+# names of variables available to y1-axis control
+rct_choice_y1 <- reactive({
+  choice_y1 <- setdiff(rct_var_num(), input[["y2"]])
+
+  choice_y1
+})
+
+# names of variables available to y2-axis control
+rct_choice_y2 <- reactive({
+  choice_y2 <- setdiff(rct_var_num(), input[["y1"]])
+
+  choice_y2
+})
+```
+
+#### Dygraph
+
+The reactive that returns the dygraph has two main parts: validate the inputs, create a dygraph.
+
+The reason we validate the inputs again is that it is possible for `rct_data()` and the axis inputs to "get out of sync", and this is our chance to offer a validation message, rather than an error, while the reactives and inputs catch up with each other.
+
+```R
+# basic dygraph
+rct_dyg <- reactive({
+
+  var_time <- input[["time"]]
+  var_y1 <- input[["y1"]]
+  var_y2 <- input[["y2"]]
+
+  shiny::validate(
+    shiny::need(
+      var_time %in% names(rct_data()),
+      "Graph cannot display without a time-variable"
+    ),
+    shiny::need(
+      c(var_y1, var_y2) %in% names(rct_data()),
+      "Graph cannot display without any y-variables"
+    )
+  )
+
+  dyg <- .dygraph(rct_data(), var_time, var_y1, var_y2)
+
+  dyg
+})
+```
+
+The second part is to call a function that returns a dygraph, given the validated inputs. I have found it useful to write such functions outside of a reactive context, so that I can build and test them interactively.
+
+```R
+# function that builds basic dygraph
+# .dygraph(wx_ames, "date", "temp", "hum")
+.dygraph <- function(data, var_time, var_y1, var_y2){
+
+  # create the mts object
+  vec_time <- data[[var_time]]
+  df_num <- data[c(var_y1, var_y2)]
+
+  # if no tz, use UTC
+  tz <- lubridate::tz(vec_time)
+  if (identical(tz, "")) {
+    tz <- "UTC"
+  }
+
+  dy_xts <- xts::xts(df_num, order.by = vec_time, tzone = tz)
+
+  dyg <- dygraphs::dygraph(dy_xts)
+  dyg <- dygraphs::dyAxis(dyg, "x", label = var_time)
+  dyg <- dygraphs::dyAxis(dyg, "y", label = paste(var_y1, collapse = ", "))
+  dyg <- dygraphs::dyAxis(dyg, "y2", label = paste(var_y2, collapse = ", "))
+
+  # put stuff on y2 axis
+  for(i in seq_along(var_y2)) {
+    dyg <- dygraphs::dySeries(dyg, var_y2[i], axis = "y2")
+  }
+
+  dyg
+}
+```
+
+### Observers
+
+We have one observer manage the showing/hiding of inputs, depending on the availability of variables in the dataframe.
+
+```R
+# shows and hides controls based on the availabilty and nature of data
+shiny::observe({
+
+  has_time <- length(df_names_inherits(rct_data(), c("POSIXct"))) > 0
+  has_num <- length(df_names_inherits(rct_data(), c("numeric", "integer")) > 0)
+
+  shinyjs::toggle("time", condition = has_time)
+  shinyjs::toggle("y1", condition = has_num)
+  shinyjs::toggle("y2", condition = has_num)
+
+})
+```
+
+We have another set of observers to update the choices and selection for each of the selectInputs.
+
+```R
+# update choices for time variable
+shiny::observeEvent(
+  eventExpr = rct_var_time(),
+  handlerExpr = {
+    updateSelectInput(
+      session,
+      inputId = "time",
+      choices = rct_var_time(),
+      selected = update_selected(input[["time"]], rct_var_time(), index = 1)
+    )
+  }
+)
+```
+
+The purpose of `update_selected()` is to propose a selection, given an existing value and set of choices; it takes three arguments:
+
+- `value` is the current value of the input
+- `choices` are the available choices
+- `index` - if `value` is not among `choices` use this index
+
+The first step is to determine the members of `value` that appear in `choices`. If this result is not empty, it is returned.
+
+If this result is empty, then `index` is used to return that index of `choices`.
+
+### Outputs & return value
+
+One of the design choices made here was to return the dygraph as a reactive to be returned rather than as an output to be displayed.
+
+This forces a little more responsibility to the user, but there can be a benefit.
+
+A server function might contain lines like these:
+
+```R
+rct_dyg <- callModule(dygraph_server, "dyg", data = rct_data)
+
+output$csv_dyg <- renderDygraph({
+  rct_dyg()
+})
+```
+
+If you wanted to add some customization to the dygraph, you could do so easily in the server function.
+
+```R
+output$csv_dyg <- renderDygraph({
+  rct_dyg() %>%
+    dyOptions(useDataTimezone = TRUE)
+})
+```
 

@@ -5,10 +5,10 @@
 \title{Get the names of all the columns of the dataframe
 that inherit from the supplied class name}
 \usage{
-df_names_inherits(df, what)
+df_names_inherits(data, what)
 }
 \arguments{
-\item{df}{dataframe}
+\item{data}{dataframe}
 
 \item{what}{character, vector of class we wish to find}
 }

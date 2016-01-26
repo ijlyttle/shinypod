@@ -146,16 +146,24 @@ dygraph_server <- function(
   # dataset
   rct_data <- reactive({
 
+    # the `data` argument can contain either:
+    #  - a reactive that returns a data frame
+    #  - a data frame
+    #
+    # in either case, we want to examine the data frame
+    #
     if (shiny::is.reactive(data)) {
       static_data <- data()
     } else {
       static_data <- data
     }
 
+    # make sure this is a data frame
     shiny::validate(
-      shiny::need(static_data, "Cannot display graph: no data")
+      shiny::need(is.data.frame(static_data), "Cannot display graph: no data")
     )
 
+    # this reactive returns the data frame
     static_data
   })
 
@@ -169,7 +177,6 @@ dygraph_server <- function(
     )
 
     var_time
-
   })
 
   # names of numeric variables
@@ -236,7 +243,6 @@ dygraph_server <- function(
 
   })
 
-
   # update choices for time variable
   shiny::observeEvent(
     eventExpr = rct_var_time(),
@@ -278,7 +284,6 @@ dygraph_server <- function(
 
   return(rct_dyg)
 }
-
 
 # function that builds basic dygraph
 # .dygraph(wx_ames, "date", "temp", "hum")

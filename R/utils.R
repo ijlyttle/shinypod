@@ -16,8 +16,8 @@ pre_scroll <- function(...){
 
 #' Sets the timezone of all time-based columns in a dataframe
 #'
-#' @param df  dataframe
-#' @param tz  timezone, an Olson timezone or "UTC" (default)
+#' @param data  dataframe
+#' @param tz    timezone, an Olson timezone or "UTC" (default)
 #'
 #' @return dataframe
 #'
@@ -26,18 +26,18 @@ pre_scroll <- function(...){
 #'
 #' @export
 #
-df_with_tz <- function(df, tz = "UTC"){
+df_with_tz <- function(data, tz = "UTC"){
 
-  names_datetime <- df_names_inherits(df, "POSIXct")
+  names_datetime <- df_names_inherits(data, "POSIXct")
 
   fn_set_tz <- function(x){
     attr(x, "tzone") <- tz
     x
   }
 
-  df[names_datetime] <- lapply(df[names_datetime], fn_set_tz)
+  data[names_datetime] <- lapply(data[names_datetime], fn_set_tz)
 
-  df
+  data
 }
 
 # returns TRUE if the dataframe parsed using the text has any POSIXct columns
@@ -116,15 +116,15 @@ is_time_8601 <- function(x){
 #' Get the names of all the columns of the dataframe
 #' that inherit from the supplied class name
 #'
-#' @param df     dataframe
+#' @param data   dataframe
 #' @param what   character, vector of class we wish to find
 #'
 #' @return character vector
 #' @export
 #
-df_names_inherits <- function(df, what){
+df_names_inherits <- function(data, what){
 
-  inherits_class <- vapply(df, inherits, logical(1), what = what)
+  inherits_class <- vapply(data, inherits, logical(1), what = what)
 
   names_class <- names(inherits_class)[inherits_class]
 
@@ -157,7 +157,6 @@ update_selected <- function(value, choices, index = NULL){
 
     # we have no choices, select NULL
     selected <- NULL
-
   } else {
 
     # see if our current value is one of our choices
@@ -171,7 +170,6 @@ update_selected <- function(value, choices, index = NULL){
       } else {
         selected <- choices[index]
       }
-
     }
 
   }

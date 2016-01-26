@@ -43,6 +43,8 @@ cat_r_fn(dygraph_ui_input)
 
 We see that this returns a named `tagList` of HTML elements.
 
+Note that we use the `shinyjs::hidden()` function to initally hide the inputs. We will use the server logic to show the controls when there is data available.
+
 Similarly for `dygraph_ui_output()`:
 
 ```{r dygraph_ui_output, comment="", echo=FALSE, results = "asis"}

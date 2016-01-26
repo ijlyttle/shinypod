@@ -4,10 +4,10 @@
 \alias{df_with_tz}
 \title{Sets the timezone of all time-based columns in a dataframe}
 \usage{
-df_with_tz(df, tz = "UTC")
+df_with_tz(data, tz = "UTC")
 }
 \arguments{
-\item{df}{dataframe}
+\item{data}{dataframe}
 
 \item{tz}{timezone, an Olson timezone or "UTC" (default)}
 }
