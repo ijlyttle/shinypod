@@ -11,7 +11,23 @@ vignette: >
 
 This vignette derives from the RStudio [article on Shiny modules](http://shiny.rstudio.com/articles/modules.html).
 
+```{r echo=FALSE}
+library("shinypod")
+```
+
 ## Structure of a server module
+
+Within a server-module function, we keep a certain order of elements within the module. This order was determined by looking over the shoulders at Andee Kaplan and Eric Hare's shiny code (thanks to both!).
+
+1. **Formals** By definition these come first.
+
+2. **Reactives** We arrange the reactives so that reactives that are depended-upon by other reactives are placed *above* the reactives that "do the depending". Reactives that validate data passed-in by the formals are put at the beginning. Keep in mind that code within reactives are called only on demand - if something downstream calls the reactive.
+
+3. **Observers** Observers are always called if anything being observed changes. This is a handy place to put any code that changes the UI. This might be code to update an input, or it might be some `shinyjs` code to show or hide inputs.
+
+4. **Outputs** One thing to keep in mind about outputs is that the code is run **only** if the output is visible in the UI. This is why it can be useful to put code that *needs* to run into observers. 
+
+5. **Return value** We are still figuring this one out. For something like a dygraph, it will ultimately be an output; perhaps you expect it to be returned as an output. However, because a dygraph can be customized, it can be useful to return the dygraph as a reactive, allowing you to customize it and put it into an output yourself. 
 
 ### Formals
 
@@ -23,16 +39,18 @@ dygraph_server <- function(
 
 The first three arguments are the standard server arguments: `input`, `output`, and `session`. 
 
-Any additional arguments are passed from the server when `callModule` is invoked. If we design the module correctly, we can allow additional arguments to be static or reactive.
+Any additional arguments are passed from the server when `callModule` is invoked. By putting some extra logic in to the reactive that validates the data, we can allow additional arguments to be static or reactive.
 
-This is the case with `data` that is expected to be either:
+In this case, we expect `data` to be either:
 
-- a dataframe
-- a reactive that returns a dataframe
+- a data frame
+- a reactive that returns a data frame
 
 ### Reactives
 
 #### Data
+
+The implementation to allow you to send either a dataframe or a reactive that returns a dataframe is inspired by ggvis (thanks!).
 
 ```R
 # dataset
@@ -64,7 +82,8 @@ This reactive, `rct_data`, is the **only** function or expression that uses the 
 
 #### Available variables
 
-Each of the inputs for this pod is a control used to specify which variables to display on a given axis.
+
+The inputs for this shinypod need to know what are the variables available in the dataframe - be they datetime or numeric.
 
 ```R
 # names of time variables
@@ -92,11 +111,11 @@ rct_var_num <- reactive({
 })
 ```
 
-The function `df_names_inherits()` returns a vector of names, these are the names of columns in the data frame that inherit from the supplied classes.
+The function `df_names_inherits()` returns a vector of names; these are the names of columns in the dataframe that inherit from the supplied classes.
 
 We use the functions here to find what are the available time and numeric variables, so as to populate the choices for the inputs.
 
-One thing to keep in mind is that if a variable is chosen for the y1 axis, it should not be available to the y2 axis. Hence, we have reactives that supply the names of the varaibles available to each axis.
+One thing to keep in mind is that if a variable is chosen for the y1 axis, it should not be available to the y2 axis. Hence, we have reactives that supply the names of the variables available to each axis.
 
 ```R
 # names of variables available to y1-axis control
@@ -118,7 +137,7 @@ rct_choice_y2 <- reactive({
 
 The reactive that returns the dygraph has two main parts: validate the inputs, create a dygraph.
 
-The reason we validate the inputs again is that it is possible for `rct_data()` and the axis inputs to "get out of sync", and this is our chance to offer a validation message, rather than an error, while the reactives and inputs catch up with each other.
+The reason we validate the inputs again is that it is possible for `rct_data()` and the axis inputs to "get out of sync". This is our chance to offer a validation message, rather than an error, while the reactives and inputs catch up with each other.
 
 ```R
 # basic dygraph
@@ -145,7 +164,7 @@ rct_dyg <- reactive({
 })
 ```
 
-The second part is to call a function that returns a dygraph, given the validated inputs. I have found it useful to write such functions outside of a reactive context, so that I can build and test them interactively.
+The second part is to call a function that returns a dygraph, given the validated inputs. It can be useful to write such functions outside of a reactive context, so that you can build and test them interactively.
 
 ```R
 # function that builds basic dygraph
@@ -180,7 +199,7 @@ The second part is to call a function that returns a dygraph, given the validate
 
 ### Observers
 
-We have one observer manage the showing/hiding of inputs, depending on the availability of variables in the dataframe.
+We have one observer manage the showing/hiding of inputs, depending on the availability of variables in the data frame.
 
 ```R
 # shows and hides controls based on the availabilty and nature of data
@@ -222,6 +241,22 @@ The purpose of `update_selected()` is to propose a selection, given an existing 
 The first step is to determine the members of `value` that appear in `choices`. If this result is not empty, it is returned.
 
 If this result is empty, then `index` is used to return that index of `choices`.
+
+Some examples:
+
+```{r update_selected}
+choices <- c("a", "b", "c")
+
+update_selected(value = "b", choices = choices, index = 1)
+update_selected(value = "d", choices = choices, index = 1)
+update_selected(value = NULL, choices = choices, index = 1)
+
+update_selected(value = "d", choices = choices, index = NULL)
+update_selected(value = NULL, choices = choices, index = NULL)
+
+update_selected(value = "b", choices = NULL, index = 1)
+update_selected(value = "b", choices = NULL, index = NULL)
+```
 
 ### Outputs & return value
 
