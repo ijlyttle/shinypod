@@ -10,10 +10,10 @@ ui <- fluidPage(
   useShinyjs(),
   sidebarLayout(
     sidebarPanel(
-      write_delim_input(app_id)
+      write_delim_sidebar(app_id)
     ),
     mainPanel(
-      write_delim_output(app_id)
+      write_delim_main(app_id)
     )
   )
 )

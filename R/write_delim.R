@@ -1,16 +1,29 @@
-
+#' UI input elements for delimited-file writer.
+#'
+#' Used to define the UI input elements within the \code{write_delim} shiny module.
+#'
+#' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
+#'
+#' \describe{
+#'  \item{delim}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify delimiter character}
+#'  \item{filename}{\code{shiny::\link[shiny]{textInput}}, used to specify file name}
+#'  \item{download}{\code{shiny::\link[shiny]{downloadButton}}, download button}
+#' }
+#'
+#' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
+#'
+#' @family write_delim module functions
+#
+#' @param id, character used to specify namesapce, see \code{shiny::\link[shiny]{NS}}
+#'
+#' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
+#'
+#' @export
+#
 write_delim_input <- function(id) {
   ns <- NS(id)
   ui_input <- shiny::tagList()
 
-  # specify delimiter
-  #ui_input$delim <-
-  #  shiny::selectizeInput(
-  #    inputId = ns("delim"),
-  #    label = "Delimiter",
-  #    choices = c(Comma = ",", Semicolon = ";", Tab = "\t"),
-  #    selected = defaults$delim
-  #  )
   ui_input$delim <- 
     shiny::uiOutput(ns("controller_delim"))
 
@@ -33,6 +46,29 @@ write_delim_input <- function(id) {
   ui_input
 }
 
+
+#' UI output elements for delimited-file writer.
+#'
+#' Used to define the UI output elements within the \code{write_delim} shiny module.
+#'
+#' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
+#'
+#' \describe{
+#'  \item{data}{\code{shiny::\link[shiny]{htmlOutput}}, used to display first few lines of the dataframe}
+#'  \item{text}{\code{shiny::\link[shiny]{htmlOutput}}, used to display first few lines of text from file}
+#'  \item{text}{\code{shiny::\link[shiny]{htmlOutput}}, used to display first text status }
+#' }
+#'
+#' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
+#'
+#' @family write_delim module functions
+#
+#' @param id, character used to specify namesapce, see \code{shiny::\link[shiny]{NS}}
+#'
+#' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
+#'
+#' @export
+#
 write_delim_output <- function(id) {
   ns <- NS(id)
 
@@ -62,19 +98,52 @@ write_delim_output <- function(id) {
   ui_output
 }
 
+#' Server function for delimted-file writer.
+#'
+#' Used to define the server within the \code{write_delim} shiny module.
+#'
+#' @family write_delim module functions
+#
+#' @param input   standard \code{shiny} input
+#' @param output  standard \code{shiny} output
+#' @param session standard \code{shiny} session
+#' @param data    data.frame
+#' @param delim   character, delimiter mark
+#'
+#' @return a \code{shiny::\link[shiny]{reactive}} containing a tbl_df of the parsed text
+#'
+#' @examples
+#' shinyServer(function(input, output, session) {
+#'
+#'   rct_data <- callModule(
+#'     module = read_delim_server,
+#'     id = "foo"
+#'   )
+#'
+#'   observe(print(rct_data()))
+#' })
+#'
+#' @export
+#
 write_delim_server <- function(
-  input, output, session, data, 
-  defaults = list(delim = ",")) {
+  input, output, session, data, delim = ","
+) {
 
   ns <- session$ns
 
   # reactives
   rct_data <- reactive({
+    if (shiny::is.reactive(data)) {
+      static_data = data()
+    } else {
+      static_data = data
+    }
+
     shiny::validate(
-      shiny::need(is.data.frame(data), "No data")
+      shiny::need(is.data.frame(static_data), "No data")
     )
 
-    dplyr::tbl_df(data)
+    dplyr::tbl_df(static_data)
   })
 
   rct_txt <- reactive({
