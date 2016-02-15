@@ -27,36 +27,30 @@ dygraph_ui_input <- function(id) {
   ui_input <- shiny::tagList()
 
   ui_input$time <-
-    shinyjs::hidden(
-      shiny::selectizeInput(
-        inputId = ns("time"),
-        label = "Time",
-        choices = NULL,
-        selected = NULL,
-        multiple = FALSE
-      )
+    shiny::selectizeInput(
+      inputId = ns("time"),
+      label = "Time",
+      choices = NULL,
+      selected = NULL,
+      multiple = FALSE
     )
 
   ui_input$y1 <-
-    shinyjs::hidden(
-      shiny::selectizeInput(
-        inputId = ns("y1"),
-        label = "Y1 axis",
-        choices = NULL,
-        selected = NULL,
-        multiple = TRUE
-      )
+    shiny::selectizeInput(
+      inputId = ns("y1"),
+      label = "Y1 axis",
+      choices = NULL,
+      selected = NULL,
+      multiple = TRUE
     )
 
   ui_input$y2 <-
-    shinyjs::hidden(
-      shiny::selectizeInput(
-        inputId = ns("y2"),
-        label = "Y2 axis",
-        choices = NULL,
-        selected = NULL,
-        multiple = TRUE
-      )
+    shiny::selectizeInput(
+      inputId = ns("y2"),
+      label = "Y2 axis",
+      choices = NULL,
+      selected = NULL,
+      multiple = TRUE
     )
 
   ui_input
