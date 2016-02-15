@@ -23,10 +23,10 @@
 #
 read_delim_sidebar_side <- function(id){
   sidebar_elems = read_delim_ui_input(id)
-  sidebar_elems$delim         = shinyjs::hidden(sidebar_elems$delim)
-  sidebar_elems$decimal_mark  = shinyjs::hidden(sidebar_elems$decimal_mark)
-  sidebar_elems$tz_parse      = shinyjs::hidden(sidebar_elems$tz_parse)
-  sidebar_elems$tz_display    = shinyjs::hidden(sidebar_elems$tz_display)
+  sidebar_elems$delim         <- shinyjs::hidden(sidebar_elems$delim)
+  sidebar_elems$decimal_mark  <- shinyjs::hidden(sidebar_elems$decimal_mark)
+  sidebar_elems$tz_parse      <- shinyjs::hidden(sidebar_elems$tz_parse)
+  sidebar_elems$tz_display    <- shinyjs::hidden(sidebar_elems$tz_display)
 
   sidebar_elems
 }
