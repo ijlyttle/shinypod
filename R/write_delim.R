@@ -20,7 +20,7 @@
 #'
 #' @export
 #
-write_delim_input <- function(id) {
+write_delim_ui_input <- function(id) {
   ns <- NS(id)
   ui_input <- shiny::tagList()
 
@@ -69,7 +69,7 @@ write_delim_input <- function(id) {
 #'
 #' @export
 #
-write_delim_output <- function(id) {
+write_delim_ui_output <- function(id) {
   ns <- NS(id)
 
   ## ui_view ##
@@ -140,22 +140,16 @@ write_delim_server <- function(
     }
 
     shiny::validate(
-      shiny::need(is.data.frame(static_data), "No data")
+      shiny::need(static_data, "No data")
     )
 
     dplyr::tbl_df(static_data)
   })
 
   rct_txt <- reactive({
-    shinyjs::disable(ns("file"))
-    shinyjs::disable(ns("download"))
-
     shiny::validate(
       shiny::need(rct_data(), "No data")
     )
-
-    shinyjs::enable(ns("file"))
-    shinyjs::enable(ns("download"))
 
     txt <-
       readr::format_delim(
@@ -169,8 +163,6 @@ write_delim_server <- function(
   })
 
   rct_filename <- reactive({
-    shinyjs::disable(ns("download"))
-
     # just for the reactive dependency
     rct_data()
 
@@ -181,23 +173,27 @@ write_delim_server <- function(
       )
     )
 
-    shinyjs::enable(ns("download"))
     input[["file"]]
   })
 
   #render UIs
   output[["controller_delim"]] <-
     renderUI({
-      #ns <- session$ns
       shiny::selectizeInput(
         inputId = ns("delim"),
         label = "Delimiter",
         choices = c(Comma = ",", Semicolon = ";", Tab = "\t"),
-        selected = defaults$delim
+        selected = delim
       )
     })
 
-  # outputs
+  # Observers
+  shiny::observe({
+    has_data <- !is.null(rct_data())  
+    shinyjs::toggle("file", condition = has_data)
+  })
+
+  # Outputs
 
   # sets the output for the input dataframe
   output[["text_data"]] <-

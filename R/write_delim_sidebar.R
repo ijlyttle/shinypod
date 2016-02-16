@@ -22,8 +22,10 @@
 #' @export
 #
 write_delim_sidebar <- function(id){
+  sidebar_elems <- write_delim_ui_input(id)
+  sidebar_elems$filename <- shinyjs::hidden(sidebar_elems$filename)
 
-  write_delim_ui_input(id)
+  sidebar_elems
 }
 
 #' @rdname write_delim_sidebar

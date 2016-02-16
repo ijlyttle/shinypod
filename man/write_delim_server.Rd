@@ -36,7 +36,7 @@ shinyServer(function(input, output, session) {
 
 }
 \seealso{
-Other write_delim module functions: \code{\link{write_delim_input}},
-  \code{\link{write_delim_output}}
+Other write_delim module functions: \code{\link{write_delim_ui_input}},
+  \code{\link{write_delim_ui_output}}
 }
 
