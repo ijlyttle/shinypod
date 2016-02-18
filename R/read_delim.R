@@ -40,23 +40,19 @@ read_delim_ui_input <- function(id){
 
   # specify delim
   ui_input$delim <-
-    shinyjs::hidden(
-      shiny::selectizeInput(
-        inputId = ns("delim"),
-        label = "Delimiter",
-        choices = c(Comma = ",", Semicolon = ";", Tab = "\t")
-      )
+    shiny::selectizeInput(
+      inputId = ns("delim"),
+      label = "Delimiter",
+      choices = c(Comma = ",", Semicolon = ";", Tab = "\t")
     )
 
 
   # specify decimal
   ui_input$decimal_mark <-
-    shinyjs::hidden(
-      shiny::selectizeInput(
-        inputId = ns("decimal_mark"),
-        label = "Decimal mark",
-        choices = c(Point = ".", Comma = ",")
-      )
+    shiny::selectizeInput(
+      inputId = ns("decimal_mark"),
+      label = "Decimal mark",
+      choices = c(Point = ".", Comma = ",")
     )
 
 
@@ -65,18 +61,16 @@ read_delim_ui_input <- function(id){
 
   # timezone to parse
   ui_input$tz_parse <-
-    shinyjs::hidden(
-      shiny::selectizeInput(
-        inputId = ns("tz_parse"),
-        label = shiny::tags$span(
-          shiny::tags$a(
-            id = ns("tz_parse_link"),
-            "Timezone to parse",
-            shiny::icon("info-circle")
-          )
-        ),
-        choices = tz_choice
-      )
+    shiny::selectizeInput(
+      inputId = ns("tz_parse"),
+      label = shiny::tags$span(
+        shiny::tags$a(
+          id = ns("tz_parse_link"),
+          "Timezone to parse",
+          shiny::icon("info-circle")
+        )
+      ),
+      choices = tz_choice
     )
 
 
@@ -95,19 +89,18 @@ read_delim_ui_input <- function(id){
 
   # timezone to display
   ui_input$tz_display <-
-    shinyjs::hidden(
-      shiny::selectizeInput(
-        inputId = ns("tz_display"),
-        label = shiny::tags$span(
-          shiny::tags$a(
-            id = ns("tz_display_link"),
-            "Timezone to display",
-            shiny::icon("info-circle")
-          )
-        ),
-        choices = tz_choice
-      )
+    shiny::selectizeInput(
+      inputId = ns("tz_display"),
+      label = shiny::tags$span(
+        shiny::tags$a(
+          id = ns("tz_display_link"),
+          "Timezone to display",
+          shiny::icon("info-circle")
+        )
+      ),
+      choices = tz_choice
     )
+    
 
   ui_input$tz_display_modal <-
     shinyBS::bsModal(

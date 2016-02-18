@@ -14,9 +14,12 @@
 #' @export
 #
 dygraph_sidebar_side <- function(id){
+  sidebar_elems       <- dygraph_ui_input(id)
+  sidebar_elems$time  <- shinyjs::hidden(sidebar_elems$time)
+  sidebar_elems$y1    <- shinyjs::hidden(sidebar_elems$y1)
+  sidebar_elems$y2    <- shinyjs::hidden(sidebar_elems$y2)
 
-  dygraph_ui_input(id)
-
+  sidebar_elems
 }
 
 #' @rdname dygraph_sidebar_side
