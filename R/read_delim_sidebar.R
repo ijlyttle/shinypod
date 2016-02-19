@@ -28,11 +28,6 @@ read_delim_sidebar_side <- function(id){
   sidebar_elems <- read_delim_ui_input(id)
   misc_elems <- read_delim_ui_misc(id)
 
-  sidebar_elems$delim         <- shinyjs::hidden(sidebar_elems$delim)
-  sidebar_elems$decimal_mark  <- shinyjs::hidden(sidebar_elems$decimal_mark)
-  sidebar_elems$tz_parse      <- shinyjs::hidden(sidebar_elems$tz_parse)
-  sidebar_elems$tz_display    <- shinyjs::hidden(sidebar_elems$tz_display)
-
   tz_modal <-
     bsplus::bs_modal(
       id = ns("tz_help"),
@@ -40,6 +35,15 @@ read_delim_sidebar_side <- function(id){
       size = "large",
       misc_elems$tz_help
     )
+
+  # note: order is imporant here!
+  #   - first, make hidden
+  #   - then, bs_modal_helpify
+  #
+  sidebar_elems$delim         <- shinyjs::hidden(sidebar_elems$delim)
+  sidebar_elems$decimal_mark  <- shinyjs::hidden(sidebar_elems$decimal_mark)
+  sidebar_elems$tz_parse      <- shinyjs::hidden(sidebar_elems$tz_parse)
+  sidebar_elems$tz_display    <- shinyjs::hidden(sidebar_elems$tz_display)
 
   sidebar_elems$tz_parse <-
     bsplus::bs_modal_helpify(
