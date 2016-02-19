@@ -19,7 +19,8 @@ Imports:
     lubridate,
     withr,
     dplyr,
-    stringr
+    stringr,
+    bsplus
 Suggests:
     testthat,
     knitr,

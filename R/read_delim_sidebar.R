@@ -22,11 +22,36 @@
 #' @export
 #
 read_delim_sidebar_side <- function(id){
+
+  ns <- shiny::NS(id)
+
   sidebar_elems <- read_delim_ui_input(id)
+  misc_elems <- read_delim_ui_misc(id)
+
   sidebar_elems$delim         <- shinyjs::hidden(sidebar_elems$delim)
   sidebar_elems$decimal_mark  <- shinyjs::hidden(sidebar_elems$decimal_mark)
   sidebar_elems$tz_parse      <- shinyjs::hidden(sidebar_elems$tz_parse)
   sidebar_elems$tz_display    <- shinyjs::hidden(sidebar_elems$tz_display)
+
+  tz_modal <-
+    bsplus::bs_modal(
+      id = ns("tz_help"),
+      title = "Timezones",
+      size = "large",
+      misc_elems$tz_help
+    )
+
+  sidebar_elems$tz_parse <-
+    bsplus::bs_modal_helpify(
+      input = sidebar_elems$tz_parse,
+      bs_modal = tz_modal
+    )
+
+  sidebar_elems$tz_display <-
+    bsplus::bs_modal_helpify(
+      input = sidebar_elems$tz_display,
+      bs_modal = tz_modal
+    )
 
   sidebar_elems
 }

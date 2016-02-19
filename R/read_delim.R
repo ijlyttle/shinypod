@@ -46,7 +46,6 @@ read_delim_ui_input <- function(id){
       choices = c(Comma = ",", Semicolon = ";", Tab = "\t")
     )
 
-
   # specify decimal
   ui_input$decimal_mark <-
     shiny::selectizeInput(
@@ -63,56 +62,16 @@ read_delim_ui_input <- function(id){
   ui_input$tz_parse <-
     shiny::selectizeInput(
       inputId = ns("tz_parse"),
-      label = shiny::tags$span(
-        shiny::tags$a(
-          id = ns("tz_parse_link"),
-          "Timezone to parse",
-          shiny::icon("info-circle")
-        )
-      ),
+      label = "Timezone to parse",
       choices = tz_choice
-    )
-
-
-  ui_input$tz_parse_modal <-
-    shinyBS::bsModal(
-      id = ns("tz_parse_modal"),
-      title = "Timezones",
-      trigger = ns("tz_parse_link"),
-      size = "large",
-      shiny::HTML(
-        readr::read_lines(
-          system.file("help", "read_delim", "tz.html", package = "shinypod")
-        )
-      )
     )
 
   # timezone to display
   ui_input$tz_display <-
     shiny::selectizeInput(
       inputId = ns("tz_display"),
-      label = shiny::tags$span(
-        shiny::tags$a(
-          id = ns("tz_display_link"),
-          "Timezone to display",
-          shiny::icon("info-circle")
-        )
-      ),
+      label = "Timezone to display",
       choices = tz_choice
-    )
-    
-
-  ui_input$tz_display_modal <-
-    shinyBS::bsModal(
-      id = ns("tz_display_modal"),
-      title = "Timezones",
-      trigger = ns("tz_display_link"),
-      size = "large",
-      shiny::HTML(
-        readr::read_lines(
-          system.file("help", "read_delim", "tz.html", package = "shinypod")
-        )
-      )
     )
 
   ui_input
@@ -160,6 +119,40 @@ read_delim_ui_output <- function(id){
     )
 
   ui_output
+}
+
+#' UI miscellaneous elements for delimited-file reader.
+#'
+#' Used to define the UI miscellaneous elements within the \code{read_delim} shiny module.
+#'
+#' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
+#'
+#' \describe{
+#'  \item{tz_help}{\code{htmltools::\link[htmltools]{HTML}}, contains help for time parsing
+#' }
+#'
+#' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
+#'
+#' @family read_delim module functions
+#
+#' @param id, character used to specify namesapce, see \code{shiny::\link[shiny]{NS}}
+#'
+#' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
+#'
+#' @export
+#
+read_delim_ui_misc <- function(id){
+
+  ui_misc <- shiny::tagList()
+
+  ui_misc$tz_help <-
+    htmltools::HTML(
+      readr::read_lines(
+        system.file("help", "read_delim", "tz.html", package = "shinypod")
+      )
+    )
+
+  ui_misc
 }
 
 #' Server function for delimted-file reader.
