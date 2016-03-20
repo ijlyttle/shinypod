@@ -7,7 +7,8 @@ library("dplyr")
 
 function(input, output, session) {
 
-  rct_data <- callModule(read_delim_server, "csv")
+  list_rct <- callModule(module = read_delim_sidebar_server, id = "csv")
+  rct_data <- list_rct$rct_data
 
   rct_dyg <- callModule(dygraph_server, "dyg", data = rct_data)
 

@@ -2,5 +2,7 @@
 
 ## 0.0.99
 
+* adds alert classes to status outputs (read_delim only)
+* moves server logic concerning presentation to presentation layer
 * adds `wx_ames` dataset and `extdata/wx_ames.csv`
 * adds `read_delim` functions to parse a csv file into a data-frame
