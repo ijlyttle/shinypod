@@ -115,7 +115,7 @@ dygraph_ui_misc <- function(id) {
 #'
 #' Used to define the server within the \code{dygraph} shiny module.
 #'
-#' @family read_delim module functions
+#' @family dygraph module functions
 #
 #' @param input   standard \code{shiny} input
 #' @param output  standard \code{shiny} output

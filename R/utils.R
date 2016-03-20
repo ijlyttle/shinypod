@@ -177,4 +177,93 @@ update_selected <- function(value, choices, index = NULL){
   selected
 }
 
+#' swap out classes on an html element
+#'
+#' This function stores the value of the last class to be added (using this function),
+#' then removes that class before addding the new class. For example, this may be useful
+#' if you want to modify a panel to show an alert.
+#'
+#' As this is an observer, there is no return value. It is called for the side-effect of
+#' changing the class of the html element.
+#'
+#' This is based on \code{shiny::renderText()}
+#'
+#' @param id A character vector to identify the html element to operate on.
+#' @param expr An expression that returns a character vector to add to the html element.
+#' @param env The environment in which to evaluate \code{expr}.
+#' @param quoted Is \code{expr} a quoted expression (with \code{quote()})? This
+#'   is useful if you want to save an expression in a variable.
+#' @return nothing
+#' @export
+#
+observe_class_swap <- function(id, expr, env = parent.frame(), quoted = FALSE){
+
+  func <- shiny::exprToFunction(expr, env, quoted)
+
+  # we use a reactive value to persist the value of the class we added previously
+  rctval <- reactiveValues(class_current = NULL)
+
+  shiny::observeEvent(
+    eventExpr = func(),
+    handlerExpr = {
+      # print(paste(rctval$class_current, func(), sep = " -> "))
+      shinyjs::removeClass(id = id, rctval$class_current)
+      shinyjs::addClass(id = id, func())
+      rctval$class_current <- func()
+    }
+  )
+
+}
+
+#' use input and result to generate message and class of status
+#'
+#' The argument \code{status} shall be a list with two members: \code{input} and \code{result}.
+#' Each of those lists shall have components \code{index}, \code{is_valid}, and \code{message}.
+#'
+#' This return value is a list with members \code{class} and \code{message}. The \code{class} can be used by
+#' \link{observe_class_swap} to change the appearance of an output. The \code{message} can be used as the
+#' text displayed by the output.
+#'
+#' @param status  list with components \code{input} and \code{result}
+#'
+#' @return list with components \code{class} and \code{message}
+#' @export
+#
+status_content <- function(status){
+
+  is_danger <-
+    identical(status$result$is_valid, FALSE) &&
+    identical(status$result$index, status$input$index)
+
+  is_warning <- identical(status$input$is_valid, FALSE)
+
+  is_info <-
+    !is.null(status$result$is_valid) &&
+    !identical(status$input$index, status$result$index)
+
+  is_success <- status$result$is_valid
+
+  if (is_danger) {
+    class <- "alert-danger"
+    message <- status$result$message
+  } else if (is_warning) {
+    class <- "alert-warning"
+    message <- status$input$message
+  } else if (is_info) {
+    class <- "alert-info"
+    message <- paste("Inputs have changed since generation of results",
+                     status$input$message,
+                     sep = "\n\n")
+  } else if (is_success){
+    class <- "alert-success"
+    message <- status$result$message
+  } else {
+    class <- NULL
+    message <- status$input$message
+  }
+
+  list(class = class, message = message)
+}
+
+
 

@@ -65,7 +65,54 @@ read_delim_sidebar_side <- function(id){
 #
 read_delim_sidebar_main <- function(id){
 
-  read_delim_ui_output(id)
+  main_elems <- read_delim_ui_output(id)
+
+  main_elems$text <- shinyjs::hidden(main_elems$text)
+  main_elems$data <- shinyjs::hidden(main_elems$data)
+
+  main_elems
 }
 
+# note we are initializing the show/hide functions here, but controlling at the definition level
 
+#' @seealso read_delim_sidebar_main
+#' @rdname read_delim_server
+#' @export
+#
+read_delim_sidebar_server <- function(
+  input, output, session,
+  delim = ",",
+  decimal_mark = "."
+){
+
+  ## reactives ##
+  ###############
+
+  list_rct <- read_delim_server(input, output, session, delim, decimal_mark)
+
+  rct_txt <- list_rct$rct_txt
+  rct_data <- list_rct$rct_data
+
+  ## observers ##
+  ###############
+
+  # shows and hides controls based on the availabilty and nature of data
+  shiny::observe({
+
+    has_text <- !is.null(rct_txt())
+    has_data <- !is.null(rct_data())
+    has_numeric <- length(df_names_inherits(rct_data(), "numeric")) > 0
+    has_time_non_8601 <- df_has_time_non_8601(rct_txt(), delim = input$delim)
+    has_time <- length(df_names_inherits(rct_data(), "POSIXct")) > 0
+
+    shinyjs::toggle("text", condition = has_text)
+    shinyjs::toggle("data", condition = has_data)
+    shinyjs::toggle("delim", condition = has_data)
+    shinyjs::toggle("decimal_mark", condition = has_numeric)
+    shinyjs::toggle("tz_parse", condition = has_time_non_8601)
+    shinyjs::toggle("tz_display", condition = has_time)
+
+  })
+
+  list_rct
+}

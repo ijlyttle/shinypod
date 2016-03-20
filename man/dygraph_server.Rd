@@ -25,8 +25,8 @@ Used to define the server within the \code{dygraph} shiny module.
 
 }
 \seealso{
-Other read_delim module functions: \code{\link{read_delim_server}},
-  \code{\link{read_delim_ui_input}},
-  \code{\link{read_delim_ui_output}}
+Other dygraph module functions: \code{\link{dygraph_ui_input}},
+  \code{\link{dygraph_ui_misc}},
+  \code{\link{dygraph_ui_output}}
 }
 

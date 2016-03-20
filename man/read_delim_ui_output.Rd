@@ -19,6 +19,7 @@ Used to define the UI output elements within the \code{read_delim} shiny module.
 This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 
 \describe{
+ \item{status}{\code{shiny::\link[shiny]{htmlOutput}}, used to display status of the module}
  \item{text}{\code{shiny::\link[shiny]{htmlOutput}}, used to display first few lines of text from file}
  \item{data}{\code{shiny::\link[shiny]{htmlOutput}}, used to display first few lines of the parsed dataframe}
 }
@@ -26,8 +27,8 @@ This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 The purpose is to specify the UI elements - another set of functions can be used to specify layout.
 }
 \seealso{
-Other read_delim module functions: \code{\link{dygraph_server}},
-  \code{\link{read_delim_server}},
-  \code{\link{read_delim_ui_input}}
+Other read_delim module functions: \code{\link{read_delim_server}},
+  \code{\link{read_delim_ui_input}},
+  \code{\link{read_delim_ui_misc}}
 }
 

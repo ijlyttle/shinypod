@@ -25,7 +25,8 @@ This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 The purpose is to specify the UI elements - another set of functions can be used to specify layout.
 }
 \seealso{
-Other dygraph module functions: \code{\link{dygraph_ui_input}},
+Other dygraph module functions: \code{\link{dygraph_server}},
+  \code{\link{dygraph_ui_input}},
   \code{\link{dygraph_ui_output}}
 }
 

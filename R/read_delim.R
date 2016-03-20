@@ -54,7 +54,6 @@ read_delim_ui_input <- function(id){
       choices = c(Point = ".", Comma = ",")
     )
 
-
   # specify timezones
   tz_choice <- c("UTC", lubridate::olson_time_zones())
 
@@ -84,6 +83,7 @@ read_delim_ui_input <- function(id){
 #' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 #'
 #' \describe{
+#'  \item{status}{\code{shiny::\link[shiny]{htmlOutput}}, used to display status of the module}
 #'  \item{text}{\code{shiny::\link[shiny]{htmlOutput}}, used to display first few lines of text from file}
 #'  \item{data}{\code{shiny::\link[shiny]{htmlOutput}}, used to display first few lines of the parsed dataframe}
 #' }
@@ -103,6 +103,12 @@ read_delim_ui_output <- function(id){
   ns <- shiny::NS(id)
 
   ui_output <- shiny::tagList()
+
+  ui_output$status <-
+    shiny::htmlOutput(
+      outputId = ns("status"),
+      container = pre_scroll
+    )
 
   # text output
   ui_output$text <-
@@ -167,17 +173,19 @@ read_delim_ui_misc <- function(id){
 #' @param delim   character, default for parsing delimiter
 #' @param decimal_mark character, default for decimal mark
 #'
-#' @return a \code{shiny::\link[shiny]{reactive}} containing a tbl_df of the parsed text
+#' @return a list with members:
+#' \code{rct_txt} \code{shiny::\link[shiny]{reactive}}, returns raw text
+#' \code{rct_data} \code{shiny::\link[shiny]{reactive}}, returns tbl_df of the parsed text
 #'
 #' @examples
 #' shinyServer(function(input, output, session) {
 #'
-#'   rct_data <- callModule(
+#'   list_rct <- callModule(
 #'     module = read_delim_server,
 #'     id = "foo"
 #'   )
 #'
-#'   observe(print(rct_data()))
+#'   observe(print(list_rct$rct_data()))
 #' })
 #'
 #' @export
@@ -241,23 +249,57 @@ read_delim_server <- function(
     df
   })
 
+  # status
+  rctval_status <-
+    shiny::reactiveValues(
+      input = list(index = 0, is_valid = NULL, message = NULL),
+      result = list(index = 0, is_valid = NULL, message = NULL)
+    )
+
+  rct_status_content <- reactive(status_content(rctval_status))
+
   ## observers ##
   ###############
 
-  # shows and hides controls based on the availabilty and nature of data
-  shiny::observe({
+  # input
+  observeEvent(
+    eventExpr = input$file,
+    handlerExpr = {
 
-    has_data <- !is.null(rct_data())
-    has_numeric <- length(df_names_inherits(rct_data(), "numeric")) > 0
-    has_time_non_8601 <- df_has_time_non_8601(rct_txt(), delim = input$delim)
-    has_time <- length(df_names_inherits(rct_data(), "POSIXct")) > 0
+      rctval_status$input$index <- rctval_status$input$index + 1
 
-    shinyjs::toggle("delim", condition = has_data)
-    shinyjs::toggle("decimal_mark", condition = has_numeric)
-    shinyjs::toggle("tz_parse", condition = has_time_non_8601)
-    shinyjs::toggle("tz_display", condition = has_time)
+      if (is.null(input$file)){
+        rctval_status$input$is_valid <- FALSE
+        rctval_status$input$message <- "Please select a file"
+      } else {
+        rctval_status$input$is_valid <- TRUE
+        rctval_status$input$message <- ""
+      }
 
-  })
+    },
+    ignoreNULL = FALSE, # makes sure we evaluate on initialization
+    priority = 1 # always execute before others
+  )
+
+  # result
+  observeEvent(
+    eventExpr = input$file,
+    handlerExpr = {
+
+      rctval_status$result$index <- rctval_status$input$index
+
+      if (is.null(input$file$datapath)){
+        rctval_status$result$is_valid <- FALSE
+        rctval_status$result$message <- paste("Cannot find file:", input$file$name)
+      } else {
+        rctval_status$result$is_valid <- TRUE
+        rctval_status$result$message <- paste("Uploaded file:", input$file$name)
+      }
+
+    }
+  )
+
+  # observe(print(paste(rctval_status$input$index, rctval_status$result$index)))
 
   # updates the display tz if the parse tz changes
   shiny::observeEvent(
@@ -271,9 +313,13 @@ read_delim_server <- function(
     }
   )
 
+  observe_class_swap(id = "status", rct_status_content()$class)
 
   ## outputs ##
   #############
+
+  output$status <-
+    shiny::renderText(rct_status_content()$message)
 
   # sets the output for the raw text
   output$text <-
@@ -298,7 +344,7 @@ read_delim_server <- function(
       h <-
         withr::with_options(
           list(width = 10000, dpylr.width = Inf, dplyr.print_min = 6),
-          capture.output(print(rct_data()))
+          utils::capture.output(print(rct_data()))
         )
       h <- paste(h, collapse = "<br/>")
       h <- shiny::HTML(h)
@@ -306,7 +352,6 @@ read_delim_server <- function(
       h
     })
 
-
-  # returns a dataframe
-  rct_data
+  # returns a list
+  list(rct_txt = rct_txt, rct_data = rct_data)
 }
