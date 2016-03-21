@@ -42,6 +42,7 @@ tagList(
           collapse_main_panel =
             collapse_main_panel(
               bs_panel_open(
+                dygraph_sidebar_main("dyg"),
                 dygraphOutput("csv_dyg")
               )
             )

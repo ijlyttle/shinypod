@@ -25,12 +25,13 @@ dygraph_sidebar_side <- function(id){
 #' @rdname dygraph_sidebar_side
 #' @export
 #
-dygraph_sidebar_main <- function(id, help =  TRUE){
+dygraph_sidebar_main <- function(id, help = TRUE){
+
+  main_elems <- dygraph_ui_output(id)
 
   if (help){
-    dygraph_ui_misc(id)
-  } else {
-    shiny::tagList()
+    main_elems$help <- dygraph_ui_misc(id)
   }
 
+  main_elems
 }

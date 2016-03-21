@@ -10,6 +10,10 @@ shinyServer(function(input, output, session) {
 
   rct_dyg <- callModule(dygraph_server, "dyg", data = rct_data)
 
+  observe({
+    shinyjs::toggle(id = "csv_dyg", condition = isValidy(rct_dyg()))
+  })
+
   output$csv_dyg <- renderDygraph({
     rct_dyg() %>%
       dyOptions(useDataTimezone = TRUE)

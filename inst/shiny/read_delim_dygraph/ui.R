@@ -1,5 +1,4 @@
 library("shiny")
-library("shinyBS")
 library("shinyjs")
 library("shinypod")
 library("dygraphs")
@@ -15,6 +14,7 @@ fluidPage(
     ),
     mainPanel(
       read_delim_sidebar_main("csv"),
+      dygraph_sidebar_main("dyg"),
       dygraphOutput("csv_dyg")
     )
   )

@@ -22,7 +22,7 @@
 #
 dygraph_ui_input <- function(id) {
 
-  ns <- NS(id)
+  ns <- shiny::NS(id)
 
   ui_input <- shiny::tagList()
 
@@ -60,8 +60,11 @@ dygraph_ui_input <- function(id) {
 #'
 #' Used to define the UI output elements within the \code{dygraph} shiny module.
 #'
-#' Because there are no outputs,
-#' this function returns an empty \code{shiny::\link[shiny]{tagList}}.
+#' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
+#'
+#' \describe{
+#'  \item{status}{\code{shiny::\link[shiny]{htmlOutput}}, used to display status of the module}
+#' }
 #'
 #' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
 #'
@@ -75,7 +78,15 @@ dygraph_ui_input <- function(id) {
 #
 dygraph_ui_output <- function(id) {
 
+  ns <- shiny::NS(id)
+
   ui_output <- shiny::tagList()
+
+  ui_output$status <-
+    shiny::htmlOutput(
+      outputId = ns("status"),
+      container = pre_scroll
+    )
 
   ui_output
 }
@@ -104,8 +115,8 @@ dygraph_ui_misc <- function(id) {
 
   ui_misc <- shiny::tagList()
 
-  ui_misc$help <-
-    shiny::tags$pre("Zoom: Click-drag\tPan: Shift-Click-Drag\tReset: Double-Click")
+  # ui_misc$help <-
+  #   shiny::tags$pre("Zoom: Click-drag\tPan: Shift-Click-Drag\tReset: Double-Click")
 
   ui_misc
 }
@@ -136,6 +147,7 @@ dygraph_server <- function(
 
   ### reactives ###
   #################
+  rctval <- reactiveValues(has_data = FALSE)
 
   # dataset
   rct_data <- reactive({
@@ -160,6 +172,16 @@ dygraph_server <- function(
     # this reactive returns the data frame
     static_data
   })
+
+  rctval <- shiny::reactiveValues(has_data = FALSE)
+
+  observe(
+    { rctval$has_data <- FALSE
+      need(rct_data(), message = "")
+      rctval$has_data <- TRUE
+    },
+    priority = 1
+  )
 
   # names of time variables
   rct_var_time <- reactive({
@@ -222,8 +244,66 @@ dygraph_server <- function(
     dyg
   })
 
+  # status
+  rctval_status <-
+    shiny::reactiveValues(
+      input = list(index = 0, is_valid = NULL, message = ""),
+      result = list(index = 0, is_valid = NULL, message = "")
+    )
+
+  rct_status_content <- shiny::reactive(status_content(rctval_status))
+
   ### observers ###
   #################
+
+  # input
+  observeEvent(
+    eventExpr = {
+      isValidy(rct_data())
+      input$time
+      input$y1
+      input$y2
+    },
+    handlerExpr = {
+
+      rctval_status$input$index <- rctval_status$input$index + 1
+
+      if (!isValidy(rct_data())){
+        rctval_status$input$is_valid <- FALSE
+        rctval_status$input$message <- "Please supply a dataset to graph"
+      } else if (!isValidy(input$time)){
+        rctval_status$input$is_valid <- FALSE
+        rctval_status$input$message <- "Please supply a time variable to graph"
+      } else if (!isValidy(input$y1) && !isValidy(input$y2)){
+        rctval_status$input$is_valid <- FALSE
+        rctval_status$input$message <- "Please supply a y-variable to graph"
+      } else {
+        rctval_status$input$is_valid <- TRUE
+        rctval_status$input$message <- ""
+      }
+
+    },
+    ignoreNULL = FALSE, # makes sure we evaluate on initialization
+    priority = 1 # always execute before others
+  )
+
+  # result
+  observeEvent(
+    eventExpr = rct_dyg(),
+    handlerExpr = {
+
+      rctval_status$result$index <- rctval_status$input$index
+
+      if (is.null(rct_dyg())){
+        rctval_status$result$is_valid <- FALSE
+        rctval_status$result$message <- "Cannot construct graph"
+      } else {
+        rctval_status$result$is_valid <- TRUE
+        rctval_status$result$message <- "Zoom: Click-drag\tPan: Shift-Click-Drag\tReset: Double-Click"
+      }
+
+    }
+  )
 
   # shows and hides controls based on the availabilty and nature of data
   shiny::observe({
@@ -275,6 +355,15 @@ dygraph_server <- function(
       )
     }
   )
+
+  observe_class_swap(id = "status", rct_status_content()$class)
+
+  ## outputs ##
+  #############
+
+  output$status <-
+    shiny::renderText(rct_status_content()$message)
+
 
   return(rct_dyg)
 }

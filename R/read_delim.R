@@ -256,7 +256,7 @@ read_delim_server <- function(
       result = list(index = 0, is_valid = NULL, message = NULL)
     )
 
-  rct_status_content <- reactive(status_content(rctval_status))
+  rct_status_content <- shiny::reactive(status_content(rctval_status))
 
   ## observers ##
   ###############

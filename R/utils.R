@@ -231,6 +231,12 @@ observe_class_swap <- function(id, expr, env = parent.frame(), quoted = FALSE){
 #
 status_content <- function(status){
 
+  if (shiny::is.reactivevalues(status)) {
+    status <- shiny::reactiveValuesToList(status)
+  }
+
+  # print(status)
+
   is_danger <-
     identical(status$result$is_valid, FALSE) &&
     identical(status$result$index, status$input$index)
@@ -241,7 +247,12 @@ status_content <- function(status){
     !is.null(status$result$is_valid) &&
     !identical(status$input$index, status$result$index)
 
-  is_success <- status$result$is_valid
+  is_success <- identical(status$result$is_valid, TRUE)
+
+  # print(paste("is_danger:", is_danger))
+  # print(paste("is_warning:", is_warning))
+  # print(paste("is_info:", is_info))
+  # print(paste("is_success:", is_success))
 
   if (is_danger) {
     class <- "alert-danger"
@@ -265,5 +276,23 @@ status_content <- function(status){
   list(class = class, message = message)
 }
 
-
+#' checks to see that an expression passes shiny validation
+#'
+#' Useful if you need to return \code{TRUE}/\code{FALSE} on the validity of a
+#' shiny reactive expression
+#'
+#' @param ... expression to pass to \code{shiny::req()}
+#'
+#' @return logical, returns \code{TRUE} if shiny validation passes
+#' @export
+#
+isValidy <- function(...){
+  result <- tryCatch(
+    expr = {
+      shiny::req(...)
+      TRUE
+    },
+    error = function(e){FALSE}
+  )
+}
 

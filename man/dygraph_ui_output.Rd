@@ -16,8 +16,11 @@ a \code{shiny::\link[shiny]{tagList}}
 Used to define the UI output elements within the \code{dygraph} shiny module.
 }
 \details{
-Because there are no outputs,
-this function returns an empty \code{shiny::\link[shiny]{tagList}}.
+This function returns a \code{shiny::\link[shiny]{tagList}} with members:
+
+\describe{
+ \item{status}{\code{shiny::\link[shiny]{htmlOutput}}, used to display status of the module}
+}
 
 The purpose is to specify the UI elements - another set of functions can be used to specify layout.
 }
