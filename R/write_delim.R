@@ -24,7 +24,7 @@ write_delim_ui_input <- function(id) {
   ns <- NS(id)
   ui_input <- shiny::tagList()
 
-  ui_input$delim <- 
+  ui_input$delim <-
     shiny::uiOutput(ns("controller_delim"))
 
   # specify filename
@@ -75,6 +75,12 @@ write_delim_ui_output <- function(id) {
   ## ui_view ##
   ui_output <- shiny::tagList()
 
+  ui_output$status <-
+    shiny::htmlOutput(
+      outputId = ns("text_status"),
+      container = pre_scroll
+    )
+
   # shows the first few lines of the data-frame
   ui_output$data <-
     shiny::htmlOutput(
@@ -86,12 +92,6 @@ write_delim_ui_output <- function(id) {
   ui_output$text <-
     shiny::htmlOutput(
       outputId = ns("text_preview"),
-      container = pre_scroll
-    )
-
-  ui_output$status <-
-    shiny::htmlOutput(
-      outputId = ns("text_status"),
       container = pre_scroll
     )
 
@@ -189,7 +189,7 @@ write_delim_server <- function(
 
   # Observers
   shiny::observe({
-    has_data <- !is.null(rct_data())  
+    has_data <- !is.null(rct_data())
     shinyjs::toggle("file", condition = has_data)
   })
 
@@ -199,7 +199,7 @@ write_delim_server <- function(
   output[["text_data"]] <-
     renderUI({
       h <-
-      devtools::with_options(
+      withr::with_options(
           list(width = 10000, dpylr.width = Inf, dplyr.print_min = 6),
           capture.output(print(rct_data()))
         )
