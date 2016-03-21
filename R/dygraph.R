@@ -173,16 +173,6 @@ dygraph_server <- function(
     static_data
   })
 
-  rctval <- shiny::reactiveValues(has_data = FALSE)
-
-  observe(
-    { rctval$has_data <- FALSE
-      need(rct_data(), message = "")
-      rctval$has_data <- TRUE
-    },
-    priority = 1
-  )
-
   # names of time variables
   rct_var_time <- reactive({
 
@@ -294,7 +284,7 @@ dygraph_server <- function(
 
       rctval_status$result$index <- rctval_status$input$index
 
-      if (is.null(rct_dyg())){
+      if (!isValidy(rct_dyg())){
         rctval_status$result$is_valid <- FALSE
         rctval_status$result$message <- "Cannot construct graph"
       } else {
