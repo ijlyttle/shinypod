@@ -133,6 +133,7 @@ write_delim_server <- function(
 
   # reactives
   rct_data <- reactive({
+
     if (shiny::is.reactive(data)) {
       static_data = data()
     } else {
@@ -140,15 +141,17 @@ write_delim_server <- function(
     }
 
     shiny::validate(
-      shiny::need(static_data, "No data")
+      shiny::need(is.data.frame(static_data), "No data")
     )
 
     dplyr::tbl_df(static_data)
   })
 
   rct_txt <- reactive({
+
     shiny::validate(
-      shiny::need(rct_data(), "No data")
+      shiny::need(is.data.frame(rct_data()), "No data"),
+      shiny::need(input$delim, "No delimiter")
     )
 
     txt <-
@@ -157,6 +160,7 @@ write_delim_server <- function(
         delim = input[["delim"]]
       )
 
+    # put here for compatibility with Windows
     txt <- stringr::str_replace_all(txt, pattern = "\n", replacement = "\r\n")
 
     txt
