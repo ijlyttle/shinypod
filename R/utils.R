@@ -210,7 +210,8 @@ observe_class_swap <- function(id, expr, env = parent.frame(), quoted = FALSE){
       shinyjs::removeClass(id = id, rctval$class_current)
       shinyjs::addClass(id = id, func())
       rctval$class_current <- func()
-    }
+    },
+    ignoreNULL = FALSE
   )
 
 }

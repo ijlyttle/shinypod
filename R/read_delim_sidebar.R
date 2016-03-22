@@ -114,5 +114,5 @@ read_delim_sidebar_server <- function(
 
   })
 
-  list_rct
+  rct_data
 }

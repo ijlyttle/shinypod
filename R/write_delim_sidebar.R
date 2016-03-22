@@ -21,17 +21,37 @@
 #'
 #' @export
 #
-write_delim_sidebar <- function(id){
+write_delim_sidebar_side <- function(id){
   sidebar_elems <- write_delim_ui_input(id)
-  sidebar_elems$filename <- shinyjs::hidden(sidebar_elems$filename)
 
   sidebar_elems
 }
 
-#' @rdname write_delim_sidebar
+#' @rdname write_delim_sidebar_side
 #' @export
 #
-write_delim_main <- function(id){
+write_delim_sidebar_main <- function(id){
 
   write_delim_ui_output(id)
+}
+
+#' @export
+#
+write_delim_sidebar_server <- function(
+  input, output, session,
+  data,
+  delim = ","
+) {
+
+  list_rct <- write_delim_server(input, output, session, data, delim)
+  rct_data <- list_rct$rct_data
+  rct_state <- list_rct$rct_state
+
+  # manage the appearance according to the status
+  shiny::observe({
+    shinyjs::toggle(id = "text_data", condition = rct_state()$has_data)
+    shinyjs::toggle(id = "text_preview", condition = rct_state()$has_txt)
+  })
+
+  rct_data
 }

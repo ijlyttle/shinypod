@@ -81,7 +81,7 @@ write_delim_ui_output <- function(id) {
 
   ui_output$status <-
     shiny::htmlOutput(
-      outputId = ns("text_status"),
+      outputId = ns("status"),
       container = pre_scroll
     )
 
@@ -153,7 +153,7 @@ write_delim_server <- function(
     dplyr::tbl_df(static_data)
   })
 
-  rct_delim <- reactive({
+  rct_delim_default <- reactive({
 
     if (shiny::is.reactive(delim)) {
       static_delim = delim()
@@ -173,7 +173,7 @@ write_delim_server <- function(
     txt <-
       readr::format_delim(
         x = rct_data(),
-        delim = input[["delim"]]
+        delim = input$delim
       )
 
     # put here for compatibility with Windows
@@ -185,42 +185,122 @@ write_delim_server <- function(
   rct_filename <- reactive({
 
     # just for the reactive dependency (why?)
-    rct_data()
+    # rct_data()
+
+    # http://stackoverflow.com/questions/17262493/
+    # check for /\:*?"<>|
 
     shiny::validate(
       shiny::need(
-        input[["file"]],
+        input$file,
         "Need a valid filename"
       )
     )
 
-    input[["file"]]
+    input$file
   })
 
-  # Observers
+  rct_state = reactive({
+    list(
+      has_data = isValidy(rct_data()),
+      has_txt = isValidy(rct_txt()),
+      has_filename = isValidy(rct_filename())
+    )
+  })
+
+  # #downloads
+  rctval <- reactiveValues(download = 0)
+
+  # status
+  rctval_status <-
+    shiny::reactiveValues(
+      input = list(index = 0, is_valid = NULL, message = NULL),
+      result = list(index = 0, is_valid = NULL, message = NULL)
+    )
+
+  rct_status_content <- shiny::reactive(status_content(rctval_status))
+
+  ## observers ##
+  ###############
+
+  # input
+  observeEvent(
+    eventExpr = {
+      rct_state()$has_data
+      input$delim
+      input$file
+    },
+    handlerExpr = {
+
+      rctval_status$input$index <- rctval_status$input$index + 1
+
+      if (!rct_state()$has_data){
+        rctval_status$input$is_valid <- FALSE
+        rctval_status$input$message <- "No data are available"
+      } else if (!isValidy(input$delim)){
+        rctval_status$input$is_valid <- FALSE
+        rctval_status$input$message <- "Please specify a delimiter"
+      } else if (!isValidy(rct_filename())){
+        rctval_status$input$is_valid <- FALSE
+        rctval_status$input$message <- "Please specify a valid filename"
+      } else {
+        rctval_status$input$is_valid <- TRUE
+        rctval_status$input$message <-
+          paste("Ready to download file", rct_filename(), sep = ": ")
+      }
+
+    },
+    ignoreNULL = FALSE, # makes sure we evaluate on initialization
+    priority = 1 # always execute before others
+  )
+
+  # result
+  # this code will not be useful until we can observe a download button
+  # being clicked
+  # observeEvent(
+  #   eventExpr = output$download,
+  #   handlerExpr = {
+  #
+  #     rctval_status$result$index <- rctval_status$input$index
+  #
+  #     # does downloadHandler give us some indication of success?
+  #     rctval_status$result$is_valid <- TRUE
+  #     rctval_status$result$message <- paste("Downloaded file:", rct_filename())
+  #
+  #     # if (is.null(input$file$datapath)){
+  #     #   rctval_status$result$is_valid <- FALSE
+  #     #   rctval_status$result$message <- paste("Cannot find file:", input$file$name)
+  #     # } else {
+  #     #   rctval_status$result$is_valid <- TRUE
+  #     #   rctval_status$result$message <- paste("Uploaded file:", input$file$name)
+  #     # }
+  #
+  #   }
+  # )
+
   observe(
     shiny::updateSelectizeInput(
       session,
       inputId = "delim",
-      selected = rct_delim()
+      selected = update_selected(rct_delim_default(), c(",", ";", "\t"))
     )
   )
 
-
-
   shiny::observe({
-    has_data <- isValidy(rct_data())
-    has_txt <- isValidy(rct_txt())
-    has_filename <- isValidy(input$file)
-
-    shinyjs::toggle("file", condition = has_txt)
-    shinyjs::toggleState("download", condition = has_txt && has_filename)
-
-    shinyjs::toggle("text_data", condition = has_data)
-    shinyjs::toggle("text_preview", condition = has_txt)
+    shinyjs::toggleState(
+      id = "download",
+      condition = rct_state()$has_txt && rct_state()$has_filename
+    )
   })
 
-  # Outputs
+  observe_class_swap(id = "status", rct_status_content()$class)
+
+  ## outputs ##
+  #############
+
+  # sets the output for the status
+  output$status <-
+    shiny::renderText(rct_status_content()$message)
 
   # sets the output for the input dataframe
   output[["text_data"]] <-
@@ -247,18 +327,9 @@ write_delim_server <- function(
       h
     })
 
-  # sets the output for the status
-  output[["text_status"]] <-
-    renderUI({
-      paste(
-        "Ready to download file",
-        paste0("\"", rct_filename(), "\""),
-        sep = ": "
-      )
-    })
 
   # do the download
-  output[["download"]] <-
+  output$download <-
     shiny::downloadHandler(
       filename = rct_filename,
       content = function(con){
@@ -267,5 +338,12 @@ write_delim_server <- function(
       contentType = "text/csv"
     )
 
-  return(rct_data)
+
+
+  result <- list(
+    rct_data = rct_data,
+    rct_state = rct_state
+  )
+
+  result
 }

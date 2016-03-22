@@ -8,10 +8,10 @@ fluidPage(
   titlePanel("Write CSV example"),
   sidebarLayout(
     sidebarPanel(
-      write_delim_sidebar("example")
+      write_delim_sidebar_side("example")
     ),
     mainPanel(
-      write_delim_main("example")
+      write_delim_sidebar_main("example")
     )
   )
 )
