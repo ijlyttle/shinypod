@@ -198,6 +198,16 @@ write_delim_server <- function(
   })
 
   # Observers
+  observe(
+    shiny::updateSelectizeInput(
+      session,
+      inputId = "delim",
+      selected = rct_delim()
+    )
+  )
+
+
+
   shiny::observe({
     has_data <- isValidy(rct_data())
     has_txt <- isValidy(rct_txt())
