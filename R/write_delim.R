@@ -25,7 +25,11 @@ write_delim_ui_input <- function(id) {
   ui_input <- shiny::tagList()
 
   ui_input$delim <-
-    shiny::uiOutput(ns("controller_delim"))
+    shiny::selectizeInput(
+      inputId = ns("delim"),
+      label = "Delimiter",
+      choices = c(Comma = ",", Semicolon = ";", Tab = "\t")
+    )
 
   # specify filename
   ui_input$filename <-
@@ -126,7 +130,9 @@ write_delim_ui_output <- function(id) {
 #' @export
 #
 write_delim_server <- function(
-  input, output, session, data, delim = ","
+  input, output, session,
+  data,
+  delim = ","
 ) {
 
   ns <- session$ns
@@ -147,10 +153,20 @@ write_delim_server <- function(
     dplyr::tbl_df(static_data)
   })
 
+  rct_delim <- reactive({
+
+    if (shiny::is.reactive(delim)) {
+      static_delim = delim()
+    } else {
+      static_delim = delim
+    }
+
+    static_delim
+  })
+
   rct_txt <- reactive({
 
     shiny::validate(
-      shiny::need(is.data.frame(rct_data()), "No data"),
       shiny::need(input$delim, "No delimiter")
     )
 
@@ -167,7 +183,8 @@ write_delim_server <- function(
   })
 
   rct_filename <- reactive({
-    # just for the reactive dependency
+
+    # just for the reactive dependency (why?)
     rct_data()
 
     shiny::validate(
@@ -180,21 +197,17 @@ write_delim_server <- function(
     input[["file"]]
   })
 
-  #render UIs
-  output[["controller_delim"]] <-
-    renderUI({
-      shiny::selectizeInput(
-        inputId = ns("delim"),
-        label = "Delimiter",
-        choices = c(Comma = ",", Semicolon = ";", Tab = "\t"),
-        selected = delim
-      )
-    })
-
   # Observers
   shiny::observe({
-    has_data <- !is.null(rct_data())
-    shinyjs::toggle("file", condition = has_data)
+    has_data <- isValidy(rct_data())
+    has_txt <- isValidy(rct_txt())
+    has_filename <- isValidy(input$file)
+
+    shinyjs::toggle("file", condition = has_txt)
+    shinyjs::toggleState("download", condition = has_txt && has_filename)
+
+    shinyjs::toggle("text_data", condition = has_data)
+    shinyjs::toggle("text_preview", condition = has_txt)
   })
 
   # Outputs
