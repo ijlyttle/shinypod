@@ -153,7 +153,7 @@ df_names_inherits <- function(data, what){
 #
 update_selected <- function(value, choices, index = NULL){
 
-  if (is.null(choices)){
+  if (!isValidy(choices)){
 
     # we have no choices, select NULL
     selected <- NULL
@@ -295,5 +295,7 @@ isValidy <- function(...){
     },
     error = function(e){FALSE}
   )
+
+  result
 }
 

@@ -216,6 +216,44 @@ read_delim_server <- function(
   ## reactives ##
   ###############
 
+  rct_delim <- reactive({
+
+    shiny::validate(
+      shiny::need(input$delim, message = "Need a delimiter")
+    )
+
+    input$delim
+  })
+
+  rct_decimal_mark <- reactive({
+
+    shiny::validate(
+      shiny::need(input$decimal_mark, message = "Need a decimal mark")
+    )
+
+    input$decimal_mark
+  })
+
+  rct_tz_parse <- reactive({
+
+    result <- input$tz_parse
+    if (!result %in% c("UTC", lubridate::olson_time_zones())){
+      result <- "UTC"
+    }
+
+    result
+  })
+
+  rct_tz_display <- reactive({
+
+    result <- input$tz_display
+    if (!result %in% c("UTC", lubridate::olson_time_zones())){
+      result <- "UTC"
+    }
+
+    result
+  })
+
   # reactive to read in the raw text from the file-specification input
   rct_txt <- reactive({
 
@@ -233,20 +271,37 @@ read_delim_server <- function(
     df <-
       readr::read_delim(
         file = rct_txt(),
-        delim = input$delim,
+        delim = rct_delim(),
         locale = readr::locale(
-          decimal_mark = input$decimal_mark,
-          tz = input$tz_parse
+          decimal_mark = rct_decimal_mark(),
+          tz = rct_tz_parse()
         )
       )
 
-    df <- df_with_tz(df, tz = input$tz_display)
+    df <- df_with_tz(df, tz = rct_tz_display())
 
     shiny::validate(
       shiny::need(is.data.frame(df), "No data")
     )
 
     df
+  })
+
+  rct_state = reactive({
+    list(
+      has_data = isValidy(rct_data()),
+      has_txt = isValidy(rct_txt()),
+      has_delim = isValidy(rct_delim()),
+      has_decimal_mark = isValidy(rct_decimal_mark()),
+      has_tz_parse = isValidy(rct_tz_parse()),
+      has_tz_display = isValidy(rct_tz_display()),
+      has_numeric =
+        isValidy(length(df_names_inherits(rct_data(), "numeric")) > 0),
+      has_time_non_8601 =
+        isValidy(df_has_time_non_8601(rct_txt(), delim = input$delim)),
+      has_time =
+        isValidy(length(df_names_inherits(rct_data(), "POSIXct")) > 0)
+    )
   })
 
   # status
@@ -263,7 +318,10 @@ read_delim_server <- function(
 
   # input
   observeEvent(
-    eventExpr = input$file,
+    eventExpr = {
+      input$file
+      rct_state()
+    },
     handlerExpr = {
 
       rctval_status$input$index <- rctval_status$input$index + 1
@@ -271,6 +329,18 @@ read_delim_server <- function(
       if (is.null(input$file)){
         rctval_status$input$is_valid <- FALSE
         rctval_status$input$message <- "Please select a file"
+      } else if (!rct_state()$has_delim){
+        rctval_status$input$is_valid <- FALSE
+        rctval_status$input$message <- "Please select a delimiter"
+      } else if (!rct_state()$has_decimal_mark){
+        rctval_status$input$is_valid <- FALSE
+        rctval_status$input$message <- "Please select a decimal mark"
+      } else if (!rct_state()$has_tz_parse){
+        rctval_status$input$is_valid <- FALSE
+        rctval_status$input$message <- "Please select a timezone for parsing"
+      } else if (!rct_state()$has_tz_display){
+        rctval_status$input$is_valid <- FALSE
+        rctval_status$input$message <- "Please select a timezone for display"
       } else {
         rctval_status$input$is_valid <- TRUE
         rctval_status$input$message <- ""
@@ -283,7 +353,9 @@ read_delim_server <- function(
 
   # result
   observeEvent(
-    eventExpr = input$file,
+    eventExpr = {
+      rct_data()
+    },
     handlerExpr = {
 
       rctval_status$result$index <- rctval_status$input$index
@@ -293,7 +365,7 @@ read_delim_server <- function(
         rctval_status$result$message <- paste("Cannot find file:", input$file$name)
       } else {
         rctval_status$result$is_valid <- TRUE
-        rctval_status$result$message <- paste("Uploaded file:", input$file$name)
+        rctval_status$result$message <- paste("Uploaded and parsed file:", input$file$name)
       }
 
     }
@@ -353,5 +425,5 @@ read_delim_server <- function(
     })
 
   # returns a list
-  list(rct_txt = rct_txt, rct_data = rct_data)
+  list(rct_data = rct_data, rct_state = rct_state)
 }

@@ -5,10 +5,9 @@ library("dygraphs")
 
 shinyServer(function(input, output, session) {
 
-  list_rct <- callModule(module = read_delim_sidebar_server, id = "csv")
-  rct_data <- list_rct$rct_data
+  rct_data <- callModule(module = read_delim_sidebar_server, id = "csv")
 
-  rct_dyg <- callModule(dygraph_server, "dyg", data = rct_data)
+  rct_dyg <- callModule(dygraph_sidebar_server, "dyg", data = rct_data)
 
   observe({
     shinyjs::toggle(id = "csv_dyg", condition = isValidy(rct_dyg()))

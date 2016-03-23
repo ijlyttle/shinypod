@@ -176,6 +176,8 @@ dygraph_server <- function(
   # names of time variables
   rct_var_time <- reactive({
 
+    if (!isValidy(rct_data())) return(character(0))
+
     var_time <- df_names_inherits(rct_data(), c("POSIXct"))
 
     shiny::validate(
@@ -187,6 +189,8 @@ dygraph_server <- function(
 
   # names of numeric variables
   rct_var_num <- reactive({
+
+    if (!isValidy(rct_data())) return(character(0))
 
     var_num <- df_names_inherits(rct_data(), c("numeric", "integer"))
 
@@ -232,6 +236,15 @@ dygraph_server <- function(
     dyg <- .dygraph(rct_data(), var_time, var_y1, var_y2)
 
     dyg
+  })
+
+  rct_state = reactive({
+    list(
+      has_data = isValidy(rct_data()),
+      has_var_time = isValidy(rct_var_time()),
+      has_var_num = isValidy(rct_var_num()),
+      has_dyg = isValidy(rct_dyg())
+    )
   })
 
   # status
@@ -295,18 +308,6 @@ dygraph_server <- function(
     }
   )
 
-  # shows and hides controls based on the availabilty and nature of data
-  shiny::observe({
-
-    has_time <- length(df_names_inherits(rct_data(), c("POSIXct"))) > 0
-    has_num <- length(df_names_inherits(rct_data(), c("numeric", "integer")) > 0)
-
-    shinyjs::toggle("time", condition = has_time)
-    shinyjs::toggle("y1", condition = has_num)
-    shinyjs::toggle("y2", condition = has_num)
-
-  })
-
   # update choices for time variable
   shiny::observeEvent(
     eventExpr = rct_var_time(),
@@ -317,7 +318,8 @@ dygraph_server <- function(
         choices = rct_var_time(),
         selected = update_selected(input[["time"]], rct_var_time(), index = 1)
       )
-    }
+    },
+    ignoreNULL = FALSE
   )
 
   # update choices for y1 variable
@@ -330,7 +332,8 @@ dygraph_server <- function(
         choices = rct_choice_y1(),
         selected = update_selected(input[["y1"]], rct_choice_y1(), index = 1)
       )
-    }
+    },
+    ignoreNULL = FALSE
   )
 
   # update choices for y2 variable
@@ -343,7 +346,8 @@ dygraph_server <- function(
         choices = rct_choice_y2(),
         selected = update_selected(input[["y2"]], rct_choice_y2(), index = NULL)
       )
-    }
+    },
+    ignoreNULL = FALSE
   )
 
   observe_class_swap(id = "status", rct_status_content()$class)
@@ -354,8 +358,10 @@ dygraph_server <- function(
   output$status <-
     shiny::renderText(rct_status_content()$message)
 
-
-  return(rct_dyg)
+  list(
+    rct_dyg = rct_dyg,
+    rct_state = rct_state
+  )
 }
 
 # function that builds basic dygraph

@@ -90,28 +90,22 @@ read_delim_sidebar_server <- function(
 
   list_rct <- read_delim_server(input, output, session, delim, decimal_mark)
 
-  rct_txt <- list_rct$rct_txt
   rct_data <- list_rct$rct_data
+  rct_state <- list_rct$rct_state
 
   ## observers ##
   ###############
 
   # shows and hides controls based on the availabilty and nature of data
   shiny::observe({
-
-    has_text <- !is.null(rct_txt())
-    has_data <- !is.null(rct_data())
-    has_numeric <- length(df_names_inherits(rct_data(), "numeric")) > 0
-    has_time_non_8601 <- df_has_time_non_8601(rct_txt(), delim = input$delim)
-    has_time <- length(df_names_inherits(rct_data(), "POSIXct")) > 0
-
-    shinyjs::toggle("text", condition = has_text)
-    shinyjs::toggle("data", condition = has_data)
-    shinyjs::toggle("delim", condition = has_data)
-    shinyjs::toggle("decimal_mark", condition = has_numeric)
-    shinyjs::toggle("tz_parse", condition = has_time_non_8601)
-    shinyjs::toggle("tz_display", condition = has_time)
-
+    # inputs
+    shinyjs::toggle("delim", condition = rct_state()$has_txt)
+    shinyjs::toggle("decimal_mark", condition = rct_state()$has_txt)
+    shinyjs::toggle("tz_parse", condition = rct_state()$has_time_non_8601)
+    shinyjs::toggle("tz_display", condition = rct_state()$has_time)
+    # outputs
+    shinyjs::toggle("text", condition = rct_state()$has_txt)
+    shinyjs::toggle("data", condition = rct_state()$has_data)
   })
 
   rct_data
