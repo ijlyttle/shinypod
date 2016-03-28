@@ -108,11 +108,12 @@ write_delim_ui_output <- function(id) {
 #'
 #' @family write_delim module functions
 #
-#' @param input   standard \code{shiny} input
-#' @param output  standard \code{shiny} output
-#' @param session standard \code{shiny} session
-#' @param data    data.frame
-#' @param delim   character, delimiter mark
+#' @param input        standard \code{shiny} input
+#' @param output       standard \code{shiny} output
+#' @param session      standard \code{shiny} session
+#' @param data         data.frame
+#' @param delim        character, possibly reactive, delimiter mark to use as a default
+#' @param status_alert logical, possibly reactive, indicates if to change alert-class of status output
 #'
 #' @return a \code{shiny::\link[shiny]{reactive}} containing a tbl_df of the parsed text
 #'
@@ -132,13 +133,14 @@ write_delim_ui_output <- function(id) {
 write_delim_server <- function(
   input, output, session,
   data,
-  delim = ","
+  delim = ",",
+  status_alert = TRUE
 ) {
 
   ns <- session$ns
 
   # reactives
-  rct_data <- reactive({
+  rct_data <- shiny::reactive({
 
     if (shiny::is.reactive(data)) {
       static_data = data()
@@ -153,18 +155,15 @@ write_delim_server <- function(
     dplyr::tbl_df(static_data)
   })
 
-  rct_delim_default <- reactive({
-
-    if (shiny::is.reactive(delim)) {
-      static_delim = delim()
-    } else {
-      static_delim = delim
-    }
-
-    static_delim
+  rct_delim_default <- shiny::reactive({
+    static(delim)
   })
 
-  rct_txt <- reactive({
+  rct_static_alert <- shiny::reactive({
+    static(status_alert)
+  })
+
+  rct_txt <- shiny::reactive({
 
     shiny::validate(
       shiny::need(input$delim, "No delimiter")
@@ -182,7 +181,7 @@ write_delim_server <- function(
     txt
   })
 
-  rct_filename <- reactive({
+  rct_filename <- shiny::reactive({
 
     # just for the reactive dependency (why?)
     # rct_data()
@@ -200,7 +199,7 @@ write_delim_server <- function(
     input$file
   })
 
-  rct_state = reactive({
+  rct_state = shiny::reactive({
     list(
       has_data = isValidy(rct_data()),
       has_txt = isValidy(rct_txt()),
@@ -209,7 +208,7 @@ write_delim_server <- function(
   })
 
   # #downloads
-  rctval <- reactiveValues(download = 0)
+  rctval <- shiny::reactiveValues(download = 0)
 
   # status
   rctval_status <-
@@ -278,7 +277,7 @@ write_delim_server <- function(
   #   }
   # )
 
-  observe(
+  shiny::observe(
     shiny::updateSelectizeInput(
       session,
       inputId = "delim",
@@ -293,7 +292,12 @@ write_delim_server <- function(
     )
   })
 
-  observe_class_swap(id = "status", rct_status_content()$class)
+  observe({
+    if (rct_static_alert()){
+      observe_class_swap(id = "status", rct_status_content()$class)
+    }
+  })
+
 
   ## outputs ##
   #############

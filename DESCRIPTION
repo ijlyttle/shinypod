@@ -19,7 +19,8 @@ Imports:
     withr,
     dplyr,
     stringr,
-    bsplus
+    bsplus,
+    tibble
 Suggests:
     testthat,
     knitr,

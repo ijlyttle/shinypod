@@ -299,3 +299,43 @@ isValidy <- function(...){
   result
 }
 
+#' convert a tbl_df printout into an html fragment
+#'
+#' @param data, data.frame
+#'
+#' @return html fragment
+#' @export
+#
+tibble_html <- function(data){
+  h <-
+    withr::with_options(
+      list(width = 10000, tibble.width = Inf, tibble.print_min = 6),
+      utils::capture.output(print(data))
+    )
+  h <- paste(h, collapse = "<br/>")
+  h <- shiny::HTML(h)
+
+  h
+}
+
+#' strip away the reactivity
+#'
+#' This is useful for functions where you want to be able to take either reactive
+#' arguements or static arguments.
+#'
+#' @param x
+#'
+#' @return \code{x}, if not reactive, \code{x()} if reactive
+#' @export
+#
+static <- function(x){
+
+  if (shiny::is.reactive(x)) {
+    static_x <- x()
+  } else {
+    static_x <- x
+  }
+
+  static_x
+}
+

@@ -147,7 +147,6 @@ dygraph_server <- function(
 
   ### reactives ###
   #################
-  rctval <- reactiveValues(has_data = FALSE)
 
   # dataset
   rct_data <- reactive({

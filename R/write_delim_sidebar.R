@@ -40,15 +40,22 @@ write_delim_sidebar_main <- function(id){
 write_delim_sidebar_server <- function(
   input, output, session,
   data,
-  delim = ","
+  delim = ",",
+  status_show = TRUE,
+  status_alert = TRUE
 ) {
 
-  list_rct <- write_delim_server(input, output, session, data, delim)
+  list_rct <- write_delim_server(input, output, session, data, delim, status_alert)
   rct_data <- list_rct$rct_data
   rct_state <- list_rct$rct_state
 
+  rct_status_show <- reactive({
+    static(status_show)
+  })
+
   # manage the appearance according to the status
   shiny::observe({
+    shinyjs::toggle(id = "status", condition = rct_status_show())
     shinyjs::toggle(id = "text_data", condition = rct_state()$has_data)
     shinyjs::toggle(id = "text_preview", condition = rct_state()$has_txt)
   })
