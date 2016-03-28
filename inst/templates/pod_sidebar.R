@@ -46,16 +46,22 @@
 #
 {{{ name }}}_sidebar_server <- function(
   input, output, session,
-  data
+  data,
+  status_show = TRUE,
+  status_alert = TRUE
 ){
 
   ## reactives ##
   ###############
 
-  list_rct <- {{{ name }}}_server(input, output, session, data)
+  list_rct <- {{{ name }}}_server(input, output, session, data, status_alert)
 
   rct_data_new <- list_rct$rct_data_new
   rct_state <- list_rct$rct_state
+
+  rct_status_show <- reactive({
+    shinypod::static(status_show)
+  })
 
   ## observers ##
   ###############
@@ -63,6 +69,7 @@
   # shows and hides controls based on the availabilty and nature of data
   shiny::observe({
     # outputs
+    shinyjs::toggle("status", condition = rct_status_show())
     shinyjs::toggle("data", condition = rct_state()$has_data)
     shinyjs::toggle("data_new", condition = rct_state()$has_data_new)
   })

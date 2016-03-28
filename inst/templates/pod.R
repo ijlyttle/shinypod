@@ -1,6 +1,6 @@
-#' UI input elements for {{{ description }}}.
+#' UI input elements for module that {{{ description }}}.
 #'
-#' Used to define the UI input elements within the \code{{{{ name }}}} shiny module.
+#' Used to define the UI input elements within the \code{ {{{ name }}} } shiny module.
 #'
 #' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 #'
@@ -26,17 +26,18 @@
 
   # action button
   ui_input$button <-
-    shiny::fileInput(
+    shiny::actionButton(
       inputId = ns("button_yell"),
-      label = "yell"
+      label = "yell",
+      class = "btn-primary"
     )
 
   ui_input
 }
 
-#' UI output elements for {{{ description }}}.
+#' UI output elements for module that {{{ description }}}.
 #'
-#' Used to define the UI output elements within the \code{{{{ name }}}} shiny module.
+#' Used to define the UI output elements within the \code{ {{{ name }}} } shiny module.
 #'
 #' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 #'
@@ -66,12 +67,24 @@
       container = pre_scroll
     )
 
+  ui_output$data <-
+    shiny::htmlOutput(
+      outputId = ns("data"),
+      container = pre_scroll
+    )
+
+  ui_output$data_new <-
+    shiny::htmlOutput(
+      outputId = ns("data_new"),
+      container = pre_scroll
+    )
+
   ui_output
 }
 
-#' UI miscellaneous elements for {{{ name }}}.
+#' UI miscellaneous elements for module that {{{ description }}}.
 #'
-#' Used to define the UI miscellaneous elements within the \code{{{{ name }}}} shiny module.
+#' Used to define the UI miscellaneous elements within the \code{ {{{ name }}} } shiny module.
 #'
 #' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 #'
@@ -99,18 +112,20 @@
 
 #' Server function for {{{ description }}}.
 #'
-#' Used to define the server within the \code{{{{ name }}}} shiny module.
+#' Used to define the server within the \code{ {{{ name }}} } shiny module.
 #'
-#' @family read_delim module functions
+#' @family {{{ name }}} module functions
 #
 #' @param input   standard \code{shiny} input
 #' @param output  standard \code{shiny} output
 #' @param session standard \code{shiny} session
-#' @param data    data.frame, or reactive that returns a data.frame
+#' @param data    data.frame, possibly reactive
+#' @param status_show logical, possibly reactive, indicates if to show the status output
+#' @param status_alert logical, possibly reactive, indicates if to change alert-class of status output
 #'
-#' @return a list with members:
-#' \code{rct_data} \code{shiny::\link[shiny]{reactive}},
-#'  returns \code{tibble::\link[tibble]{tbl_df}}
+#' @return \code{ {{{ name }}}_server}: a list containing reactives that return a data.frame
+#'    and a list of logicals that describe the state of the module,
+#'    \code{ {{{ name }}}_sidebar_server}: a reactive that returns a data.frame
 #'
 #' @examples
 #' shinyServer(function(input, output, session) {
@@ -124,9 +139,10 @@
 #'
 #' @export
 #
-read_delim_server <- function(
+{{{ name }}}_server <- function(
   input, output, session,
-  data
+  data,
+  status_alert = TRUE
 ){
 
   ns <- session$ns
@@ -145,11 +161,7 @@ read_delim_server <- function(
     #
     # in either case, we want to examine the data frame
     #
-    if (shiny::is.reactive(data)) {
-      static_data <- data()
-    } else {
-      static_data <- data
-    }
+    static_data <- shinypod::static(data)
 
     # make sure this is a data frame
     shiny::validate(
@@ -160,9 +172,14 @@ read_delim_server <- function(
     static_data
   })
 
+  rct_status_alert <- shiny::reactive({
+    shinypod::static(status_alert)
+  })
+
   rct_state <- shiny::reactive({
     list(
-      has_data = shinypod::isValidy(rct_data())
+      has_data = shinypod::isValidy(rct_data()),
+      has_data_new = shinypod::isValidy(rct_data_new())
     )
   })
 
@@ -185,24 +202,24 @@ read_delim_server <- function(
 
   # button should be active only when we have data
   observe({
-    shinyjs::toggle(id = "button-scream", condition = rct_state()$has_data)
+    shinyjs::toggleState(id = "button-scream", condition = rct_state()$has_data)
   })
 
   # input
   observeEvent(
     eventExpr = {
-      rct_state()
+      rct_data()
     },
     handlerExpr = {
 
       rctval_status$input$index <- rctval_status$input$index + 1
 
-      if (rct_state()$has_data){
+      if (!shinypod::isValidy(rct_data())){
         rctval_status$input$is_valid <- FALSE
         rctval_status$input$message <- "Please supply a dataset"
       }  else {
         rctval_status$input$is_valid <- TRUE
-        rctval_status$input$message <- ""
+        rctval_status$input$message <- "Ready to yell!"
       }
 
     },
@@ -212,7 +229,7 @@ read_delim_server <- function(
 
   # result
   observeEvent(
-    eventExpr = input$button_scream,
+    eventExpr = input$button_yell,
     handlerExpr = {
 
       rctval_status$result$index <- rctval_status$input$index
@@ -243,7 +260,11 @@ read_delim_server <- function(
   )
 
   # used to change the class of the status box
-  observe_class_swap(id = "status", rct_status_content()$class)
+  observe({
+    if (rct_status_alert()){
+      shinypod::observe_class_swap(id = "status", rct_status_content()$class)
+    }
+  })
 
   ## outputs ##
   #############

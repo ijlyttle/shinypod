@@ -24,7 +24,8 @@ Imports:
 Suggests:
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    rprojroot
 Remotes: ijlyttle/bsplus
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr

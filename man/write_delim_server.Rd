@@ -16,7 +16,9 @@ write_delim_server(input, output, session, data, delim = ",",
 
 \item{data}{data.frame}
 
-\item{delim}{character, delimiter mark}
+\item{delim}{character, possibly reactive, delimiter mark to use as a default}
+
+\item{status_alert}{logical, possibly reactive, indicates if to change alert-class of status output}
 }
 \value{
 a \code{shiny::\link[shiny]{reactive}} containing a tbl_df of the parsed text
