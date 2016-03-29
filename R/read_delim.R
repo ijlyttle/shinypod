@@ -396,35 +396,10 @@ read_delim_server <- function(
     shiny::renderText(rct_status_content()$message)
 
   # sets the output for the raw text
-  output$text <-
-    shiny::renderUI({
-
-      shiny::validate(
-        shiny::need(rct_txt(), "File did not load properly")
-      )
-
-      h <- rct_txt()
-      h <- readr::read_lines(h, n_max = 7)
-      h <- paste(h, collapse = "<br/>")
-      h <- shiny::HTML(h)
-
-      h
-    })
+  output$text <- shiny::renderUI({tibble_html(rct_data())})
 
   # sets the output for the parsed dataframe
-  output$data <-
-    shiny::renderUI({
-
-      h <-
-        withr::with_options(
-          list(width = 10000, dpylr.width = Inf, dplyr.print_min = 6),
-          utils::capture.output(print(rct_data()))
-        )
-      h <- paste(h, collapse = "<br/>")
-      h <- shiny::HTML(h)
-
-      h
-    })
+  output$data <- shiny::renderUI({tibble_html(rct_data())})
 
   # returns a list
   list(rct_data = rct_data, rct_state = rct_state)
