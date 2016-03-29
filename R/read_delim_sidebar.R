@@ -40,10 +40,12 @@ read_delim_sidebar_side <- function(id){
   #   - first, make hidden
   #   - then, bs_modal_helpify
   #
-  sidebar_elems$delim         <- shinyjs::hidden(sidebar_elems$delim)
-  sidebar_elems$decimal_mark  <- shinyjs::hidden(sidebar_elems$decimal_mark)
-  sidebar_elems$tz_parse      <- shinyjs::hidden(sidebar_elems$tz_parse)
-  sidebar_elems$tz_display    <- shinyjs::hidden(sidebar_elems$tz_display)
+  # not necessary to hide - observe-toggle takes care of it
+  #
+  # sidebar_elems$delim         <- shinyjs::hidden(sidebar_elems$delim)
+  # sidebar_elems$decimal_mark  <- shinyjs::hidden(sidebar_elems$decimal_mark)
+  # sidebar_elems$tz_parse      <- shinyjs::hidden(sidebar_elems$tz_parse)
+  # sidebar_elems$tz_display    <- shinyjs::hidden(sidebar_elems$tz_display)
 
   sidebar_elems$tz_parse <-
     bsplus::bs_modal_helpify(
