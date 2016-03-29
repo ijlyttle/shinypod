@@ -133,6 +133,7 @@ write_delim_ui_output <- function(id) {
 write_delim_server <- function(
   input, output, session,
   data,
+  filename = "data.csv",
   delim = ",",
   status_alert = TRUE
 ) {
@@ -153,6 +154,17 @@ write_delim_server <- function(
     )
 
     dplyr::tbl_df(static_data)
+  })
+
+  rct_filename_default <- shiny::reactive({
+
+    if (shiny::is.reactive(filename)) {
+      static_filename = filename()
+    } else {
+      static_filename = filename
+    }
+
+    static_filename
   })
 
   rct_delim_default <- shiny::reactive({
@@ -222,6 +234,18 @@ write_delim_server <- function(
   ## observers ##
   ###############
 
+  # update filename input
+  shiny::observeEvent(
+    eventExpr = rct_filename_default(),
+    handlerExpr = {
+      shiny::updateTextInput(
+        session,
+        inputId = "file",
+        value = rct_filename_default()
+      )
+    }
+  )
+
   # input
   observeEvent(
     eventExpr = {
@@ -286,13 +310,15 @@ write_delim_server <- function(
   )
 
   shiny::observe({
+    shinyjs::toggleState(id = "delim", condition = rct_state()$has_data)
+    shinyjs::toggleState(id = "file", condition = rct_state()$has_data)
     shinyjs::toggleState(
       id = "download",
       condition = rct_state()$has_txt && rct_state()$has_filename
     )
   })
 
-  observe({
+  shiny::observe({
     if (rct_static_alert()){
       observe_class_swap(id = "status", rct_status_content()$class)
     }

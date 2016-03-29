@@ -41,11 +41,19 @@ write_delim_sidebar_server <- function(
   input, output, session,
   data,
   delim = ",",
+  filename = "data.csv",
   status_show = TRUE,
   status_alert = TRUE
 ) {
 
-  list_rct <- write_delim_server(input, output, session, data, delim, status_alert)
+  list_rct <- write_delim_server(
+    input, output, session,
+    data = data,
+    delim = delim,
+    filename = filename,
+    status_alert = status_alert
+  )
+
   rct_data <- list_rct$rct_data
   rct_state <- list_rct$rct_state
 

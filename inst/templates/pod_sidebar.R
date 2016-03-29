@@ -30,7 +30,7 @@
   sidebar_elems
 }
 
-#' @rdname read_delim_sidebar_side
+#' @rdname {{{ name }}}_sidebar_side
 #' @export
 #
 {{{ name }}}_sidebar_main <- function(id){

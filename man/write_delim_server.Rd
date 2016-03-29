@@ -4,8 +4,8 @@
 \alias{write_delim_server}
 \title{Server function for delimted-file writer.}
 \usage{
-write_delim_server(input, output, session, data, delim = ",",
-  status_alert = TRUE)
+write_delim_server(input, output, session, data, filename = "data.csv",
+  delim = ",", status_alert = TRUE)
 }
 \arguments{
 \item{input}{standard \code{shiny} input}

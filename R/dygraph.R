@@ -258,6 +258,12 @@ dygraph_server <- function(
   ### observers ###
   #################
 
+  shiny::observe({
+    shinyjs::toggleState("time", condition = rct_state()$has_var_time)
+    shinyjs::toggleState("y1", condition = rct_state()$has_var_num)
+    shinyjs::toggleState("y2", condition = rct_state()$has_var_num)
+  })
+
   # input
   observeEvent(
     eventExpr = {
