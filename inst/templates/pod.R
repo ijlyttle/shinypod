@@ -153,24 +153,8 @@
   ## reactives ##
   ###############
 
-  rct_data <- shiny::reactive({
-
-    # the `data` argument can contain either:
-    #  - a reactive that returns a data frame
-    #  - a data frame
-    #
-    # in either case, we want to examine the data frame
-    #
-    static_data <- shinypod::static(data)
-
-    # make sure this is a data frame
-    shiny::validate(
-      shiny::need(is.data.frame(static_data), "Dataset not available")
-    )
-
-    # this reactive returns the data frame
-    static_data
-  })
+  rct_data <-
+    shinypod::reactive_validate(data, is.data.frame, "Please supply a dataset")
 
   rct_status_alert <- shiny::reactive({
     shinypod::static(status_alert)

@@ -148,29 +148,8 @@ dygraph_server <- function(
   ### reactives ###
   #################
 
-  # dataset
-  rct_data <- reactive({
-
-    # the `data` argument can contain either:
-    #  - a reactive that returns a data frame
-    #  - a data frame
-    #
-    # in either case, we want to examine the data frame
-    #
-    if (shiny::is.reactive(data)) {
-      static_data <- data()
-    } else {
-      static_data <- data
-    }
-
-    # make sure this is a data frame
-    shiny::validate(
-      shiny::need(is.data.frame(static_data), "Cannot display graph: no data")
-    )
-
-    # this reactive returns the data frame
-    static_data
-  })
+  rct_data <-
+    shinypod::reactive_validate(data, is.data.frame, "Cannot display graph: no data")
 
   # names of time variables
   rct_var_time <- reactive({
