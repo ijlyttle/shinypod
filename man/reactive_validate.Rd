@@ -4,14 +4,18 @@
 \alias{reactive_validate}
 \title{combines handling of reactive and validating the contents}
 \usage{
-reactive_validate(expr, .f = identity, ...)
+reactive_validate(expr, .f = identity, message, label = NULL, ...)
 }
 \arguments{
 \item{expr}{expression, or reactive that returns an expressiondo}
 
 \item{.f}{function that takes a single arg (object), returns TRUE if valid}
 
-\item{...}{other args to pass along to \code{need}, such as message and label}
+\item{message}{passed to need}
+
+\item{label}{passed to need}
+
+\item{...}{other args to pass along to .f}
 }
 \value{
 reactive that returns the expression

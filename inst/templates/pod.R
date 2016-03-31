@@ -64,19 +64,19 @@
   ui_output$status <-
     shiny::htmlOutput(
       outputId = ns("status"),
-      container = pre_scroll
+      container = shinypod::pre_scroll
     )
 
   ui_output$data <-
     shiny::htmlOutput(
       outputId = ns("data"),
-      container = pre_scroll
+      container = shinypod::pre_scroll
     )
 
   ui_output$data_new <-
     shiny::htmlOutput(
       outputId = ns("data_new"),
-      container = pre_scroll
+      container = shinypod::pre_scroll
     )
 
   ui_output
@@ -147,14 +147,11 @@
 
   ns <- session$ns
 
-  ## input updates ##
-  ###################
-
   ## reactives ##
   ###############
 
   rct_data <-
-    shinypod::reactive_validate(data, is.data.frame, "Please supply a dataset")
+    shinypod::reactive_validate(data, is.data.frame, message = "Please supply a dataset")
 
   rct_status_alert <- shiny::reactive({
     shinypod::static(status_alert)
@@ -180,6 +177,9 @@
     )
 
   rct_status_content <- shiny::reactive(shinypod::status_content(rctval_status))
+
+  ## input updates ##
+  ###################
 
   ## observers ##
   ###############

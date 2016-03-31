@@ -343,19 +343,21 @@ static <- function(x){
 #'
 #' @param  expr   expression, or reactive that returns an expressiondo
 #' @param .f      function that takes a single arg (object), returns TRUE if valid
-#' @param ...     other args to pass along to \code{need}, such as message and label
+#' @param message passed to need
+#' @param label   passed to need
+#' @param ...     other args to pass along to .f
 #'
 #' @return reactive that returns the expression
 #' @export
 #
-reactive_validate <- function(expr, .f = identity, ...){
+reactive_validate <- function(expr, .f = identity, message, label = NULL, ...){
 
   shiny::reactive(
     {
       static_x <- static(expr)
 
       shiny::validate(
-        shiny::need(do.call(.f, list(static_x)), ...)
+        shiny::need(do.call(.f, list(static_x, ...)), message, label)
       )
 
       static_x
