@@ -28,14 +28,8 @@ pre_scroll <- function(...){
 #
 df_with_tz <- function(data, tz = "UTC"){
 
-  names_datetime <- df_names_inherits(data, "POSIXct")
-
-  fn_set_tz <- function(x){
-    attr(x, "tzone") <- tz
-    x
-  }
-
-  data[names_datetime] <- lapply(data[names_datetime], fn_set_tz)
+  .Deprecated(new = "lubridate::with_tz", package = "shinypod")
+  lubridate::with_tz(time = data, tzone = tz)
 
   data
 }
