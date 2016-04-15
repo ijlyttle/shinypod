@@ -28,14 +28,8 @@ pre_scroll <- function(...){
 #
 df_with_tz <- function(data, tz = "UTC"){
 
-  names_datetime <- df_names_inherits(data, "POSIXct")
-
-  fn_set_tz <- function(x){
-    attr(x, "tzone") <- tz
-    x
-  }
-
-  data[names_datetime] <- lapply(data[names_datetime], fn_set_tz)
+  .Deprecated(new = "lubridate::with_tz", package = "shinypod")
+  data <- lubridate::with_tz(time = data, tzone = tz)
 
   data
 }
@@ -312,6 +306,26 @@ tibble_html <- function(data){
       list(width = 10000, tibble.width = Inf, tibble.print_min = 6),
       utils::capture.output(print(data))
     )
+  h <- paste(h, collapse = "<br/>")
+  h <- shiny::HTML(h)
+
+  h
+}
+
+#' convert text into an html fragment
+#'
+#' @param text, text with newline character
+#' @param n, number of lines to keep
+#'
+#' @return html fragment
+#' @export
+#
+text_html <- function(text, n = 6){
+
+  # do more with n
+  h <- stringr::str_split(text, "\\n")
+  h <- h[[1]]
+  h <- h[seq(min(n, length(h)))]
   h <- paste(h, collapse = "<br/>")
   h <- shiny::HTML(h)
 

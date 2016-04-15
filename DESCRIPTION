@@ -15,7 +15,7 @@ Imports:
     shiny (>= 0.13.0),
     shinyjs,
     readr,
-    lubridate,
+    lubridate (>= 1.5.6),
     withr,
     dplyr,
     stringr,

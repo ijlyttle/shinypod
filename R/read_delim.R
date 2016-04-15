@@ -280,7 +280,7 @@ read_delim_server <- function(
         )
       )
 
-    df <- df_with_tz(df, tz = rct_tz_display())
+    df <- lubridate::with_tz(df, tzone = rct_tz_display())
 
     shiny::validate(
       shiny::need(is.data.frame(df), "No data")
@@ -396,7 +396,8 @@ read_delim_server <- function(
     shiny::renderText(rct_status_content()$message)
 
   # sets the output for the raw text
-  output$text <- shiny::renderUI({tibble_html(rct_data())})
+  output$text <-
+    shiny::renderUI({text_html(rct_txt())})
 
   # sets the output for the parsed dataframe
   output$data <- shiny::renderUI({tibble_html(rct_data())})

@@ -1,10 +1,12 @@
 library("lubridate")
+library("tibble")
+library("dplyr")
 library("readr")
 
 context("df_with_tz")
 
 tz_new <- "Europe/Paris"
-wx_ames_new <- df_with_tz(wx_ames, tz_new)
+wx_ames_new <- with_tz(wx_ames, tz_new)
 
 test_that("we can set the time columns in a dataframe", {
   expect_equal(tz(wx_ames_new$date), tz_new)
@@ -33,8 +35,8 @@ df_ref <- data_frame(
   int = c(1L, 2L, 3L),
   dbl = c(1, 2, 3),
   char = c("a", "b", "c"),
-  dtm_a = ymd("2012-01-02") + hours(seq(1, 3)),
-  dtm_b = ymd("2012-01-02") + hours(seq(1, 3))
+  dtm_a = ymd("2012-01-02", tz = "UTC") + hours(seq(1, 3)),
+  dtm_b = ymd("2012-01-02", tz = "UTC") + hours(seq(1, 3))
 )
 
 fmt_reg <- stamp("2012-03-04 05:06:07", quiet = TRUE)
