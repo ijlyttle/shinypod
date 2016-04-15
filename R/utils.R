@@ -312,6 +312,26 @@ tibble_html <- function(data){
   h
 }
 
+#' convert text into an html fragment
+#'
+#' @param text, text with newline character
+#' @param n, number of lines to keep
+#'
+#' @return html fragment
+#' @export
+#
+text_html <- function(text, n = 6){
+
+  # do more with n
+  h <- stringr::str_split(text, "\\n")
+  h <- h[[1]]
+  h <- h[seq(min(n, length(h)))]
+  h <- paste(h, collapse = "<br/>")
+  h <- shiny::HTML(h)
+
+  h
+}
+
 #' strip away the reactivity
 #'
 #' This is useful for functions where you want to be able to take either reactive
