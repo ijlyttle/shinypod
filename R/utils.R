@@ -29,7 +29,7 @@ pre_scroll <- function(...){
 df_with_tz <- function(data, tz = "UTC"){
 
   .Deprecated(new = "lubridate::with_tz", package = "shinypod")
-  lubridate::with_tz(time = data, tzone = tz)
+  data <- lubridate::with_tz(time = data, tzone = tz)
 
   data
 }
