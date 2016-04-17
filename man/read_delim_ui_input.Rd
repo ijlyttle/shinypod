@@ -23,9 +23,11 @@ This function returns a \code{shiny::\link[shiny]{tagList}} with members:
  \item{delim}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify delimiter character}
  \item{decimal_mark}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify decimal mark}
  \item{tz_parse}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify timezone to parse}
- \item{tz_parse_modal}{\code{shinyBS::\link[shinyBS]{bsModal}}, used explain timezone-parsing}
  \item{tz_display}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify timezone to display}
- \item{tz_display_modal}{\code{shinyBS::\link[shinyBS]{bsModal}}, used explain timezone-parsing}
+ \item{is_parse}{\code{shiny::\link[shiny]{checkboxInput}}, used to indicate if custom datetime-parsing is needed}
+ \item{parse_column}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify which column to parse}
+ \item{parse_format}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify a parsing format}
+ \item{parse_locale}{\code{shiny::\link[shiny]{textInput}}, used to specify a language locale for parsing}
 }
 
 The purpose is to specify the UI elements - another set of functions can be used to specify layout.

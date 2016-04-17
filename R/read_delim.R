@@ -9,9 +9,11 @@
 #'  \item{delim}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify delimiter character}
 #'  \item{decimal_mark}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify decimal mark}
 #'  \item{tz_parse}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify timezone to parse}
-#'  \item{tz_parse_modal}{\code{shinyBS::\link[shinyBS]{bsModal}}, used explain timezone-parsing}
 #'  \item{tz_display}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify timezone to display}
-#'  \item{tz_display_modal}{\code{shinyBS::\link[shinyBS]{bsModal}}, used explain timezone-parsing}
+#'  \item{is_parse}{\code{shiny::\link[shiny]{checkboxInput}}, used to indicate if custom datetime-parsing is needed}
+#'  \item{parse_column}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify which column to parse}
+#'  \item{parse_format}{\code{shiny::\link[shiny]{selectizeInput}}, used to specify a parsing format}
+#'  \item{parse_locale}{\code{shiny::\link[shiny]{textInput}}, used to specify a language locale for parsing}
 #' }
 #'
 #' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
@@ -71,6 +73,37 @@ read_delim_ui_input <- function(id){
       inputId = ns("tz_display"),
       label = "Timezone to display",
       choices = tz_choice
+    )
+
+  # custom parsing
+  ui_input$is_parse <-
+    shiny::checkboxInput(
+      inputId = ns("is_parse"),
+      label = "Custom datetime-parsing"
+    )
+
+  # column to parse to datetime
+  ui_input$parse_column <-
+    shiny::selectizeInput(
+      inputId = ns("parse_column"),
+      label = "Column to parse",
+      choices = "",
+      selected = ""
+    )
+
+  ui_input$parse_format <-
+    shiny::selectizeInput(
+      inputId = ns("parse_format"),
+      label = "Format to parse",
+      choices = "",
+      selected = ""
+    )
+
+  ui_input$parse_locale <-
+    shiny::textInput(
+      inputId = ns("parse_locale"),
+      label = "Language locale",
+      value = "en"
     )
 
   ui_input
@@ -388,6 +421,16 @@ read_delim_server <- function(
   )
 
   observe_class_swap(id = "status", rct_status_content()$class)
+
+  # observer to toggle the activation of the custom-parsing inputs
+  observeEvent(
+    eventExpr = input$is_parse,
+    handlerExpr = {
+      shinyjs::toggleState(id = "parse_column", condition = input$is_parse)
+      shinyjs::toggleState(id = "parse_format", condition = input$is_parse)
+      shinyjs::toggleState(id = "parse_locale", condition = input$is_parse)
+    }
+  )
 
   ## outputs ##
   #############
