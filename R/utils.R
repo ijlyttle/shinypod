@@ -306,6 +306,7 @@ tibble_html <- function(data){
       list(width = 10000, tibble.print_min = 5, tibble.print_max = 5),
       utils::capture.output(print(data))
     )
+  h <- htmltools::htmlEscape(h)
   h <- paste(h, collapse = "<br/>")
   h <- shiny::HTML(h)
 
@@ -323,7 +324,8 @@ tibble_html <- function(data){
 text_html <- function(text, n = 6){
 
   # do more with n
-  h <- stringr::str_split(text, "\\n")
+  h <- htmltools::htmlEscape(text)
+  h <- stringr::str_split(h, "\\n")
   h <- h[[1]]
   h <- h[seq(min(n, length(h)))]
   h <- paste(h, collapse = "<br/>")
