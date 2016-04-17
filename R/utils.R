@@ -327,7 +327,12 @@ text_html <- function(text, n = 6){
   h <- htmltools::htmlEscape(text)
   h <- stringr::str_split(h, "\\n")
   h <- h[[1]]
-  h <- h[seq(min(n, length(h)))]
+
+  # truncate h, if needed
+  if (length(h) > n){
+    h <- c(h[seq(n)], "...")
+  }
+
   h <- paste(h, collapse = "<br/>")
   h <- shiny::HTML(h)
 
