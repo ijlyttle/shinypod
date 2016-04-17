@@ -303,7 +303,7 @@ isValidy <- function(...){
 tibble_html <- function(data){
   h <-
     withr::with_options(
-      list(width = 10000, tibble.width = Inf, tibble.print_min = 6),
+      list(width = 10000, tibble.print_min = 5, tibble.print_max = 5),
       utils::capture.output(print(data))
     )
   h <- paste(h, collapse = "<br/>")
