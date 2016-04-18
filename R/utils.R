@@ -325,7 +325,7 @@ text_html <- function(text, n = 6){
 
   # do more with n
   h <- htmltools::htmlEscape(text)
-  h <- stringr::str_split(h, "\\n")
+  h <- stringr::str_split(h, "\\r?\\n")
   h <- h[[1]]
 
   # truncate h, if needed
