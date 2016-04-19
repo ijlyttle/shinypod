@@ -329,7 +329,7 @@ text_html <- function(text, n = 6){
   h <- h[[1]]
 
   # truncate h, if needed
-  if (length(h) > n){
+  if (length(h) > (n + 1)){
     h <- c(h[seq(n)], "...")
   }
 
@@ -386,3 +386,48 @@ reactive_validate <- function(expr, .f = identity, message, label = NULL, ...){
   )
 
 }
+
+# @param str_dtm     character, string to be parsed as datetime
+# @param format      character, format to use - see readr::parse_datetime
+# @param lang        character, language to use - see readr::locale
+# @param tz_parse    character, timezone to parse, default "UTC"
+.parse_datetime <- function(str_dtm, format, lang = "en", tz_parse = "UTC"){
+
+  locale <- readr::locale(date_names = lang, tz = tz_parse)
+
+  dtm <- readr::parse_datetime(str_dtm, format = format, locale = locale)
+
+  dtm
+}
+
+.choices_format <- function(dtm = lubridate::ymd_hms("2015-09-28 02:45:00")){
+
+   print_format <- c(
+    "%d-%b-%Y %H:%M:%S",
+    "%m/%d/%Y %H:%M:%S %z"
+  )
+
+  # used to make the parsing format more-permissive than the printing format
+  parse_format <- function(x){
+    regex <- "(%[A-Za-z])[^%]+" # a "%", followed by any upper/lowercase letter,
+    #  followed by one-or-more non-"%" characters
+
+    # replace
+    result <- stringr::str_replace_all(x, regex, "\\1%.")
+
+    result
+  }
+
+  choices <- purrr::map_chr(print_format, parse_format)
+  names(choices) <- purrr::map_chr(print_format, ~ format(dtm, format = .x))
+
+  choices
+}
+
+
+
+
+
+
+
+

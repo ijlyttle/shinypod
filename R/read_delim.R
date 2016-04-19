@@ -91,19 +91,19 @@ read_delim_ui_input <- function(id){
       selected = ""
     )
 
+  # ui_input$parse_lang <-
+  #   shiny::textInput(
+  #     inputId = ns("parse_lang"),
+  #     label = "Language locale",
+  #     value = "en"
+  #   )
+
   ui_input$parse_format <-
     shiny::selectizeInput(
       inputId = ns("parse_format"),
       label = "Format to parse",
-      choices = "",
+      choices = .choices_format(),
       selected = ""
-    )
-
-  ui_input$parse_locale <-
-    shiny::textInput(
-      inputId = ns("parse_locale"),
-      label = "Language locale",
-      value = "en"
     )
 
   ui_input
@@ -267,8 +267,6 @@ read_delim_server <- function(
     input$decimal_mark
   })
 
-
-
   rct_tz_parse <- reactive({
 
     result <- input$tz_parse
@@ -278,6 +276,18 @@ read_delim_server <- function(
 
     result
   })
+
+  # rct_parse_lang <- reactive({
+  #
+  #   shiny::validate(
+  #     shiny::need(
+  #       input$parse_lang %in% c(readr::date_names_langs(), ""),
+  #       message = "locale language not recognized"
+  #     )
+  #   )
+  #
+  #   input$parse_lang
+  # })
 
   rct_tz_display <- reactive({
 
@@ -301,7 +311,7 @@ read_delim_server <- function(
     readr::read_file(infile)
   })
 
-  rct_data <- reactive({
+  rct_data_provisional <- reactive({
 
     df <-
       readr::read_delim(
@@ -318,6 +328,47 @@ read_delim_server <- function(
     shiny::validate(
       shiny::need(is.data.frame(df), "No data")
     )
+
+    df
+  })
+
+  rct_parse_column <- reactive({
+
+    shiny::validate(
+      shiny::need(input$is_parse, message = "parsing not selected"),
+      shiny::need(input$parse_column, label = "parsing column")
+    )
+
+    rct_data_provisional()[[input$parse_column]]
+  })
+
+  rct_parse_column_dtm <- reactive({
+
+    shiny::validate(shiny::need(rct_parse_column(), label = "parsing column"))
+
+    if (identical(class(rct_parse_column()), "character") ){
+      dtm <-
+        .parse_datetime(
+          rct_parse_column(),
+          format = input$parse_format,
+          tz = rct_tz_parse()
+        )
+    } else {
+      # this is a numeric column - we are parsing as seconds since the epoch
+      dtm <- as.POSIXct(rct_parse_column(), origin = "1970-01-01", tz = "UTC")
+    }
+
+    dtm <- lubridate::with_tz(dtm, tzone = rct_tz_display())
+
+    dtm
+  })
+
+  rct_data <- reactive({
+    df <- rct_data_provisional()
+
+    if (isValidy(rct_parse_column_dtm()) && isValidy(input$parse_column)) {
+      df[[input$parse_column]] <- rct_parse_column_dtm()
+    }
 
     df
   })
@@ -420,15 +471,48 @@ read_delim_server <- function(
     }
   )
 
+  # updates the columns for custom-parsing
+  shiny::observeEvent(
+    eventExpr = rct_data_provisional(),
+    handlerExpr = {
+      col_names <- df_names_inherits(rct_data_provisional(), c("numeric", "integer", "character"))
+      shiny::updateSelectInput(
+        session,
+        inputId = "parse_column",
+        choices = col_names,
+        selected = ""
+      )
+    }
+  )
+
   observe_class_swap(id = "status", rct_status_content()$class)
 
   # observer to toggle the activation of the custom-parsing inputs
   observeEvent(
-    eventExpr = input$is_parse,
+    eventExpr = {
+      input$is_parse
+      isValidy(rct_parse_column())
+    },
     handlerExpr = {
-      shinyjs::toggleState(id = "parse_column", condition = input$is_parse)
-      shinyjs::toggleState(id = "parse_format", condition = input$is_parse)
-      shinyjs::toggleState(id = "parse_locale", condition = input$is_parse)
+
+      is_char <-
+        isValidy(rct_parse_column()) &&
+        identical(class(rct_parse_column()), "character")
+
+      shinyjs::toggleState(
+        id = "parse_column",
+        condition = input$is_parse
+      )
+
+      shinyjs::toggleState(
+        id = "parse_format",
+        condition = is_char
+      )
+
+      shinyjs::toggleState(
+        id = "parse_locale",
+        condition = is_char
+      )
     }
   )
 
