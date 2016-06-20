@@ -1,0 +1,40 @@
+---
+title: "what is a shinypod?"
+author: "Ian Lyttle"
+date: "April 28, 2016"
+output: html_document
+---
+
+A shinypod is a set of functions that implement a Shiny module
+
+There is a functional layer and a presentation layer.
+
+- the functional layer is where all the inputs and outputs are defined. Any logic to enable/disable input elements is made here.
+- the presentation layer is where all the inputs and outputs are arranged, and where the logic to show/hide elements is placed.
+
+The typical sidebar presentation consists of:
+
+- a list of Shiny inputs, typically in the sidebar
+- a Shiny output for status, typcially in the main panel
+- a list of "useful" Shuiny outputs, typically in the main panel
+
+Rules for how the status output behaves.
+
+Types of pods:
+
+- everything is reactive, action happens automatically
+- there is a blocking input, like an action button, that controls when the action happens
+
+Meaning of status class:
+
+- default: nothing notable
+- warning: there is something (other than a button push) preventing the function from being run
+- success: the function has run without any problems
+- info: the inputs are newer than the outputs
+- danger: the function has run, but there was a problem
+
+If there is no action button, then info should never appear
+
+It seems that there should be something in the reactivity itself that helps us to figure out which is the case.
+
+
