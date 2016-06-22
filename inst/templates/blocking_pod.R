@@ -119,7 +119,7 @@
   ui_misc
 }
 
-#' Server function for {{{ description }}}.
+#' Server function for module that {{{ description }}}.
 #'
 #' Used to define the server within the \code{ {{{ name }}} } shiny module.
 #'
@@ -130,15 +130,26 @@
 #' @param session standard \code{shiny} session
 #' @param data    data.frame or a reactive that returns a data.frame
 #'
-#' @return \code{ {{{ name }}}_server}: a list containing reactives that return a data.frame
-#'    and a list of logicals that describe the state of the module,
-#'    \code{ {{{ name }}}_sidebar_server}: a reactive that returns a data.frame
+#' @return \describe{
+#'   \item{\code{ {{{ name }}}_server}}{a list containing:
+#'     \itemize{
+#'       \item \code{rct_result} a \code{shiny::\link[shiny]{reactive}},
+#'         returning the resulting data.frame
+#'       \item \code{rct_input_state} a \code{shiny::\link[shiny]{reactive}},
+#'         returning a list of logicals describing the state of the inputs
+#'       \item \code{rct_status_content} a \code{shiny::\link[shiny]{reactive}},
+#'         returning a list with members \code{class} and \code{message} used to
+#'         build the status output.
+#'     }
+#'   }
+#'   \item{\code{ {{{ name }}}_sidebar_server}}{a reactive that returns a data.frame}
+#' }
 #'
 #' @examples
 #' shinyServer(function(input, output, session) {
 #'
 #'   list_rct <- callModule(
-#'     module = {{{ name }}}_server,
+#'     module = {{{ name }}}_sidebar_server,
 #'     id = "foo",
 #'     data = iris
 #'   )
@@ -222,10 +233,12 @@
 
       state <- rct_input_state()
 
-      # default
+      # default (all is well)
       is_valid <- TRUE
       message <- "Ready to transform column names"
 
+      # for each potential invalid input state,
+      # provide a message for the status output
       if (!state$has_data){
         is_valid <- FALSE
         message <- "Please supply a dataset"
@@ -242,23 +255,30 @@
     priority = 1 # always execute before others
   )
 
-  # result
+  # button
   shiny::observeEvent(
     eventExpr = input$button,
     handlerExpr = {
+      # put the result in a reactive source
+      rctval_result$data_new <- rename(rct_data(), rct_fn_rename())
+    }
+  )
 
-      # default
+  # result
+  shiny::observeEvent(
+    eventExpr = rct_data_new(),
+    handlerExpr = {
+
+      # default (all is well)
       is_valid = TRUE
       message = "Column names transformed"
 
-      data_new <- rename(rct_data(), rct_fn_rename())
-
-      if (!shinypod::isValidy(data_new)){
+      # for each potential problem in the result,
+      # provide a message for the status output
+      if (!shinypod::isValidy(rct_data_new())){
         rctval_status$result$is_valid <- FALSE
         rctval_status$result$message <- "Cannot transform column names"
       }
-
-      rctval_result$data_new <- data_new
 
       rctval_status$result$index <- rctval_status$input$index
       rctval_status$result$is_valid <- is_valid

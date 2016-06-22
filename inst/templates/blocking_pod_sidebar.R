@@ -4,6 +4,8 @@
 #'
 #' Generally, the side elements are the inputs; the main elements are the outputs.
 #'
+#' @family {{{ name }}} module functions
+#'
 #' @param id character, used to identify a namespace
 #'
 #' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
@@ -40,7 +42,6 @@
   main_elems
 }
 
-#' @seealso {{{ name }}}_sidebar_main
 #' @rdname {{{ name }}}_server
 #' @export
 #

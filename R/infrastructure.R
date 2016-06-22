@@ -1,4 +1,4 @@
-#' create a shinypod from a template
+#' Create a shinypod from a template.
 #'
 #' This function is used to write out a template function for a shinypod,
 #' both for the functional layer, in \code{foo_pod.R}, and a presentation layer, in
@@ -8,7 +8,7 @@
 #' the \code{R} directory.
 #'
 #' @param name        character, name to prepend to the filenames
-#' @param description character, short description to use in the function documentation
+#' @param description character, completes the phrase "module that ..."
 #' @param is_blocking logical, indicates if this pod will have a blocking button
 #' @param overwrite   logical, same usage as devtools; indicates if an existing file can be overwritten
 #'

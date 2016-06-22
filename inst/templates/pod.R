@@ -111,7 +111,7 @@
   ui_misc
 }
 
-#' Server function for {{{ description }}}.
+#' Server function for module that {{{ description }}}.
 #'
 #' Used to define the server within the \code{ {{{ name }}} } shiny module.
 #'
@@ -122,15 +122,26 @@
 #' @param session standard \code{shiny} session
 #' @param data    data.frame or a reactive that returns a data.frame
 #'
-#' @return \code{ {{{ name }}}_server}: a list containing reactives that return a data.frame
-#'    and a list of logicals that describe the state of the module,
-#'    \code{ {{{ name }}}_sidebar_server}: a reactive that returns a data.frame
+#' @return \describe{
+#'   \item{\code{ {{{ name }}}_server}}{a list containing:
+#'     \itemize{
+#'       \item \code{rct_result} a \code{shiny::\link[shiny]{reactive}},
+#'         returning the resulting data.frame
+#'       \item \code{rct_input_state} a \code{shiny::\link[shiny]{reactive}},
+#'         returning a list of logicals describing the state of the inputs
+#'       \item \code{rct_status_content} a \code{shiny::\link[shiny]{reactive}},
+#'         returning a list with members \code{class} and \code{message} used to
+#'         build the status output.
+#'     }
+#'   }
+#'   \item{\code{ {{{ name }}}_sidebar_server}}{a reactive that returns a data.frame}
+#' }
 #'
 #' @examples
 #' shinyServer(function(input, output, session) {
 #'
 #'   list_rct <- callModule(
-#'     module = {{{ name }}}_server,
+#'     module = {{{ name }}}_sidebar_server,
 #'     id = "foo",
 #'     data = iris
 #'   )
