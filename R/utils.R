@@ -9,8 +9,15 @@
 #
 pre_scroll <- function(...){
   shiny::pre(
-    ...,
-    style = "overflow: auto; word-wrap: normal; white-space: pre;"
+    style = "overflow: auto; word-wrap: normal; white-space: pre;",
+    ...
+  )
+}
+
+pre_scroll_vert <- function(...){
+  shiny::pre(
+    class = "pre-scrollable",
+    ...
   )
 }
 

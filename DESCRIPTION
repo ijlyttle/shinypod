@@ -25,7 +25,8 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    rprojroot
+    rprojroot,
+    devtools
 Remotes: ijlyttle/bsplus
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
