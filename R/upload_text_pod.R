@@ -1,16 +1,16 @@
-#' UI input elements for module that {{{ description }}}.
+#' UI input elements for module that uploads a text file.
 #'
-#' Used to define the UI input elements within the \code{ {{{ name }}} } shiny module.
+#' Used to define the UI input elements within the \code{ upload_text } shiny module.
 #'
 #' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 #'
 #' \describe{
-#'  \item{choice}{\code{shiny::\link[shiny]{selectizeInput}}, input to choose action}
+#'  \item{file}{\code{shiny::\link[shiny]{select}}, input to choose action}
 #' }
 #'
 #' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
 #'
-#' @family {{{ name }}} module functions
+#' @family upload_text module functions
 #
 #' @param id, character used to specify namesapce, see \code{shiny::\link[shiny]{NS}}
 #'
@@ -18,38 +18,26 @@
 #'
 #' @export
 #
-{{{ name }}}_ui_input <- function(id){
+upload_text_ui_input <- function(id){
 
   ns <- shiny::NS(id)
 
   ui_input <- shiny::tagList()
 
-  # choice
-  ui_input$choice <-
-    shiny::selectizeInput(
-      inputId = ns("choice"),
-      label = "Action for column-names",
-      choices = c(
-        `make upper-case` = "toupper",
-        `make lower-case` = "tolower",
-        `none` = "identity"
-      )
-    )
-
-  # button
-  ui_input$button <-
-    shiny::actionButton(
-      inputId = ns("button"),
-      label = "Do it!",
-      class = "btn-primary"
+  # file upload
+  ui_input$file <-
+    shiny::fileInput(
+      inputId = ns("file"),
+      label = "Upload text file",
+      accept = c("text/csv", ".csv", "text/comma-separated-values", "text/plain")
     )
 
   ui_input
 }
 
-#' UI output elements for module that {{{ description }}}.
+#' UI output elements for module that uploads a text file.
 #'
-#' Used to define the UI output elements within the \code{ {{{ name }}} } shiny module.
+#' Used to define the UI output elements within the \code{ upload_text } shiny module.
 #'
 #' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 #'
@@ -62,7 +50,7 @@
 #'
 #' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
 #'
-#' @family {{{ name }}} module functions
+#' @family upload_text module functions
 #
 #' @param id, character used to specify namesapce, see \code{shiny::\link[shiny]{NS}}
 #'
@@ -70,7 +58,7 @@
 #'
 #' @export
 #
-{{{ name }}}_ui_output <- function(id){
+upload_text_ui_output <- function(id){
 
   ns <- shiny::NS(id)
 
@@ -91,9 +79,9 @@
   ui_output
 }
 
-#' UI miscellaneous elements for module that {{{ description }}}.
+#' UI miscellaneous elements for module that uploads a text file.
 #'
-#' Used to define the UI miscellaneous elements within the \code{ {{{ name }}} } shiny module.
+#' Used to define the UI miscellaneous elements within the \code{ upload_text } shiny module.
 #'
 #' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 #'
@@ -102,7 +90,7 @@
 #'
 #' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
 #'
-#' @family {{{ name }}} module functions
+#' @family upload_text module functions
 #
 #' @param id, character used to specify namesapce, see \code{shiny::\link[shiny]{NS}}
 #'
@@ -110,7 +98,7 @@
 #'
 #' @export
 #
-{{{ name }}}_ui_misc <- function(id){
+upload_text_ui_misc <- function(id){
 
   # this is for elements that are neither inputs nor outputs
 
@@ -119,11 +107,11 @@
   ui_misc
 }
 
-#' Server function for module that {{{ description }}}.
+#' Server function for module that uploads a text file.
 #'
-#' Used to define the server within the \code{ {{{ name }}} } shiny module.
+#' Used to define the server within the \code{ upload_text } shiny module.
 #'
-#' @family {{{ name }}} module functions
+#' @family upload_text module functions
 #
 #' @param input   standard \code{shiny} input
 #' @param output  standard \code{shiny} output
@@ -131,10 +119,10 @@
 #' @param data    data.frame or a reactive that returns a data.frame
 #'
 #' @return \describe{
-#'   \item{\code{ {{{ name }}}_server}}{a list containing:
+#'   \item{\code{ upload_text_server}}{a list containing:
 #'     \itemize{
 #'       \item \code{rct_result} a \code{shiny::\link[shiny]{reactive}},
-#'         returning the resulting data.frame
+#'         returning the resulting text
 #'       \item \code{rct_input_state} a \code{shiny::\link[shiny]{reactive}},
 #'         returning a list of logicals describing the state of the inputs
 #'       \item \code{rct_status_content} a \code{shiny::\link[shiny]{reactive}},
@@ -142,14 +130,14 @@
 #'         build the status output.
 #'     }
 #'   }
-#'   \item{\code{ {{{ name }}}_sidebar_server}}{a reactive that returns a data.frame}
+#'   \item{\code{ upload_text_sidebar_server}}{a reactive that returns a data.frame}
 #' }
 #'
 #' @examples
 #' shinyServer(function(input, output, session) {
 #'
 #'   list_rct <- callModule(
-#'     module = {{{ name }}}_sidebar_server,
+#'     module = upload_text_server,
 #'     id = "foo",
 #'     data = iris
 #'   )
@@ -158,7 +146,7 @@
 #'
 #' @export
 #
-{{{ name }}}_server <- function(
+upload_text_server <- function(
   input, output, session,
   data
 ){
@@ -167,13 +155,6 @@
 
   ## functions ##
   ###############
-
-  rename <- function(data, fn_rename){
-    # given a dataframe and a function (or name of a function),
-    # rename the columns of the dataframe according to the function
-    names(data) <- do.call(fn_rename, list(names(data)))
-    data
-  }
 
   ## reactive sources ##
   ######################
@@ -184,7 +165,7 @@
       result = list(index = 0, is_valid = NULL, message = NULL)
     )
 
-  rctval_result <- shiny::reactiveValues(data_new = NULL)
+  rctval_result <- shiny::reactiveValues(text = NULL)
 
   ## reactive conductors ##
   #########################
@@ -205,20 +186,13 @@
   rct_input_state <-
     shiny::reactive({
       list(
-        has_data = shinypod::isValidy(rct_data()),
-        has_fn_rename = shinypod::isValidy(rct_fn_rename())
+        has_file = shinypod::isValidy(input$file)
       )
     })
 
-  rct_data_new <- shiny::reactive(rctval_result$data_new)
+  rct_text <- shiny::reactive(rctval_result$text)
 
   rct_status_content <- shiny::reactive(shinypod::status_content(rctval_status))
-
-  rct_is_ready <- shiny::reactive({
-    state <- rct_input_state()
-
-    state$has_data && state$has_fn_rename
-  })
 
   ## input-update observers ##
   ############################
@@ -233,18 +207,13 @@
 
       state <- rct_input_state()
 
-      # default (all is well)
+      # default
       is_valid <- TRUE
-      message <- "Ready to transform column names"
+      message <- ""
 
-      # for each potential invalid input state,
-      # provide a message for the status output
-      if (!state$has_data){
+      if (!state$has_file){
         is_valid <- FALSE
-        message <- "Please supply a dataset"
-      }  else if (!state$has_fn_rename) {
-        is_valid <- FALSE
-        message <- "Please make a renaming choice"
+        message <- "Please choose a text file"
       }
 
       rctval_status$input$index <- rctval_status$input$index + 1
@@ -257,27 +226,25 @@
 
   # button
   shiny::observeEvent(
-    eventExpr = input$button,
+    eventExpr = input$file,
     handlerExpr = {
       # put the result in a reactive source
-      rctval_result$data_new <- rename(rct_data(), rct_fn_rename())
+      rctval_result$text <- readr::read_file(input$file$datapath)
     }
   )
 
   # result
   shiny::observeEvent(
-    eventExpr = rct_data_new(),
+    eventExpr = rct_text(),
     handlerExpr = {
 
-      # default (all is well)
-      is_valid <- TRUE
-      message <- "Column names transformed"
+      # default
+      is_valid = TRUE
+      message = paste("File uploaded:", input$file$name)
 
-      # for each potential problem in the result,
-      # provide a message for the status output
-      if (!shinypod::isValidy(rct_data_new())){
+      if (!shinypod::isValidy(rct_text())){
         is_valid <- FALSE
-        message <- "Cannot transform column names"
+        message <- paste("Cannot find text in:", input$file$name)
       }
 
       rctval_status$result$index <- rctval_status$input$index
@@ -286,20 +253,16 @@
     }
   )
 
-  shiny::observe(
-    shinyjs::toggleState("button", condition = rct_is_ready())
-  )
-
   ## outputs ##
   #############
 
   output$status <- shiny::renderText(rct_status_content()$message)
 
-  output$data_preview <- shiny::renderUI(shinypod::tibble_html(rct_data_new()))
+  output$data_preview <- shiny::renderUI(shinypod::text_html(rct_text()))
 
   # returns a list
   list(
-    rct_result = rct_data_new,
+    rct_result = rct_text,
     rct_input_state = rct_input_state,
     rct_status_content = rct_status_content
   )

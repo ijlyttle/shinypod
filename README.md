@@ -1,5 +1,9 @@
 # shinypod 0.0.99
 
+## Warning
+
+*The API is not yet stable - but your feedback is welcome.*
+
 As you write more-and-more shiny apps and they become more-and-more complex, you may notice a couple of things:
 
 1. Among different apps, you may be doing the same things over and over again, like uploading and parsing csv files.
@@ -28,7 +32,7 @@ For each module foo, we have fundamental functions: `foo_ui_input()`, `foo_ui_ou
 
 For each module foo, we also have a couple of functions that return ui arrangements for a sidebar layout: `foo_ui_sidebar_side()` and `foo_ui_sidebar_main()`. These functions rely on the fundamental UI functions. 
 
-Each of these functions has an associated arguement `id`, which is used to keep orderly the shiny namespace.
+Each of these functions has an associated argument `id`, which is used to keep orderly the shiny namespace.
 
 ## Examples
 

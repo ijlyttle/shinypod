@@ -5,7 +5,7 @@
 #' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 #'
 #' \describe{
-#'  \item{choice}{\code{shiny::\link[shiny]{select}}, input to choose action}
+#'  \item{choice}{\code{shiny::\link[shiny]{selectizeInput}}, input to choose action}
 #' }
 #'
 #' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
@@ -243,12 +243,12 @@
     handlerExpr = {
 
       # default
-      is_valid = TRUE
-      message = "Column names transformed"
+      is_valid <- TRUE
+      message <- "Column names transformed"
 
       if (!shinypod::isValidy(rct_data_new())){
-        rctval_status$result$is_valid <- FALSE
-        rctval_status$result$message <- "Cannot transform column names"
+        is_valid <- FALSE
+        message <- "Cannot transform column names"
       }
 
       rctval_status$result$index <- rctval_status$input$index
