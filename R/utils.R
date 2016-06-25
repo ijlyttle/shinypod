@@ -330,6 +330,8 @@ tibble_html <- function(data){
 #
 text_html <- function(text, n = 6){
 
+  if (is.null(text)) return(NULL)
+
   # do more with n
   h <- htmltools::htmlEscape(text)
   h <- stringr::str_split(h, "\\r?\\n")

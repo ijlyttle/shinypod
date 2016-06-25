@@ -5,3 +5,4 @@ License: MIT + file LICENSE
 DisplayMode: Showcase
 Tags: shinypod shiny-modules
 Type: Shiny
+Imports: purrr
