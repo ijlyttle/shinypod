@@ -1,6 +1,8 @@
-# shinypod
+# shinypod 0.0.99.9001
 
-## 0.0.99
+* adds SERAN repository line to DESCRIPTION for SE internal use
+
+# shinypod 0.0.99
 
 * adds alert classes to status outputs (read_delim only)
 * moves server logic concerning presentation to presentation layer

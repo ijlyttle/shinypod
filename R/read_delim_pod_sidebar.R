@@ -1,61 +1,62 @@
-#' Sidebar layout for {{{ name }}} module
+#' Sidebar layout for read_delim module
 #'
 #' These functions return the ui elements for a side panel and a main panel.
 #'
 #' Generally, the side elements are the inputs; the main elements are the outputs.
 #'
-#' @family {{{ name }}} module functions
+#' @family read_delim module functions
 #'
 #' @param id character, used to identify a namespace
 #'
 #' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
 #'
 #' @examples
+#' library("shiny")
 #' shinyUI(
 #'   fluidPage(
 #'     shinyjs::useShinyjs(),
 #'     sidebarLayout(
-#'       sidebarPanel({{{ name }}}_sidebar_side("foo")),
-#'       mainPanel({{{ name }}}_sidebar_main("foo"))
+#'       sidebarPanel(read_delim_sidebar_side("foo")),
+#'       mainPanel(read_delim_sidebar_main("foo"))
 #'     )
 #'   )
 #' )
 #'
 #' @export
 #
-{{{ name }}}_sidebar_side <- function(id){
+read_delim_sidebar_side <- function(id){
 
   ns <- shiny::NS(id)
 
-  sidebar_elems <- {{{ name }}}_ui_input(id)
+  sidebar_elems <- read_delim_ui_input(id)
 
   sidebar_elems
 }
 
-#' @rdname {{{ name }}}_sidebar_side
+#' @rdname read_delim_sidebar_side
 #' @export
 #
-{{{ name }}}_sidebar_main <- function(id){
+read_delim_sidebar_main <- function(id){
 
-  main_elems <- {{{ name }}}_ui_output(id)
+  main_elems <- read_delim_ui_output(id)
 
   main_elems
 }
 
-#' @rdname {{{ name }}}_server
+#' @rdname read_delim_server
 #' @export
 #
-{{{ name }}}_sidebar_server <- function(
+read_delim_sidebar_server <- function(
   input, output, session,
-  data
+  text, delim = ",", decimal_mark = "."
 ){
 
   ## reactives ##
   ###############
 
-  list_rct <- {{{ name }}}_server(input, output, session, data)
+  list_rct <- read_delim_server(input, output, session, text)
 
-  rct_data_new <- list_rct$rct_result
+  rct_data <- list_rct$rct_result
   rct_input_state <- list_rct$rct_input_state
   rct_status_content <- list_rct$rct_status_content
 
@@ -67,12 +68,12 @@
     # outputs
     shinyjs::toggle(
       "data_preview",
-      condition = shinypod::isValidy(rct_data_new())
+      condition = shinypod::isValidy(rct_data())
     )
   })
 
   # change the class of the status window
   shinypod::observe_class_swap(id = "status", rct_status_content()$class)
 
-  rct_data_new
+  rct_data
 }

@@ -1,51 +1,52 @@
-#' Sidebar layout for {{{ name }}} module
+#' Sidebar layout for dygraph module
 #'
 #' These functions return the ui elements for a side panel and a main panel.
 #'
 #' Generally, the side elements are the inputs; the main elements are the outputs.
 #'
-#' @family {{{ name }}} module functions
+#' @family dygraph module functions
 #'
 #' @param id character, used to identify a namespace
 #'
 #' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
 #'
 #' @examples
+#' library("shiny")
 #' shinyUI(
 #'   fluidPage(
 #'     shinyjs::useShinyjs(),
 #'     sidebarLayout(
-#'       sidebarPanel({{{ name }}}_sidebar_side("foo")),
-#'       mainPanel({{{ name }}}_sidebar_main("foo"))
+#'       sidebarPanel(dygraph_sidebar_side("foo")),
+#'       mainPanel(dygraph_sidebar_main("foo"))
 #'     )
 #'   )
 #' )
 #'
 #' @export
 #
-{{{ name }}}_sidebar_side <- function(id){
+dygraph_sidebar_side <- function(id){
 
   ns <- shiny::NS(id)
 
-  sidebar_elems <- {{{ name }}}_ui_input(id)
+  sidebar_elems <- dygraph_ui_input(id)
 
   sidebar_elems
 }
 
-#' @rdname {{{ name }}}_sidebar_side
+#' @rdname dygraph_sidebar_side
 #' @export
 #
-{{{ name }}}_sidebar_main <- function(id){
+dygraph_sidebar_main <- function(id){
 
-  main_elems <- {{{ name }}}_ui_output(id)
+  main_elems <- dygraph_ui_output(id)
 
   main_elems
 }
 
-#' @rdname {{{ name }}}_server
+#' @rdname dygraph_server
 #' @export
 #
-{{{ name }}}_sidebar_server <- function(
+dygraph_sidebar_server <- function(
   input, output, session,
   data
 ){
@@ -53,7 +54,7 @@
   ## reactives ##
   ###############
 
-  list_rct <- {{{ name }}}_server(input, output, session, data)
+  list_rct <- dygraph_server(input, output, session, data)
 
   rct_data_new <- list_rct$rct_result
   rct_input_state <- list_rct$rct_input_state

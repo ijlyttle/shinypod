@@ -1,17 +1,26 @@
 library("shiny")
 library("shinyjs")
 library("shinypod")
+library("dygraphs")
+library("htmltools")
 
 shinyUI(
   fluidPage(
-    useShinyjs(debug = TRUE),
+    useShinyjs(),
     titlePanel("CSV parser"),
     sidebarLayout(
       sidebarPanel(
-        read_delim_sidebar_side("csv")
+        upload_text_sidebar_side("text"),
+        tags$hr(),
+        read_delim_sidebar_side("data"),
+        tags$hr(),
+        dygraph_sidebar_side("dygraph")
       ),
       mainPanel(
-        read_delim_sidebar_main("csv")
+        upload_text_sidebar_main("text"),
+        read_delim_sidebar_main("data"),
+        dygraph_sidebar_main("dygraph"),
+        dygraphOutput("dyg")
       )
     )
   )

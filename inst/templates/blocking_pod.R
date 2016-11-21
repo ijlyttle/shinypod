@@ -36,6 +36,14 @@
       )
     )
 
+  # button
+  ui_input$button <-
+    shiny::actionButton(
+      inputId = ns("button"),
+      label = "Do it!",
+      class = "btn-primary"
+    )
+
   ui_input
 }
 
@@ -176,6 +184,8 @@
       result = list(index = 0, is_valid = NULL, message = NULL)
     )
 
+  rctval_result <- shiny::reactiveValues(data_new = NULL)
+
   ## reactive conductors ##
   #########################
 
@@ -200,9 +210,15 @@
       )
     })
 
-  rct_data_new <- shiny::reactive(rename(rct_data(), rct_fn_rename()))
+  rct_data_new <- shiny::reactive(rctval_result$data_new)
 
   rct_status_content <- shiny::reactive(shinypod::status_content(rctval_status))
+
+  rct_is_ready <- shiny::reactive({
+    state <- rct_input_state()
+
+    state$has_data && state$has_fn_rename
+  })
 
   ## input-update observers ##
   ############################
@@ -217,10 +233,12 @@
 
       state <- rct_input_state()
 
-      # default
+      # default (all is well)
       is_valid <- TRUE
-      message <- "" # will not be displayed
+      message <- "Ready to transform column names"
 
+      # for each potential invalid input state,
+      # provide a message for the status output
       if (!state$has_data){
         is_valid <- FALSE
         message <- "Please supply a dataset"
@@ -237,15 +255,26 @@
     priority = 1 # always execute before others
   )
 
+  # button
+  shiny::observeEvent(
+    eventExpr = input$button,
+    handlerExpr = {
+      # put the result in a reactive source
+      rctval_result$data_new <- rename(rct_data(), rct_fn_rename())
+    }
+  )
+
   # result
   shiny::observeEvent(
     eventExpr = rct_data_new(),
     handlerExpr = {
 
-      # default
+      # default (all is well)
       is_valid <- TRUE
       message <- "Column names transformed"
 
+      # for each potential problem in the result,
+      # provide a message for the status output
       if (!shinypod::isValidy(rct_data_new())){
         is_valid <- FALSE
         message <- "Cannot transform column names"
@@ -255,6 +284,10 @@
       rctval_status$result$is_valid <- is_valid
       rctval_status$result$message <- message
     }
+  )
+
+  shiny::observe(
+    shinyjs::toggleState("button", condition = rct_is_ready())
   )
 
   ## outputs ##

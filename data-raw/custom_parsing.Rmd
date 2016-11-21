@@ -1,0 +1,72 @@
+---
+title: "Custom parsing formats"
+author: "Ian Lyttle"
+output: html_document
+---
+
+```{r library}
+library("lubridate")
+library("readr")
+library("purrr")
+library("dplyr")
+library("tibble")
+library("tidyr")
+library("stringr")
+```
+
+```{r}
+dtm_reference <- ymd_hms("2015-09-28T02:45:00Z")
+```
+
+```{r}
+fmt <- frame_data(
+  ~string,                      ~format_parse,                ~format_print,          ~lang,
+  "28-Sep-2015 02:45:00",       "%d%.%b%.%Y%.%H%.%M%.%S",     "%d-%b-%Y %H:%M:%S",    "en",
+  "28-sept.-2015 02:45:00",     "%d%.%b%.%Y%.%H%.%M%.%S",     "%d-%b-%Y %H:%M:%S",    "fr",
+  "09/27/2015 21:45:00 -05:00", "%m%.%d%.%Y%.%H%.%M%.%S%.%z", "%m/%d/%Y %H:%M:%S %z", "en"
+)
+
+fmt_test <- 
+  fmt %>%
+  mutate(
+    locale = map(lang, ~ locale(date_names = .x, tz = "UTC")),
+    datetime = pmap(list(x = string, format = format_parse, locale = locale), parse_datetime)
+  ) %>%
+  tidyr::unnest(datetime) %>%
+  mutate(
+    string_new = map2_chr(datetime, format_print, ~ format(.x, format = .y))
+  )
+```
+
+We need a function, given a datetime printing string, return a datetime parsing string.
+
+```{r}
+parsing_string <- function(x){
+  regex <- "(%[A-Za-z])[^%]+" # a "%", followed by any upper/lowercase letter, 
+                              #  followed by one-or-more non-"%" characters
+  
+  # replace 
+  result <- stringr::str_replace_all(x, regex, "\\1%.")
+  
+  result
+}
+```
+
+
+```{r}
+format_print <- c("%d-%b-%Y %H:%M:%S", "%m/%d/%Y %H:%M:%S %z")
+
+format_parse <- 
+  format_print %>%
+  map_chr(parsing_string)
+
+str_print <-
+  format_print %>%
+  map_chr(~format(dtm_reference, format = .x, tz = "UTC"))
+
+names(format_parse) <- str_print
+```
+
+```{r eval=FALSE}
+devtools::use_data(wx_ames, overwrite = TRUE)
+```

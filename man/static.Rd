@@ -7,7 +7,7 @@
 static(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{object}
 }
 \value{
 \code{x}, if not reactive, \code{x()} if reactive

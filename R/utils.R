@@ -9,30 +9,37 @@
 #
 pre_scroll <- function(...){
   shiny::pre(
-    ...,
-    style = "overflow: auto; word-wrap: normal; white-space: pre;"
+    style = "overflow: auto; word-wrap: normal; white-space: pre;",
+    ...
   )
 }
 
-#' Sets the timezone of all time-based columns in a dataframe
-#'
-#' @param data  dataframe
-#' @param tz    timezone, an Olson timezone or "UTC" (default)
-#'
-#' @return dataframe
-#'
-#' @examples
-#' df_with_tz(wx_ames, tz = "UTC")
-#'
-#' @export
-#
-df_with_tz <- function(data, tz = "UTC"){
-
-  .Deprecated(new = "lubridate::with_tz", package = "shinypod")
-  data <- lubridate::with_tz(time = data, tzone = tz)
-
-  data
+pre_scroll_vert <- function(...){
+  shiny::pre(
+    class = "pre-scrollable",
+    ...
+  )
 }
+
+# ' Sets the timezone of all time-based columns in a dataframe
+# '
+# ' @param data  dataframe
+# ' @param tz    timezone, an Olson timezone or "UTC" (default)
+# '
+# ' @return dataframe
+# '
+# ' @examples
+# ' df_with_tz(wx_ames, tz = "UTC")
+# '
+# ' @export
+#
+# df_with_tz <- function(data, tz = "UTC"){
+#
+#   .Deprecated(new = "lubridate::with_tz", package = "shinypod")
+#   data <- lubridate::with_tz(time = data, tzone = tz)
+#
+#   data
+# }
 
 # returns TRUE if the dataframe parsed using the text has any POSIXct columns
 # not parsed from ISO-8601
@@ -57,14 +64,14 @@ df_has_time_non_8601 <- function(txt, delim){
     col_sum <- unlist(col_sum)
 
     # turn this into a col_types specification
-    col_types <- ifelse(col_sum == "time", "c", "_")
+    col_types <- ifelse(col_sum == "dttm", "c", "_")
     col_types <- paste0(col_types, collapse = "")
 
     # parse the text into character
     df_txt <- readr::read_delim(txt, delim = delim, col_types = col_types)
 
     # put into a matrix (limit to first 1000 rows)
-    mat_txt <- as.matrix(head(df_txt, 1000))
+    mat_txt <- as.matrix(utils::head(df_txt, 1000))
 
     # test for iso_8601 pattern
     all_8601 <- all(is_time_8601(mat_txt), na.rm = TRUE)
@@ -195,7 +202,7 @@ observe_class_swap <- function(id, expr, env = parent.frame(), quoted = FALSE){
   func <- shiny::exprToFunction(expr, env, quoted)
 
   # we use a reactive value to persist the value of the class we added previously
-  rctval <- reactiveValues(class_current = NULL)
+  rctval <- shiny::reactiveValues(class_current = NULL)
 
   shiny::observeEvent(
     eventExpr = func(),
@@ -303,9 +310,10 @@ isValidy <- function(...){
 tibble_html <- function(data){
   h <-
     withr::with_options(
-      list(width = 10000, tibble.width = Inf, tibble.print_min = 6),
+      list(width = 10000, tibble.print_min = 5, tibble.print_max = 5),
       utils::capture.output(print(data))
     )
+  h <- htmltools::htmlEscape(h)
   h <- paste(h, collapse = "<br/>")
   h <- shiny::HTML(h)
 
@@ -322,10 +330,18 @@ tibble_html <- function(data){
 #
 text_html <- function(text, n = 6){
 
+  if (is.null(text)) return(NULL)
+
   # do more with n
-  h <- stringr::str_split(text, "\\n")
+  h <- htmltools::htmlEscape(text)
+  h <- stringr::str_split(h, "\\r?\\n")
   h <- h[[1]]
-  h <- h[seq(min(n, length(h)))]
+
+  # truncate h, if needed
+  if (length(h) > (n + 1)){
+    h <- c(h[seq(n)], "...")
+  }
+
   h <- paste(h, collapse = "<br/>")
   h <- shiny::HTML(h)
 
@@ -337,7 +353,7 @@ text_html <- function(text, n = 6){
 #' This is useful for functions where you want to be able to take either reactive
 #' arguements or static arguments.
 #'
-#' @param x
+#' @param x object
 #'
 #' @return \code{x}, if not reactive, \code{x()} if reactive
 #' @export
@@ -379,3 +395,48 @@ reactive_validate <- function(expr, .f = identity, message, label = NULL, ...){
   )
 
 }
+
+# @param str_dtm     character, string to be parsed as datetime
+# @param format      character, format to use - see readr::parse_datetime
+# @param lang        character, language to use - see readr::locale
+# @param tz_parse    character, timezone to parse, default "UTC"
+.parse_datetime <- function(str_dtm, format, lang = "en", tz_parse = "UTC"){
+
+  locale <- readr::locale(date_names = lang, tz = tz_parse)
+
+  dtm <- readr::parse_datetime(str_dtm, format = format, locale = locale)
+
+  dtm
+}
+
+.choices_format <- function(dtm = lubridate::ymd_hms("2015-09-28 02:45:00")){
+
+   print_format <- c(
+    "%d-%b-%Y %H:%M:%S",
+    "%m/%d/%Y %H:%M:%S %z"
+  )
+
+  # used to make the parsing format more-permissive than the printing format
+  parse_format <- function(x){
+    regex <- "(%[A-Za-z])[^%]+" # a "%", followed by any upper/lowercase letter,
+    #  followed by one-or-more non-"%" characters
+
+    # replace
+    result <- stringr::str_replace_all(x, regex, "\\1%.")
+
+    result
+  }
+
+  choices <- purrr::map_chr(print_format, parse_format)
+  names(choices) <- purrr::map_chr(print_format, ~ format(dtm, format = .x))
+
+  choices
+}
+
+
+
+
+
+
+
+

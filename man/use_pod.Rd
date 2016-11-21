@@ -2,16 +2,18 @@
 % Please edit documentation in R/infrastructure.R
 \name{use_pod}
 \alias{use_pod}
-\title{create a shinypod from a template}
+\title{Create a shinypod from a template.}
 \usage{
-use_pod(name, description, overwrite = FALSE)
+use_pod(name, description, is_blocking = TRUE, overwrite = FALSE)
 }
 \arguments{
 \item{name}{character, name to prepend to the filenames}
 
-\item{description}{character, short description to use in the function documentation}
+\item{description}{character, completes the phrase "module that ..."}
 
-\item{overwrite}{logical, indicates if an existing file can be overwritten}
+\item{is_blocking}{logical, indicates if this pod will have a blocking button}
+
+\item{overwrite}{logical, same usage as devtools; indicates if an existing file can be overwritten}
 }
 \value{
 list of TRUE values
