@@ -165,7 +165,7 @@ read_delim_ui_misc <- function(id){
 #' @param input        standard \code{shiny} input
 #' @param output       standard \code{shiny} output
 #' @param session      standard \code{shiny} session
-#' @param data         data.frame or a reactive that returns a data.frame
+#' @param text         character or a reactive that returns character
 #' @param delim        character, defualt delimiter
 #' @param decimal_mark character, default decimal-mark
 #'
@@ -185,6 +185,7 @@ read_delim_ui_misc <- function(id){
 #' }
 #'
 #' @examples
+#' library("shiny")
 #' shinyServer(function(input, output, session) {
 #'
 #'   list_rct <- callModule(
@@ -244,7 +245,7 @@ read_delim_server <- function(
   rct_text <-
     shinypod::reactive_validate(text, is.character, message = "Please supply text to parse")
 
-  rct_delim <- reactive({
+  rct_delim <- shiny::reactive({
 
     shiny::validate(
       shiny::need(input$delim, message = "Need a delimiter")
@@ -253,7 +254,7 @@ read_delim_server <- function(
     input$delim
   })
 
-  rct_decimal_mark <- reactive({
+  rct_decimal_mark <- shiny::reactive({
 
     shiny::validate(
       shiny::need(input$decimal_mark, message = "Need a decimal mark")
@@ -262,7 +263,7 @@ read_delim_server <- function(
     input$decimal_mark
   })
 
-  rct_tz_parse <- reactive({
+  rct_tz_parse <- shiny::reactive({
 
     result <- input$tz_parse
     if (!result %in% c("UTC", lubridate::olson_time_zones())){
@@ -272,7 +273,7 @@ read_delim_server <- function(
     result
   })
 
-  rct_tz_display <- reactive({
+  rct_tz_display <- shiny::reactive({
 
     result <- input$tz_display
     if (!result %in% c("UTC", lubridate::olson_time_zones())){

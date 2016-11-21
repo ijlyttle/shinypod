@@ -145,6 +145,7 @@ dygraph_ui_misc <- function(id){
 #' }
 #'
 #' @examples
+#' library("shiny")
 #' shinyServer(function(input, output, session) {
 #'
 #'   list_rct <- callModule(
@@ -267,7 +268,7 @@ dygraph_server <- function(
       )
     })
 
-  rct_dyg <- reactive({
+  rct_dyg <- shiny::reactive({
 
     shiny::validate(
       shiny::need(
@@ -292,7 +293,7 @@ dygraph_server <- function(
   shiny::observeEvent(
     eventExpr = rct_var_time(),
     handlerExpr = {
-      updateSelectInput(
+      shiny::updateSelectInput(
         session,
         inputId = "time",
         choices = rct_var_time(),
@@ -306,7 +307,7 @@ dygraph_server <- function(
   shiny::observeEvent(
     eventExpr = rct_choice_y1(),
     handlerExpr = {
-      updateSelectInput(
+      shiny::updateSelectInput(
         session,
         inputId = "y1",
         choices = rct_choice_y1(),
@@ -320,7 +321,7 @@ dygraph_server <- function(
   shiny::observeEvent(
     eventExpr = rct_choice_y2(),
     handlerExpr = {
-      updateSelectInput(
+      shiny::updateSelectInput(
         session,
         inputId = "y2",
         choices = rct_choice_y2(),

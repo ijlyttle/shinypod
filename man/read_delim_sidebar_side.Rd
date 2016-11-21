@@ -22,6 +22,7 @@ These functions return the ui elements for a side panel and a main panel.
 Generally, the side elements are the inputs; the main elements are the outputs.
 }
 \examples{
+library("shiny")
 shinyUI(
   fluidPage(
     shinyjs::useShinyjs(),

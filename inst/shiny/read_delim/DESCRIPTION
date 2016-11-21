@@ -2,7 +2,5 @@ Title: CSV parser
 Author: Ian Lyttle & Alex Shum
 AuthorUrl: https://ijlyttle.github.com/shinypod
 License: MIT + file LICENSE
-DisplayMode: Showcase
 Tags: shinypod shiny-modules
 Type: Shiny
-Imports: purrr

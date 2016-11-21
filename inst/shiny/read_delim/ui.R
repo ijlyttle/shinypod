@@ -2,6 +2,7 @@ library("shiny")
 library("shinyjs")
 library("shinypod")
 library("dygraphs")
+library("htmltools")
 
 shinyUI(
   fluidPage(
@@ -10,7 +11,9 @@ shinyUI(
     sidebarLayout(
       sidebarPanel(
         upload_text_sidebar_side("text"),
+        tags$hr(),
         read_delim_sidebar_side("data"),
+        tags$hr(),
         dygraph_sidebar_side("dygraph")
       ),
       mainPanel(

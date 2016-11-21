@@ -1,0 +1,23 @@
+
+```{r}
+library("readr")
+library("xts")
+library("dygraphs")
+```
+
+```{r}
+wx_ames_txt <-
+  read_file(system.file("extdata", "wx_ames.csv", package = "shinypod"))
+```
+
+```{r}
+wx_ames <-
+  read_csv(wx_ames_txt, locale = locale(tz = "America/Chicago"))
+```
+
+```{r}
+wx_ames_xts <-
+  xts(wx_ames[, c("temp", "dew_pt")], order.by = wx_ames$date)
+
+dygraph(wx_ames_xts)
+```

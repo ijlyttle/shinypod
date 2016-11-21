@@ -18,11 +18,11 @@ read_delim_sidebar_server(input, output, session, text, delim = ",",
 
 \item{session}{standard \code{shiny} session}
 
+\item{text}{character or a reactive that returns character}
+
 \item{delim}{character, defualt delimiter}
 
 \item{decimal_mark}{character, default decimal-mark}
-
-\item{data}{data.frame or a reactive that returns a data.frame}
 }
 \value{
 \describe{
@@ -44,6 +44,7 @@ read_delim_sidebar_server(input, output, session, text, delim = ",",
 Used to define the server within the \code{ read_delim } shiny module.
 }
 \examples{
+library("shiny")
 shinyServer(function(input, output, session) {
 
   list_rct <- callModule(

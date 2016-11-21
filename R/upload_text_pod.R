@@ -5,7 +5,7 @@
 #' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
 #'
 #' \describe{
-#'  \item{file}{\code{shiny::\link[shiny]{select}}, input to choose action}
+#'  \item{file}{\code{shiny::\link[shiny]{selectInput}}, input to choose action}
 #' }
 #'
 #' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
@@ -134,6 +134,7 @@ upload_text_ui_misc <- function(id){
 #' }
 #'
 #' @examples
+#' library("shiny")
 #' shinyServer(function(input, output, session) {
 #'
 #'   list_rct <- callModule(

@@ -21,7 +21,7 @@
 #' @export
 #
 write_delim_ui_input <- function(id) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   ui_input <- shiny::tagList()
 
   ui_input$delim <-
@@ -74,7 +74,7 @@ write_delim_ui_input <- function(id) {
 #' @export
 #
 write_delim_ui_output <- function(id) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
 
   ## ui_view ##
   ui_output <- shiny::tagList()
@@ -112,12 +112,15 @@ write_delim_ui_output <- function(id) {
 #' @param output       standard \code{shiny} output
 #' @param session      standard \code{shiny} session
 #' @param data         data.frame
+#' @param filename     path
 #' @param delim        character, possibly reactive, delimiter mark to use as a default
+#' @param status_show  logical, possibly reactive, indicates if to show status
 #' @param status_alert logical, possibly reactive, indicates if to change alert-class of status output
 #'
 #' @return a \code{shiny::\link[shiny]{reactive}} containing a tbl_df of the parsed text
 #'
 #' @examples
+#' library("shiny")
 #' shinyServer(function(input, output, session) {
 #'
 #'   rct_data <- callModule(
@@ -247,7 +250,7 @@ write_delim_server <- function(
   )
 
   # input
-  observeEvent(
+  shiny::observeEvent(
     eventExpr = {
       rct_state()$has_data
       input$delim
@@ -334,11 +337,11 @@ write_delim_server <- function(
 
   # sets the output for the input dataframe
   output[["text_data"]] <-
-    renderUI({
+    shiny::renderUI({
       h <-
       withr::with_options(
           list(width = 10000, dpylr.width = Inf, dplyr.print_min = 6),
-          capture.output(print(rct_data()))
+          utils::capture.output(print(rct_data()))
         )
       h <- paste(h, collapse = "<br/>")
       h <- htmltools::HTML(h)
@@ -348,7 +351,7 @@ write_delim_server <- function(
 
   # sets the output for the raw text
   output[["text_preview"]] <-
-    renderUI({
+    shiny::renderUI({
       h <- rct_txt()
       h <- readr::read_lines(h, n_max = 7)
       h <- paste(h, collapse = "<br/>")

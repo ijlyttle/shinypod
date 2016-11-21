@@ -29,7 +29,7 @@ use_pod <- function(name, description, is_blocking = TRUE, overwrite = FALSE){
 
     use_template(
       template = template_name,
-      save = file.path("R", paste(name, file_name, sep = "_")),
+      save_as = file.path("R", paste(name, file_name, sep = "_")),
       data = list(name = name, description = description),
       overwrite = overwrite
     )

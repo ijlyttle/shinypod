@@ -9,12 +9,13 @@
 #' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
 #'
 #' @examples
+#' library("shiny")
 #' shinyUI(
 #'   fluidPage(
 #'     shinyjs::useShinyjs(),
 #'     sidebarLayout(
-#'       sidebarPanel(write_delim_sidebar("foo")),
-#'       mainPanel(read_delim_main("foo"))
+#'       sidebarPanel(write_delim_sidebar_side("foo")),
+#'       mainPanel(write_delim_sidebar_main("foo"))
 #'     )
 #'   )
 #' )
@@ -35,6 +36,7 @@ write_delim_sidebar_main <- function(id){
   write_delim_ui_output(id)
 }
 
+#' @rdname write_delim_server
 #' @export
 #
 write_delim_sidebar_server <- function(
@@ -57,7 +59,7 @@ write_delim_sidebar_server <- function(
   rct_data <- list_rct$rct_data
   rct_state <- list_rct$rct_state
 
-  rct_status_show <- reactive({
+  rct_status_show <- shiny::reactive({
     static(status_show)
   })
 

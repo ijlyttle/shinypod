@@ -7,12 +7,14 @@ shinyServer(function(input, output, session) {
 
   rct_text <- callModule(module = upload_text_sidebar_server, id = "text")
 
-#   rct_text <- reactive(system.file("extdata", "wx_ames.csv", package = "shinypod"))
-
   rct_data <- callModule(module = read_delim_sidebar_server, id = "data", text = rct_text)
 
   rct_dyg <- callModule(module = dygraph_sidebar_server, id = "dygraph", data = rct_data)
 
-  output$dyg <- renderDygraph(rct_dyg())
+  observe({
+    toggle("dyg", condition = isValidy(rct_dyg()))
+  })
+
+  output$dyg <- renderDygraph(dyOptions(rct_dyg(), useDataTimezone = TRUE))
 
 })

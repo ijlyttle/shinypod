@@ -22,12 +22,13 @@ These functions return the ui elements for a side panel and a main panel.
 The side elements are the inputs; the main elements are the outputs.
 }
 \examples{
+library("shiny")
 shinyUI(
   fluidPage(
     shinyjs::useShinyjs(),
     sidebarLayout(
-      sidebarPanel(write_delim_sidebar("foo")),
-      mainPanel(read_delim_main("foo"))
+      sidebarPanel(write_delim_sidebar_side("foo")),
+      mainPanel(write_delim_sidebar_main("foo"))
     )
   )
 )

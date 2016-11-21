@@ -21,25 +21,25 @@ pre_scroll_vert <- function(...){
   )
 }
 
-#' Sets the timezone of all time-based columns in a dataframe
-#'
-#' @param data  dataframe
-#' @param tz    timezone, an Olson timezone or "UTC" (default)
-#'
-#' @return dataframe
-#'
-#' @examples
-#' df_with_tz(wx_ames, tz = "UTC")
-#'
-#' @export
+# ' Sets the timezone of all time-based columns in a dataframe
+# '
+# ' @param data  dataframe
+# ' @param tz    timezone, an Olson timezone or "UTC" (default)
+# '
+# ' @return dataframe
+# '
+# ' @examples
+# ' df_with_tz(wx_ames, tz = "UTC")
+# '
+# ' @export
 #
-df_with_tz <- function(data, tz = "UTC"){
-
-  .Deprecated(new = "lubridate::with_tz", package = "shinypod")
-  data <- lubridate::with_tz(time = data, tzone = tz)
-
-  data
-}
+# df_with_tz <- function(data, tz = "UTC"){
+#
+#   .Deprecated(new = "lubridate::with_tz", package = "shinypod")
+#   data <- lubridate::with_tz(time = data, tzone = tz)
+#
+#   data
+# }
 
 # returns TRUE if the dataframe parsed using the text has any POSIXct columns
 # not parsed from ISO-8601
@@ -64,14 +64,14 @@ df_has_time_non_8601 <- function(txt, delim){
     col_sum <- unlist(col_sum)
 
     # turn this into a col_types specification
-    col_types <- ifelse(col_sum == "time", "c", "_")
+    col_types <- ifelse(col_sum == "dttm", "c", "_")
     col_types <- paste0(col_types, collapse = "")
 
     # parse the text into character
     df_txt <- readr::read_delim(txt, delim = delim, col_types = col_types)
 
     # put into a matrix (limit to first 1000 rows)
-    mat_txt <- as.matrix(head(df_txt, 1000))
+    mat_txt <- as.matrix(utils::head(df_txt, 1000))
 
     # test for iso_8601 pattern
     all_8601 <- all(is_time_8601(mat_txt), na.rm = TRUE)
@@ -202,7 +202,7 @@ observe_class_swap <- function(id, expr, env = parent.frame(), quoted = FALSE){
   func <- shiny::exprToFunction(expr, env, quoted)
 
   # we use a reactive value to persist the value of the class we added previously
-  rctval <- reactiveValues(class_current = NULL)
+  rctval <- shiny::reactiveValues(class_current = NULL)
 
   shiny::observeEvent(
     eventExpr = func(),
@@ -353,7 +353,7 @@ text_html <- function(text, n = 6){
 #' This is useful for functions where you want to be able to take either reactive
 #' arguements or static arguments.
 #'
-#' @param x
+#' @param x object
 #'
 #' @return \code{x}, if not reactive, \code{x()} if reactive
 #' @export

@@ -11,6 +11,7 @@
 #' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
 #'
 #' @examples
+#' library("shiny")
 #' shinyUI(
 #'   fluidPage(
 #'     shinyjs::useShinyjs(),

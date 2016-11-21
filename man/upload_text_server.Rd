@@ -38,6 +38,7 @@ upload_text_sidebar_server(input, output, session, data)
 Used to define the server within the \code{ upload_text } shiny module.
 }
 \examples{
+library("shiny")
 shinyServer(function(input, output, session) {
 
   list_rct <- callModule(
