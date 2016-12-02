@@ -1,3 +1,7 @@
+# shinypod 0.0.99.9100
+
+* bumps version in anticipaton of reworking
+
 # shinypod 0.0.99.9001
 
 * adds SERAN repository line to DESCRIPTION for SE internal use

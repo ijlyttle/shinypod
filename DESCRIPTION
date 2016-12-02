@@ -1,9 +1,10 @@
 Package: shinypod
 Type: Package
 Title: Reusable shiny modules
-Version: 0.0.99.9001
+Version: 0.0.99.9100
 Authors@R: c(
-    person(given = "Ian", family = "Lyttle", email = "ian.lyttle@schneider-electric.com", role = c("aut", "cre")),
+    person(given = "Ian", family = "Lyttle", email = "ian.lyttle@schneider-electric.com", role = c("aut", "cre", "cph")),
+    person(family = "Schneider Electric", role = c("cph", "fnd")),
     person(given = "Alex", family = "Shum", email = "alex@ALShum.com", role = c("aut"))
   )
 URL: https://github.com/ijlyttle/shinypod
@@ -35,7 +36,5 @@ Suggests:
     rmarkdown,
     rprojroot,
     devtools
-Remotes: ijlyttle/bsplus
-Repository: SERAN
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
