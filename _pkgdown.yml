@@ -3,7 +3,9 @@ templates:
     bootswatch: sandstone
 
 reference:
-- title: "Utilities"
-  desc: Helper functions for shiny modules
+- title: "Utilities - reactive"
+  desc: Some functions that make it a little easier to program
+    with reactives
   contents:
     - reactive_validate
+    - isValidy

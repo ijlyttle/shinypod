@@ -1,11 +1,15 @@
-
-upload_text_ui_input <- function(id){
+# note that this module acts as a source of sorts
+upload_text_ui <- function(id){
 
   ns <- shiny::NS(id)
 
-  ui_input <- shiny::tagList()
+  # returns a list with members: input, output, misc - each a shiny tagList
+  ui <- sp_ui()
 
-  # file upload
+  ### input ###
+  #############
+
+  # file
   ui_input$file <-
     shiny::fileInput(
       inputId = ns("file"),
@@ -13,45 +17,21 @@ upload_text_ui_input <- function(id){
       accept = c("text/csv", ".csv", "text/comma-separated-values", "text/plain")
     )
 
-  ui_input
-}
+  ### output ###
+  ##############
 
-upload_text_ui_output <- function(id){
-
-  ns <- shiny::NS(id)
-
-  ui_output <- shiny::tagList()
-
-  ui_output$status <-
-    shiny::htmlOutput(
-      outputId = ns("status"),
-      container = shinypod::pre_scroll
-    )
-
+  # data_preview
   ui_output$data_preview <-
     shiny::htmlOutput(
       outputId = ns("data_preview"),
       container = shinypod::pre_scroll
     )
 
-  ui_output
+  ui
 }
 
-
-upload_text_ui_misc <- function(id){
-
-  # this is for elements that are neither inputs nor outputs
-
-  ui_misc <- shiny::tagList()
-
-  ui_misc
-}
-
-
-upload_text_server <- function(
-  input, output, session,
-  data
-){
+upload_text_server <- function(input, output, session,
+                               data){
 
   ns <- session$ns
 
@@ -61,19 +41,8 @@ upload_text_server <- function(
   ## reactive sources ##
   ######################
 
-  rctval_status <-
-    shiny::reactiveValues(
-      input = list(index = 0, is_valid = NULL, message = NULL),
-      result = list(index = 0, is_valid = NULL, message = NULL)
-    )
-
-  rctval_result <- shiny::reactiveValues(text = NULL)
-
   ## reactive conductors ##
   #########################
-
-  rct_data <-
-    shinypod::reactive_validate(data, is.data.frame, message = "Please supply a dataset")
 
   rct_fn_rename <-
     shiny::reactive({
@@ -85,7 +54,7 @@ upload_text_server <- function(
       input$choice
     })
 
-  rct_input_state <-
+  rct_state <-
     shiny::reactive({
       list(
         has_file = shinypod::isValidy(input$file)

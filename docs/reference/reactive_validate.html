@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Validates inputs for shiny modules, returns reactive — reactive_validate • shinypod</title>
+<title>Validates Shiny-module input, returns reactive — reactive_validate • shinypod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,7 +77,7 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Validates inputs for shiny modules, returns reactive</h1>
+    <h1>Validates Shiny-module input, returns reactive</h1>
     </div>
 
     
@@ -105,8 +105,11 @@ that returns an expression</dd>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/reactive'>reactive</a></code> that returns <code>x</code>, or
-  <code>x()</code>, if <code>x</code> is reactive</p>
+    <p><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/reactive'>reactive</a></code> that returns:
+<dl class='dl-horizontal'>
+  <dt><code>x()</code></dt><dd>if <code>x</code> is reactive</dd>
+  <dt><code>x</code></dt><dd>if <code>x</code> is not reactive</dd>
+</dl></p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 

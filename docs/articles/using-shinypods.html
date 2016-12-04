@@ -97,7 +97,7 @@
   rct_dyg &lt;-<span class="st"> </span><span class="kw">callModule</span>(<span class="dt">module =</span> dygraph_sidebar_server, <span class="dt">id =</span> <span class="st">"dygraph"</span>, <span class="dt">data =</span> rct_data)
 
   <span class="kw">observe</span>({
-    <span class="kw">toggle</span>(<span class="st">"dyg"</span>, <span class="dt">condition =</span> <span class="kw">isValidy</span>(<span class="kw">rct_dyg</span>()))
+    <span class="kw">toggle</span>(<span class="st">"dyg"</span>, <span class="dt">condition =</span> <span class="kw"><a href="../reference/isValidy.html">isValidy</a></span>(<span class="kw">rct_dyg</span>()))
   })
 
   output$dyg &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>(<span class="kw">dyOptions</span>(<span class="kw">rct_dyg</span>(), <span class="dt">useDataTimezone =</span> <span class="ot">TRUE</span>))
@@ -153,7 +153,7 @@ function(input, output, session) {
   rct_dyg &lt;-<span class="st"> </span><span class="kw">callModule</span>(dygraph_sidebar_server, <span class="st">"dyg"</span>, <span class="dt">data =</span> rct_data)
 
   <span class="kw">observe</span>({
-    shinyjs::<span class="kw">toggle</span>(<span class="dt">id =</span> <span class="st">"csv_dyg"</span>, <span class="dt">condition =</span> <span class="kw">isValidy</span>(<span class="kw">rct_dyg</span>()))
+    shinyjs::<span class="kw">toggle</span>(<span class="dt">id =</span> <span class="st">"csv_dyg"</span>, <span class="dt">condition =</span> <span class="kw"><a href="../reference/isValidy.html">isValidy</a></span>(<span class="kw">rct_dyg</span>()))
   })
 
   output$csv_dyg &lt;-<span class="st"> </span><span class="kw">renderDygraph</span>({
