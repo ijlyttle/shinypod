@@ -16,4 +16,5 @@ static(x)
 This is useful for functions where you want to be able to take either reactive
 arguements or static arguments.
 }
+\keyword{internal}
 

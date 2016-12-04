@@ -1,23 +1,4 @@
-#' UI input elements for module that uploads a text file.
-#'
-#' Used to define the UI input elements within the \code{ upload_text } shiny module.
-#'
-#' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
-#'
-#' \describe{
-#'  \item{file}{\code{shiny::\link[shiny]{selectInput}}, input to choose action}
-#' }
-#'
-#' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
-#'
-#' @family upload_text module functions
-#
-#' @param id, character used to specify namesapce, see \code{shiny::\link[shiny]{NS}}
-#'
-#' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
-#'
-#' @export
-#
+
 upload_text_ui_input <- function(id){
 
   ns <- shiny::NS(id)
@@ -35,29 +16,6 @@ upload_text_ui_input <- function(id){
   ui_input
 }
 
-#' UI output elements for module that uploads a text file.
-#'
-#' Used to define the UI output elements within the \code{ upload_text } shiny module.
-#'
-#' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
-#'
-#' \describe{
-#'  \item{status}{\code{shiny::\link[shiny]{htmlOutput}},
-#'    used to display status of the module}
-#'  \item{data_preview}{\code{shiny::\link[shiny]{htmlOutput}},
-#'    used to display the first few rows of the dataframe}
-#' }
-#'
-#' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
-#'
-#' @family upload_text module functions
-#
-#' @param id, character used to specify namesapce, see \code{shiny::\link[shiny]{NS}}
-#'
-#' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
-#'
-#' @export
-#
 upload_text_ui_output <- function(id){
 
   ns <- shiny::NS(id)
@@ -79,25 +37,7 @@ upload_text_ui_output <- function(id){
   ui_output
 }
 
-#' UI miscellaneous elements for module that uploads a text file.
-#'
-#' Used to define the UI miscellaneous elements within the \code{ upload_text } shiny module.
-#'
-#' This function returns a \code{shiny::\link[shiny]{tagList}} with members:
-#'
-#' \describe{
-#' }
-#'
-#' The purpose is to specify the UI elements - another set of functions can be used to specify layout.
-#'
-#' @family upload_text module functions
-#
-#' @param id, character used to specify namesapce, see \code{shiny::\link[shiny]{NS}}
-#'
-#' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
-#'
-#' @export
-#
+
 upload_text_ui_misc <- function(id){
 
   # this is for elements that are neither inputs nor outputs
@@ -107,46 +47,7 @@ upload_text_ui_misc <- function(id){
   ui_misc
 }
 
-#' Server function for module that uploads a text file.
-#'
-#' Used to define the server within the \code{ upload_text } shiny module.
-#'
-#' @family upload_text module functions
-#
-#' @param input   standard \code{shiny} input
-#' @param output  standard \code{shiny} output
-#' @param session standard \code{shiny} session
-#' @param data    data.frame or a reactive that returns a data.frame
-#'
-#' @return \describe{
-#'   \item{\code{ upload_text_server}}{a list containing:
-#'     \itemize{
-#'       \item \code{rct_result} a \code{shiny::\link[shiny]{reactive}},
-#'         returning the resulting text
-#'       \item \code{rct_input_state} a \code{shiny::\link[shiny]{reactive}},
-#'         returning a list of logicals describing the state of the inputs
-#'       \item \code{rct_status_content} a \code{shiny::\link[shiny]{reactive}},
-#'         returning a list with members \code{class} and \code{message} used to
-#'         build the status output.
-#'     }
-#'   }
-#'   \item{\code{ upload_text_sidebar_server}}{a reactive that returns a data.frame}
-#' }
-#'
-#' @examples
-#' library("shiny")
-#' shinyServer(function(input, output, session) {
-#'
-#'   list_rct <- callModule(
-#'     module = upload_text_server,
-#'     id = "foo",
-#'     data = iris
-#'   )
-#'
-#' })
-#'
-#' @export
-#
+
 upload_text_server <- function(
   input, output, session,
   data

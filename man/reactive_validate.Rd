@@ -2,25 +2,70 @@
 % Please edit documentation in R/utils.R
 \name{reactive_validate}
 \alias{reactive_validate}
-\title{combines handling of reactive and validating the contents}
+\title{Validates inputs for shiny modules, returns reactive}
 \usage{
-reactive_validate(expr, .f = identity, message, label = NULL, ...)
+reactive_validate(x, .f = identity, message, label = NULL, ...)
 }
 \arguments{
-\item{expr}{expression, or reactive that returns an expressiondo}
+\item{x}{expression, or  \code{shiny::\link[shiny]{reactive}}
+that returns an expression}
 
 \item{.f}{function that takes a single arg (object), returns TRUE if valid}
 
-\item{message}{passed to need}
+\item{message}{character, passed to \code{shiny::\link[shiny]{need}}}
 
-\item{label}{passed to need}
+\item{label}{character, passed to \code{shiny::\link[shiny]{need}}}
 
-\item{...}{other args to pass along to .f}
+\item{...}{other args passed along to \code{.f}}
 }
 \value{
-reactive that returns the expression
+\code{shiny::\link[shiny]{reactive}} that returns \code{x}, or
+  \code{x()}, if \code{x} is reactive
 }
 \description{
-combines handling of reactive and validating the contents
+Using this function at the start of your Shiny module
+allows you to call your modules using arguments that may or may
+not be reactive.
+}
+\details{
+This function does three things, but these things are associated
+as to form a pattern that merits its own function. For a given expression \code{x}:
+
+\enumerate{
+  \item{if \code{x} is reactive, set \code{y <- x()};
+    if \code{x} is not reactive, set \code{y <- x}}
+  \item{validate \code{y}, using \code{shiny::\link[shiny]{validate}} and
+    \code{shiny::\link[shiny]{need}} with \code{.f}, \code{message},
+    \code{label}, and \code{...}}
+  \item{return \code{shiny::\link[shiny]{reactive}(y)}
+    to use later in your module}
+}
+}
+\examples{
+library("shiny")
+
+# module function
+summary_server <- function(input, output, session, df){
+
+  rct_df <- reactive_validate(df, is.data.frame)
+
+  rct_summary <- reactive(summary(rct_df()))
+
+  rct_summary
+}
+
+# server function
+shinyServer(function(input, output, session){
+
+  # either of these constructions will work
+
+  df <- mtcars
+  rct_summary <- callModule(summary_server, "summary", df)
+
+  rct_df <- reactive(mtcars)
+  rct_summary <- callModule(summary_server, "summary", rct_df)
+
+})
+
 }
 

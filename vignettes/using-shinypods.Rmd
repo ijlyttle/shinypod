@@ -17,7 +17,7 @@ cat_r_file <- function(file){
 
 Shiny modules make it much easier to design and build complex shiny apps. 
 
-Imagine that you are designing an app that requires the user to upload a csv file to be parsed into a data frame. You will wish to use the data frame elsewhere in the app. Instead of writing the parser  from scratch, you can use a set of **shinypod** functions in your app.
+Imagine that you are designing an app that requires the user to upload a csv file to be parsed into a data frame. You will wish to use the data frame elsewhere in the app. Instead of writing the parser from scratch, you can use a set of **shinypod** functions in your app.
 
 Shinypod is simply an implementaton of a set of design guidelines to allow you to use, remix, and even build your own shiny modules. An advantage of using such guidelines is that we can all use each others' shinypods more quickly and reliably.
 
@@ -41,15 +41,13 @@ cat_r_file(system.file("shiny", "read_delim", "server.R", package = "shinypod"))
 
 For this implementation we call upon three functions.
 
-- `read_delim_sidebar_side()`
-- `read_delim_sidebar_main()`
-- `read_delim_server()`
+- `read_delim_sb_side()`
+- `read_delim_sb_main()`
+- `read_delim_sb_server()`
 
-The first two functions each return a named `shiny::tagList` of UI elements that can be used in a sidebar layout. The side panel contains the inputs, and the main panel contains the outputs.
+The first two functions each return a named `shiny::tagList` of UI elements that can be used in a sidebar layout. The side panel contains the inputs, and the main panel contains the outputs. We will use this as a general rule, but recognize that there are situations where you may have some inputs in the main panel, or that some elements may serve as both input and output.
 
-Other UI arrangements are possible; you are referred to the "remixing-shinypods" vignette.
-
-The third function is used in the server function to return a reactive element. This reactive returns the parsed dataframe. 
+The third function is used in the server function to return a reactive function. This reactive returns the parsed dataframe. 
 
 To use all three, all you have to do is call each of the three functions using the same `id`, in this case `"csv"` - this is to keep the shiny namespace tidy.
 
@@ -75,11 +73,10 @@ And a `server.R` file:
 cat_r_file(system.file("shiny", "read_delim_dygraph", "server.R", package = "shinypod"))
 ```
 
-
 A few things to note:
 
 - we use a different namespace id for the read_delim pod (`"csv"`) as for the dygraph pod (`"dyg"`).
-- we supply the reactive returned by the `read_delim_server()` function as an argument to the `dygraph_server()` function. This is how the data is moved around.
+- we supply the reactive returned by the `read_delim_sb_server()` function as an argument to the `dygraph_server()` function. This is how the data is moved around.
 - the `dygraph_server()` function returns a reactive that returns a dygraph. We use this to build the output for the app. Note also that the dygraph shinypod returns a basic dygraph; we can use functions from the dygraphs package to customize it.
 
 If you like, try out the [deployed app](https://ijlyttle.shinyapps.io/read_delim_dygraph/).

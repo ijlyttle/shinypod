@@ -1,0 +1,9 @@
+templates:
+  params:
+    bootswatch: sandstone
+
+reference:
+- title: "Utilities"
+  desc: Helper functions for shiny modules
+  contents:
+    - reactive_validate

@@ -1,4 +1,4 @@
-# shinypod 0.0.99
+# shinypod 0.0.99.9100
 
 ## Warning
 
@@ -28,11 +28,15 @@ devtools::install_github("ijlyttle/shinypod")
 
 ## Philosophy
 
-For each module foo, we have fundamental functions: `foo_ui_input()`, `foo_ui_output()`, possibly `foo_ui_misc()`, and `foo_server()`. The fundamental UI functions each return a named `shiny::tagList`; the server function is called by `shiny::callModule`.
+For a shiny module, we propose two layers of functions: (1) a fundamental layer that concerns itself with the inputs, outputs, and the return values from the server module, (2) a presentation layer that arranges the inputs and outputs according to some framework. For this package, for each "pod" there is a set of presentation functions based on the sidebar layout.
 
-For each module foo, we also have a couple of functions that return ui arrangements for a sidebar layout: `foo_ui_sidebar_side()` and `foo_ui_sidebar_main()`. These functions rely on the fundamental UI functions. 
+For each module `foo`, we have fundamental functions: `foo_ui()` and `foo_server()`. In the fundamental layer, we are concerned with returning a result, and with 
 
-Each of these functions has an associated argument `id`, which is used to keep orderly the shiny namespace.
+For each module `foo`, we also have a display functions, based on a sidebar layout: `foo_sb_side()`, `foo_sb_main()`, and `foo_sb_server()`. These functions rely on the fundamental functions. 
+
+As a developer, if the sidebar functions work for you, you would have no reason to call the fundamental functions directly.
+
+Each of the ui functions has an associated argument `id`, which is used to keep the shiny namespace orderly.
 
 ## Examples
 
@@ -52,8 +56,8 @@ app <- shinyApp(
       fluidPage(
         useShinyjs(),
         sidebarLayout(
-          sidebarPanel(read_delim_sidebar_side("read_csv")),
-          mainPanel(read_delim_sidebar_main("read_csv"))
+          sidebarPanel(read_delim_sb_side("read_csv")),
+          mainPanel(read_delim_sb_main("read_csv"))
         )
       )
     )  
@@ -61,7 +65,7 @@ app <- shinyApp(
   server = {
     shinyServer(function(input, output, session) {
     
-      rct_data <- callModule(read_delim_server, id = "read_csv")
+      rct_data <- callModule(read_delim_sb_server, id = "read_csv")
     
       observe(print(rct_data()))
     })  

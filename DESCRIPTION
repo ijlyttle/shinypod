@@ -4,8 +4,8 @@ Title: Reusable shiny modules
 Version: 0.0.99.9100
 Authors@R: c(
     person(given = "Ian", family = "Lyttle", email = "ian.lyttle@schneider-electric.com", role = c("aut", "cre", "cph")),
-    person(family = "Schneider Electric", role = c("cph", "fnd")),
-    person(given = "Alex", family = "Shum", email = "alex@ALShum.com", role = c("aut"))
+    person(given = "Alex", family = "Shum", email = "alex@ALShum.com", role = c("aut")),
+    person(family = "Schneider Electric", role = c("cph", "fnd"))
   )
 URL: https://github.com/ijlyttle/shinypod
 BugReports: https://github.com/ijlyttle/shinypod/issues

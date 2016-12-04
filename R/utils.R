@@ -21,98 +21,16 @@ pre_scroll_vert <- function(...){
   )
 }
 
-# ' Sets the timezone of all time-based columns in a dataframe
-# '
-# ' @param data  dataframe
-# ' @param tz    timezone, an Olson timezone or "UTC" (default)
-# '
-# ' @return dataframe
-# '
-# ' @examples
-# ' df_with_tz(wx_ames, tz = "UTC")
-# '
-# ' @export
-#
-# df_with_tz <- function(data, tz = "UTC"){
-#
-#   .Deprecated(new = "lubridate::with_tz", package = "shinypod")
-#   data <- lubridate::with_tz(time = data, tzone = tz)
-#
-#   data
-# }
+sp_result <- function(){}
 
-# returns TRUE if the dataframe parsed using the text has any POSIXct columns
-# not parsed from ISO-8601
-#
-# detects if any time columns in dataframe
-#
-# @param txt character, text used to make the dataframe
-# @param delim character, delimiter
-#
-# @return logical, indicating if there are any non ISO-8601 time columns
-#
-df_has_time_non_8601 <- function(txt, delim){
+sp_state <- function(){}
 
-  df <- readr::read_delim(txt, delim = delim)
+sp_input <- function(){}
 
-  has_posixct <- (length(df_names_inherits(df, "POSIXct")))
+sp_output <- function(){}
 
-  if (has_posixct) {
+sp_misc <- function(){}
 
-    # identify time columns of dataframe
-    col_sum <- lapply(df, dplyr::type_sum)
-    col_sum <- unlist(col_sum)
-
-    # turn this into a col_types specification
-    col_types <- ifelse(col_sum == "dttm", "c", "_")
-    col_types <- paste0(col_types, collapse = "")
-
-    # parse the text into character
-    df_txt <- readr::read_delim(txt, delim = delim, col_types = col_types)
-
-    # put into a matrix (limit to first 1000 rows)
-    mat_txt <- as.matrix(utils::head(df_txt, 1000))
-
-    # test for iso_8601 pattern
-    all_8601 <- all(is_time_8601(mat_txt), na.rm = TRUE)
-
-    x <- !all_8601
-  } else {
-    x <- FALSE
-  }
-
-  x
-}
-
-# detects if a character string is in ISO-8601 format
-is_time_8601 <- function(x){
-
-  # \\d{4}    exactly 4 digits
-  # -?        optional "-"
-  # \\d{2}    exactly 2 digits
-  # -?        optional "-"
-  # \\d{2}    exactly 2 digits
-  regex_8601_date <- "\\d{4}-?\\d{2}-?\\d{2}"
-
-  # \\d{2}       exactly 2 digits
-  # (:?\\d{2})?  optional (optional ":", exactly 2 digits)
-  # (:?\\d{2})?  optional (optional ":", exactly 2 digits)
-  # (\\.\\d{3})? optional (".", exactly 3 digits)
-  regex_8601_time <- "\\d{2}(:?\\d{2})?(:?\\d{2})?(\\.\\d{3})?"
-
-  # Z                       "Z"
-  # |                       or
-  # ([+-]\\d{2}(:?\\d{2})?) (one of "+,-", exactly 2 digits,
-  #                          optional (optional ":", exactly 2 digits))
-  regex_8601_zone <- "Z|([+-]\\d{2}(:?\\d{2})?)"
-
-  # ^         beginning of string
-  # [T ]      "T" or " "
-  # $         end of string
-  regex_8601 <- paste0("^", regex_8601_date, "[T ]", regex_8601_time, regex_8601_zone, "$")
-
-  stringr::str_detect(x, regex_8601)
-}
 
 #' Get the names of all the columns of the dataframe
 #' that inherit from the supplied class name
@@ -217,89 +135,6 @@ observe_class_swap <- function(id, expr, env = parent.frame(), quoted = FALSE){
 
 }
 
-#' use input and result to generate message and class of status
-#'
-#' The argument \code{status} shall be a list with two members: \code{input} and \code{result}.
-#' Each of those lists shall have components \code{index}, \code{is_valid}, and \code{message}.
-#'
-#' This return value is a list with members \code{class} and \code{message}. The \code{class} can be used by
-#' \link{observe_class_swap} to change the appearance of an output. The \code{message} can be used as the
-#' text displayed by the output.
-#'
-#' @param status  list with components \code{input} and \code{result}
-#'
-#' @return list with components \code{class} and \code{message}
-#' @export
-#
-status_content <- function(status){
-
-  if (shiny::is.reactivevalues(status)) {
-    status <- shiny::reactiveValuesToList(status)
-  }
-
-  # print(status)
-
-  is_danger <-
-    identical(status$result$is_valid, FALSE) &&
-    identical(status$result$index, status$input$index)
-
-  is_warning <- identical(status$input$is_valid, FALSE)
-
-  is_info <-
-    !is.null(status$result$is_valid) &&
-    !identical(status$input$index, status$result$index)
-
-  is_success <- identical(status$result$is_valid, TRUE)
-
-  # print(paste("is_danger:", is_danger))
-  # print(paste("is_warning:", is_warning))
-  # print(paste("is_info:", is_info))
-  # print(paste("is_success:", is_success))
-
-  if (is_danger) {
-    class <- "alert-danger"
-    message <- status$result$message
-  } else if (is_warning) {
-    class <- "alert-warning"
-    message <- status$input$message
-  } else if (is_info) {
-    class <- "alert-info"
-    message <- paste("Inputs have changed since generation of results",
-                     status$input$message,
-                     sep = "\n\n")
-  } else if (is_success){
-    class <- "alert-success"
-    message <- status$result$message
-  } else {
-    class <- NULL
-    message <- status$input$message
-  }
-
-  list(class = class, message = message)
-}
-
-#' checks to see that an expression passes shiny validation
-#'
-#' Useful if you need to return \code{TRUE}/\code{FALSE} on the validity of a
-#' shiny reactive expression
-#'
-#' @param ... expression to pass to \code{shiny::req()}
-#'
-#' @return logical, returns \code{TRUE} if shiny validation passes
-#' @export
-#
-isValidy <- function(...){
-  result <- tryCatch(
-    expr = {
-      shiny::req(...)
-      TRUE
-    },
-    error = function(e){FALSE}
-  )
-
-  result
-}
-
 #' convert a tbl_df printout into an html fragment
 #'
 #' @param data, data.frame
@@ -357,7 +192,8 @@ text_html <- function(text, n = 6){
 #'
 #' @return \code{x}, if not reactive, \code{x()} if reactive
 #' @export
-#
+#' @keywords internal
+#'
 static <- function(x){
 
   if (shiny::is.reactive(x)) {
@@ -369,26 +205,73 @@ static <- function(x){
   static_x
 }
 
-#' combines handling of reactive and validating the contents
+#' Validates inputs for shiny modules, returns reactive
 #'
-#' @param  expr   expression, or reactive that returns an expressiondo
+#' Using this function at the start of your Shiny module
+#' allows you to call your modules using arguments that may or may
+#' not be reactive.
+#'
+#' This function does three things, but these things are associated
+#' as to form a pattern that merits its own function. For a given expression \code{x}:
+#'
+#' \enumerate{
+#'   \item{if \code{x} is reactive, set \code{y <- x()};
+#'     if \code{x} is not reactive, set \code{y <- x}}
+#'   \item{validate \code{y}, using \code{shiny::\link[shiny]{validate}} and
+#'     \code{shiny::\link[shiny]{need}} with \code{.f}, \code{message},
+#'     \code{label}, and \code{...}}
+#'   \item{return \code{shiny::\link[shiny]{reactive}(y)}
+#'     to use later in your module}
+#' }
+#'
+#' @param x       expression, or  \code{shiny::\link[shiny]{reactive}}
+#'   that returns an expression
 #' @param .f      function that takes a single arg (object), returns TRUE if valid
-#' @param message passed to need
-#' @param label   passed to need
-#' @param ...     other args to pass along to .f
+#' @param message character, passed to \code{shiny::\link[shiny]{need}}
+#' @param label   character, passed to \code{shiny::\link[shiny]{need}}
+#' @param ...     other args passed along to \code{.f}
 #'
-#' @return reactive that returns the expression
+#' @return \code{shiny::\link[shiny]{reactive}} that returns \code{x}, or
+#'   \code{x()}, if \code{x} is reactive
+#' @examples
+#' library("shiny")
+#'
+#' # module function
+#' summary_server <- function(input, output, session, df){
+#'
+#'   rct_df <- reactive_validate(df, is.data.frame)
+#'
+#'   rct_summary <- reactive(summary(rct_df()))
+#'
+#'   rct_summary
+#' }
+#'
+#' # server function
+#' shinyServer(function(input, output, session){
+#'
+#'   # either of these constructions will work
+#'
+#'   df <- mtcars
+#'   rct_summary <- callModule(summary_server, "summary", df)
+#'
+#'   rct_df <- reactive(mtcars)
+#'   rct_summary <- callModule(summary_server, "summary", rct_df)
+#'
+#' })
+#'
 #' @export
 #
-reactive_validate <- function(expr, .f = identity, message, label = NULL, ...){
+reactive_validate <- function(x, .f = identity, message, label = NULL, ...){
 
   shiny::reactive(
     {
-      static_x <- static(expr)
+      static_x <- static(x)
 
-      shiny::validate(
-        shiny::need(do.call(.f, list(static_x, ...)), message, label)
-      )
+      if (!is.null(.f)){
+        shiny::validate(
+          shiny::need(do.call(.f, list(static_x, ...)), message, label)
+        )
+      }
 
       static_x
     }
