@@ -8,10 +8,10 @@ shinyUI(
     titlePanel("Upload Text"),
     sidebarLayout(
       sidebarPanel(
-        upload_text_sidebar_side("upload")
+        upload_text_sb_side("upload")
       ),
       mainPanel(
-        upload_text_sidebar_main("upload")
+        upload_text_sb_main("upload")
       )
     )
   )

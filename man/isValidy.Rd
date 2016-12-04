@@ -4,16 +4,33 @@
 \alias{isValidy}
 \title{Evaluates the validity of a reactive expression}
 \usage{
-isValidy(...)
+isValidy(x)
 }
 \arguments{
-\item{...}{expression to pass to \code{shiny::req()}}
+\item{x}{\code{shiny::\link[shiny]{reactive}} expression
+to be evaluated by \code{shiny::\link[shiny]{req}}}
 }
 \value{
-logical, returns \code{TRUE} if shiny validation passes
+logical, indicating the validity of \code{x}
 }
 \description{
-Useful if you need to return \code{TRUE}/\code{FALSE} on the validity of a
-shiny reactive expression
+The difference between this function and \code{shiny::\link[shiny]{isTruthy}}
+is that this function will always return a (\code{TRUE}/\code{FALSE}),
+rather than get hung-up on an invalid reactive.
+(test this ASAP to make sure I am not mis-remembering)
+}
+\details{
+This function can be useful for use with
+\code{shinyjs::\link[shinyjs]{toggleState}} and
+\code{shinyjs::\link[shinyjs]{toggle}}, to control the state or visibility
+of html elements according to the validity of some reactive expression.
+}
+\examples{
+\dontrun{
+library("shinyjs")
+
+# code within a Shiny server function
+toggle(id = "my_control", condition = isValidy(rct_data()))
+}
 }
 

@@ -81,23 +81,40 @@
     </div>
 
     
-    <p>Useful if you need to return <code>TRUE</code>/<code>FALSE</code> on the validity of a
-shiny reactive expression</p>
+    <p>The difference between this function and <code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/req'>isTruthy</a></code>
+is that this function will always return a (<code>TRUE</code>/<code>FALSE</code>),
+rather than get hung-up on an invalid reactive.
+(test this ASAP to make sure I am not mis-remembering)</p>
     
 
-    <pre><span class='fu'>isValidy</span>(<span class='no'>...</span>)</pre>
+    <pre><span class='fu'>isValidy</span>(<span class='no'>x</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>...</dt>
-      <dd>expression to pass to <code>shiny::req()</code></dd>
+      <dt>x</dt>
+      <dd><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/reactive'>reactive</a></code> expression
+to be evaluated by <code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/req'>req</a></code></dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>logical, returns <code>TRUE</code> if shiny validation passes</p>
+    <p>logical, indicating the validity of <code>x</code></p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function can be useful for use with
+<code>shinyjs::<a href='http://www.rdocumentation.org/packages/shinyjs/topics/stateFuncs'>toggleState</a></code> and
+<code>shinyjs::<a href='http://www.rdocumentation.org/packages/shinyjs/topics/visibilityFuncs'>toggle</a></code>, to control the state or visibility
+of html elements according to the validity of some reactive expression.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
+<span class='co'># library("shinyjs")</span>
+<span class='co'># </span>
+<span class='co'># # code within a Shiny server function</span>
+<span class='co'># toggle(id = "my control", condition = isValidy(rct_data()))</span>
+<span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -105,7 +122,11 @@ shiny reactive expression</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

@@ -1,13 +1,23 @@
 
-sp_result <- function(){}
+sp_rct_result <- function(x){
+  x$rct_result
+}
 
-sp_state <- function(){}
+sp_rct_state <- function(x){
+  x$rct_state
+}
 
-sp_ui_input <- function(){}
+sp_ui_input <- function(x){
+  x$input
+}
 
-sp_ui_output <- function(){}
+sp_ui_output <- function(x){
+  x$output
+}
 
-sp_ui_misc <- function(){}
+sp_ui_misc <- function(x){
+  x$misc
+}
 
 sp_ui <- function(){
 

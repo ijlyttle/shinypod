@@ -1,49 +1,29 @@
 
-upload_text_sidebar_side <- function(id){
+#' @export
+upload_text_sb_side <- function(id){
 
-  ns <- shiny::NS(id)
-
-  sidebar_elems <- upload_text_ui_input(id)
-
-  sidebar_elems
+  sp_ui_input(upload_text_ui(id))
 }
 
+#' @export
+upload_text_sb_main <- function(id){
 
-upload_text_sidebar_main <- function(id){
-
-  main_elems <- upload_text_ui_output(id)
-
-  main_elems
+  sp_ui_output(upload_text_ui(id))
 }
 
-upload_text_sidebar_server <- function(
-  input, output, session,
-  data
-){
+#' @export
+upload_text_sb_server <- function(input, output, session){
 
   ## reactives ##
   ###############
 
-  list_rct <- upload_text_server(input, output, session, data)
+  upload_text <- upload_text_server(input, output, session)
 
-  rct_data_new <- list_rct$rct_result
-  rct_input_state <- list_rct$rct_input_state
-  rct_status_content <- list_rct$rct_status_content
+  rct_text <- sp_rct_result(upload_text)
+  rct_state <- sp_rct_state(upload_text)
 
   ## observers ##
   ###############
 
-  # shows and hides controls based on the availabilty and nature of data
-  shiny::observe({
-    # outputs
-    shinyjs::toggle(
-      "data_preview",
-      condition = shinypod::isValidy(rct_data_new())
-    )
-  })
-
-  # change the class of the status window
-  shinypod::observe_class_swap(id = "status", rct_status_content()$class)
-
-  rct_data_new
+  rct_text
 }

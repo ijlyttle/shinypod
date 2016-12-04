@@ -1,19 +1,34 @@
 
 #' Evaluates the validity of a reactive expression
 #'
-#' Useful if you need to return \code{TRUE}/\code{FALSE} on the validity of a
-#' shiny reactive expression
+#' The difference between this function and \code{shiny::\link[shiny]{isTruthy}}
+#' is that this function will always return a (\code{TRUE}/\code{FALSE}),
+#' rather than get hung-up on an invalid reactive.
+#' (test this ASAP to make sure I am not mis-remembering)
 #'
-#' @param ... expression to pass to \code{shiny::req()}
+#' This function can be useful for use with
+#' \code{shinyjs::\link[shinyjs]{toggleState}} and
+#' \code{shinyjs::\link[shinyjs]{toggle}}, to control the state or visibility
+#' of html elements according to the validity of some reactive expression.
 #'
-#' @return logical, returns \code{TRUE} if shiny validation passes
+#' @param x \code{shiny::\link[shiny]{reactive}} expression
+#'   to be evaluated by \code{shiny::\link[shiny]{req}}
+#'
+#' @return logical, indicating the validity of \code{x}
+#' @examples
+#' \dontrun{
+#' library("shinyjs")
+#'
+#' # code within a Shiny server function
+#' toggle(id = "my_control", condition = isValidy(rct_data()))
+#' }
 #' @export
-#
-isValidy <- function(...){
+#'
+isValidy <- function(x){
 
   result <- tryCatch(
     expr = {
-      shiny::req(...)
+      shiny::req(x)
       TRUE
     },
     error = function(e){FALSE}
@@ -21,7 +36,6 @@ isValidy <- function(...){
 
   result
 }
-
 
 #' Get the value of a reactive function, if reactive
 #'
