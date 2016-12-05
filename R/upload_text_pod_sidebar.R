@@ -28,14 +28,7 @@ upload_text_sb_server <- function(input, output, session){
   shiny::observeEvent(
     rct_notification(),
     handlerExpr = {
-      if (!is.null(rct_notification())){
-        print(rct_notification())
-
-        shiny::showNotification(
-          ui = rct_notification()$ui,
-          type = rct_notification()$type
-        )
-      }
+      do.call(shiny::showNotification, rct_notification())
     }
   )
 
