@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Evaluates the validity of a reactive expression — isValidy • shinypod</title>
+<title>Pipe — %&gt;% • shinypod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,56 +77,28 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Evaluates the validity of a reactive expression</h1>
+    <h1>Pipe</h1>
     </div>
 
     
-    <p>The difference between this function and <code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/req'>isTruthy</a></code>
-is that this function will always return a (<code>TRUE</code>/<code>FALSE</code>),
-rather than get hung-up on an invalid reactive.
-(test this ASAP to make sure I am not mis-remembering)</p>
+    <p>Like dplyr, bsplus also uses the pipe function, <code>%&gt;%</code> to turn
+function composition into a series of imperative statements.</p>
     
 
-    <pre><span class='fu'>isValidy</span>(<span class='no'>x</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>x</dt>
-      <dd><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/reactive'>reactive</a></code> expression
-to be evaluated by <code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/req'>req</a></code></dd>
+      <dt>lhs, rhs</dt>
+      <dd>An object and a function to apply to it</dd>
     </dl>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>logical, indicating the validity of <code>x</code></p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This function can be useful for use with
-<code>shinyjs::<a href='http://www.rdocumentation.org/packages/shinyjs/topics/stateFuncs'>toggleState</a></code> and
-<code>shinyjs::<a href='http://www.rdocumentation.org/packages/shinyjs/topics/visibilityFuncs'>toggle</a></code>, to control the state or visibility
-of html elements according to the validity of some reactive expression.</p>
-    
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># library("shinyjs")</span>
-<span class='co'># </span>
-<span class='co'># # code within a Shiny server function</span>
-<span class='co'># toggle(id = "my_control", condition = isValidy(rct_data()))</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+                </ul>
 
   </div>
 </div>

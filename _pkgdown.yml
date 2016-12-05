@@ -9,3 +9,11 @@ reference:
   contents:
     - reactive_validate
     - isValidy
+
+- title: "Utilities - HTML"
+  desc: These functions help you to make HTML fragments to use with the
+    `shiny::renderUI()` function. You might use them to
+  contents:
+    - tibble_html
+    - text_html
+    - pre_scroll

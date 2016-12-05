@@ -29,7 +29,8 @@ Imports:
     purrr,
     whisker,
     xts,
-    utils
+    utils,
+    tibble
 Suggests:
     testthat,
     knitr,

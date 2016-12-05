@@ -30,8 +30,7 @@ upload_text_ui <- function(id){
   ui
 }
 
-upload_text_server <- function(input, output, session,
-                               data){
+upload_text_server <- function(input, output, session){
 
   ns <- session$ns
 
@@ -42,11 +41,14 @@ upload_text_server <- function(input, output, session,
   ######################
 
   rctval <- shiny::reactiveValues(
-    text = NULL
+    text = NULL,
+    notification = NULL
   )
 
   ## reactive conductors ##
   #########################
+
+  rct_text <- shiny::reactive(rctval$text)
 
   rct_state <-
     shiny::reactive({
@@ -55,7 +57,7 @@ upload_text_server <- function(input, output, session,
       )
     })
 
-  rct_text <- shiny::reactive(rctval$text)
+  rct_notification <- shiny::reactive(rctval$notification)
 
   ## input-update observers ##
   ############################
@@ -69,18 +71,35 @@ upload_text_server <- function(input, output, session,
     handlerExpr = {
       # put the result in a reactive source
       rctval$text <- readr::read_file(input$file$datapath)
-      print(rctval$text)
+
+      str_size <-
+        input$file$size %>%
+        structure(class = "object_size") %>%
+        format(units = "auto")
+
+      rctval$notification <- list(
+        ui = paste(
+          "Uploaded", input$file$name,
+          paste0("(", str_size, ")")
+        ),
+        type = "message"
+      )
     }
   )
 
   ## outputs ##
   #############
 
-  output$text_preview <- shiny::renderUI(shinypod::text_html(rct_text()))
+  output$text_preview <-
+    shiny::renderUI(
+      rct_text() %>%
+      shinypod::text_html()
+    )
 
   # returns a list
   list(
     rct_result = rct_text,
-    rct_state = rct_state
+    rct_state = rct_state,
+    rct_notification = rct_notification
   )
 }

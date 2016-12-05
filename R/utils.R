@@ -7,6 +7,10 @@ sp_rct_state <- function(x){
   x$rct_state
 }
 
+sp_rct_notification <- function(x){
+  x$rct_notification
+}
+
 sp_ui_input <- function(x){
   x$input
 }

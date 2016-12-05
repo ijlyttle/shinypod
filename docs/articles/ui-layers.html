@@ -58,37 +58,69 @@
 <h3 class="hasAnchor"><html><body><a href="#convention" class="anchor"> </a></body></html>Convention</h3>
 <p>The functions <code><a href="../reference/dygraph_sidebar_side.html">dygraph_sidebar_side()</a></code> and <code><a href="../reference/dygraph_sidebar_side.html">dygraph_sidebar_main()</a></code> draw upon the elemental ui functions: <code><a href="../reference/dygraph_ui_input.html">dygraph_ui_input()</a></code>, <code><a href="../reference/dygraph_ui_output.html">dygraph_ui_output()</a></code> and <code><a href="../reference/dygraph_ui_misc.html">dygraph_ui_misc()</a></code>.</p>
 <p>Let&rsquo;s look at the code for <code><a href="../reference/dygraph_ui_input.html">dygraph_ui_input()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">function (id) 
-{
-    ns &lt;-<span class="st"> </span>shiny::<span class="kw">NS</span>(id)
-    ui_input &lt;-<span class="st"> </span>shiny::<span class="kw">tagList</span>()
-    ui_input$time &lt;-<span class="st"> </span>shiny::<span class="kw">selectizeInput</span>(<span class="dt">inputId =</span> <span class="kw">ns</span>(<span class="st">"time"</span>), 
-        <span class="dt">label =</span> <span class="st">"Time"</span>, <span class="dt">choices =</span> <span class="ot">NULL</span>, <span class="dt">selected =</span> <span class="ot">NULL</span>, <span class="dt">multiple =</span> <span class="ot">FALSE</span>)
-    ui_input$y1 &lt;-<span class="st"> </span>shiny::<span class="kw">selectizeInput</span>(<span class="dt">inputId =</span> <span class="kw">ns</span>(<span class="st">"y1"</span>), 
-        <span class="dt">label =</span> <span class="st">"Y1 axis"</span>, <span class="dt">choices =</span> <span class="ot">NULL</span>, <span class="dt">selected =</span> <span class="ot">NULL</span>, <span class="dt">multiple =</span> <span class="ot">TRUE</span>)
-    ui_input$y2 &lt;-<span class="st"> </span>shiny::<span class="kw">selectizeInput</span>(<span class="dt">inputId =</span> <span class="kw">ns</span>(<span class="st">"y2"</span>), 
-        <span class="dt">label =</span> <span class="st">"Y2 axis"</span>, <span class="dt">choices =</span> <span class="ot">NULL</span>, <span class="dt">selected =</span> <span class="ot">NULL</span>, <span class="dt">multiple =</span> <span class="ot">TRUE</span>)
-    ui_input
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">function(id){
+
+  ns &lt;-<span class="st"> </span>shiny::<span class="kw">NS</span>(id)
+
+  ui_input &lt;-<span class="st"> </span>shiny::<span class="kw">tagList</span>()
+
+  ui_input$time &lt;-
+<span class="st">    </span>shiny::<span class="kw">selectizeInput</span>(
+      <span class="dt">inputId =</span> <span class="kw">ns</span>(<span class="st">"time"</span>),
+      <span class="dt">label =</span> <span class="st">"Time"</span>,
+      <span class="dt">choices =</span> <span class="ot">NULL</span>,
+      <span class="dt">selected =</span> <span class="ot">NULL</span>,
+      <span class="dt">multiple =</span> <span class="ot">FALSE</span>
+    )
+
+  ui_input$y1 &lt;-
+<span class="st">    </span>shiny::<span class="kw">selectizeInput</span>(
+      <span class="dt">inputId =</span> <span class="kw">ns</span>(<span class="st">"y1"</span>),
+      <span class="dt">label =</span> <span class="st">"Y1 axis"</span>,
+      <span class="dt">choices =</span> <span class="ot">NULL</span>,
+      <span class="dt">selected =</span> <span class="ot">NULL</span>,
+      <span class="dt">multiple =</span> <span class="ot">TRUE</span>
+    )
+
+  ui_input$y2 &lt;-
+<span class="st">    </span>shiny::<span class="kw">selectizeInput</span>(
+      <span class="dt">inputId =</span> <span class="kw">ns</span>(<span class="st">"y2"</span>),
+      <span class="dt">label =</span> <span class="st">"Y2 axis"</span>,
+      <span class="dt">choices =</span> <span class="ot">NULL</span>,
+      <span class="dt">selected =</span> <span class="ot">NULL</span>,
+      <span class="dt">multiple =</span> <span class="ot">TRUE</span>
+    )
+
+  ui_input
 }
 &lt;environment:<span class="st"> </span>namespace:shinypod&gt;</code></pre></div>
 <p>We see that this returns a named <code>tagList</code> of HTML elements.</p>
 <p>Note that we use the <code>shinyjs::hidden()</code> function to initally hide the inputs. We will use the server logic to show the controls when there is data available.</p>
 <p>Similarly for <code><a href="../reference/dygraph_ui_output.html">dygraph_ui_output()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">function (id) 
-{
-    ns &lt;-<span class="st"> </span>shiny::<span class="kw">NS</span>(id)
-    ui_output &lt;-<span class="st"> </span>shiny::<span class="kw">tagList</span>()
-    ui_output$status &lt;-<span class="st"> </span>shiny::<span class="kw">htmlOutput</span>(<span class="dt">outputId =</span> <span class="kw">ns</span>(<span class="st">"status"</span>), 
-        <span class="dt">container =</span> shinypod::pre_scroll)
-    ui_output
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">function(id){
+
+  ns &lt;-<span class="st"> </span>shiny::<span class="kw">NS</span>(id)
+
+  ui_output &lt;-<span class="st"> </span>shiny::<span class="kw">tagList</span>()
+
+  ui_output$status &lt;-
+<span class="st">    </span>shiny::<span class="kw">htmlOutput</span>(
+      <span class="dt">outputId =</span> <span class="kw">ns</span>(<span class="st">"status"</span>),
+      <span class="dt">container =</span> shinypod::pre_scroll
+    )
+
+  ui_output
 }
 &lt;environment:<span class="st"> </span>namespace:shinypod&gt;</code></pre></div>
 <p>This returns an empty <code>tagList</code>, but we keep the function for completeness.</p>
 <p>Finally for <code><a href="../reference/dygraph_ui_misc.html">dygraph_ui_misc()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">function (id) 
-{
-    ui_misc &lt;-<span class="st"> </span>shiny::<span class="kw">tagList</span>()
-    ui_misc
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">function(id){
+
+  <span class="co"># this is for elements that are neither inputs nor outputs</span>
+
+  ui_misc &lt;-<span class="st"> </span>shiny::<span class="kw">tagList</span>()
+
+  ui_misc
 }
 &lt;environment:<span class="st"> </span>namespace:shinypod&gt;</code></pre></div>
 </div>
@@ -99,18 +131,21 @@
 <ul><li><code><a href="../reference/dygraph_sidebar_side.html">dygraph_sidebar_side()</a></code></li>
 <li><code><a href="../reference/dygraph_sidebar_side.html">dygraph_sidebar_main()</a></code></li>
 </ul><p>Here&rsquo;s <code><a href="../reference/dygraph_sidebar_side.html">dygraph_sidebar_side()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">function (id) 
-{
-    ns &lt;-<span class="st"> </span>shiny::<span class="kw">NS</span>(id)
-    sidebar_elems &lt;-<span class="st"> </span><span class="kw"><a href="../reference/dygraph_ui_input.html">dygraph_ui_input</a></span>(id)
-    sidebar_elems
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">function(id){
+
+  ns &lt;-<span class="st"> </span>shiny::<span class="kw">NS</span>(id)
+
+  sidebar_elems &lt;-<span class="st"> </span><span class="kw"><a href="../reference/dygraph_ui_input.html">dygraph_ui_input</a></span>(id)
+
+  sidebar_elems
 }
 &lt;environment:<span class="st"> </span>namespace:shinypod&gt;</code></pre></div>
 <p>Here&rsquo;s <code><a href="../reference/dygraph_sidebar_side.html">dygraph_sidebar_main()</a></code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">function (id) 
-{
-    main_elems &lt;-<span class="st"> </span><span class="kw"><a href="../reference/dygraph_ui_output.html">dygraph_ui_output</a></span>(id)
-    main_elems
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">function(id){
+
+  main_elems &lt;-<span class="st"> </span><span class="kw"><a href="../reference/dygraph_ui_output.html">dygraph_ui_output</a></span>(id)
+
+  main_elems
 }
 &lt;environment:<span class="st"> </span>namespace:shinypod&gt;</code></pre></div>
 <p>These are the functions that you would use - in putting togther a shiny app, I would suggest using these presentation functions.</p>

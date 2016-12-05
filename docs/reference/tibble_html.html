@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>convert a tbl_df printout into an html fragment — tibble_html • shinypod</title>
+<title>Converts dataframe into an HTML fragment — tibble_html • shinypod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,26 +77,64 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>convert a tbl_df printout into an html fragment</h1>
+    <h1>Converts dataframe into an HTML fragment</h1>
     </div>
 
     
-    <p>convert a tbl_df printout into an html fragment</p>
+    <p>This is useful to compose an HTML fragment to put in an output built using
+<code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/renderUI'>renderUI</a></code>. This is a useful way to show the first
+few rows of a dataframe, verbatim.</p>
     
 
-    <pre><span class='fu'>tibble_html</span>(<span class='no'>data</span>)</pre>
+    <pre><span class='fu'>tibble_html</span>(<span class='no'>data</span>, <span class='kw'>n_row</span> <span class='kw'>=</span> <span class='fl'>5</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>data, </dt>
-      <dd>data.frame</dd>
+      <dt>n_row</dt>
+      <dd>numeric, number of rows of <code>df</code> to put into html</dd>
+      <dt>df</dt>
+      <dd>data.frame, to display</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>html fragment</p>
+    <p>chracter, HTML fragment</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <p><code><a href='text_html.html'>text_html</a></code>, <code><a href='pre_scroll.html'>pre_scroll</a></code></p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='st'>"shiny"</span>)
+<span class='fu'>library</span>(<span class='st'>"readr"</span>)
+
+<span class='no'>ui</span> <span class='kw'>&lt;-</span> <span class='fu'>shinyUI</span>(
+
+  <span class='fu'>fluidPage</span>(
+    <span class='fu'>sidebarLayout</span>(
+      <span class='fu'>sidebarPanel</span>(),
+      <span class='fu'>mainPanel</span>(
+        <span class='fu'>htmlOutput</span>(<span class='kw'>outputId</span> <span class='kw'>=</span> <span class='st'>"text_preview"</span>, <span class='kw'>container</span> <span class='kw'>=</span> <span class='no'>pre_scroll</span>)
+      )
+    )
+  )
+)
+
+<span class='no'>server</span> <span class='kw'>&lt;-</span> <span class='fu'>shinyServer</span>(<span class='kw'>function</span>(<span class='no'>input</span>, <span class='no'>output</span>){
+
+  <span class='no'>output</span>$<span class='no'>text_preview</span> <span class='kw'>&lt;-</span>
+    <span class='fu'>renderUI</span>(
+      <span class='fu'>system.file</span>(<span class='st'>"extdata"</span>, <span class='st'>"wx_ames.csv"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"shinypod"</span>) <span class='kw'>%&gt;%</span>
+      <span class='fu'>read_csv</span>() <span class='kw'>%&gt;%</span>
+      <span class='fu'>tibble_html</span>()
+    )
+
+})
+
+<span class='co'>## Not run: ------------------------------------</span>
+<span class='co'># shinyApp(ui = ui, server = server)</span>
+<span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -104,7 +142,11 @@
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+
+      <li><a href="#see-also">See also</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
