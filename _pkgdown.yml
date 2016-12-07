@@ -3,17 +3,43 @@ templates:
     bootswatch: sandstone
 
 reference:
+
+- title: "Module: upload text"
+  desc: Some words here
+  contents:
+  - upload_text_sb_side
+  - upload_text_sb_main
+  - upload_text_sb_server
+
+- title: "Example: fundamental functions"
+  desc: To design your own shinypods, it may be useful to consider the
+    structure of these functions
+  contents:
+  - upload_text_ui
+  - upload_text_server
+
 - title: "Utilities - reactive"
   desc: Some functions that make it a little easier to program
     with reactives
   contents:
-    - reactive_validate
-    - isValidy
+  - reactive_validate
+  - isValidy
 
 - title: "Utilities - HTML"
   desc: These functions help you to make HTML fragments to use with the
-    `shiny::renderUI()` function. You might use them to
+    `shiny::renderUI()` function.
   contents:
-    - tibble_html
-    - text_html
-    - pre_scroll
+  - tibble_html
+  - text_html
+  - pre_scroll
+
+- title: "Utilities - composing shinypods"
+  desc: These functions are used to contsruct shinypods. You will likely not need them to
+    use shinypods.
+  contents:
+  - sp_ui
+  - sp_srv
+
+- title: "Utilities - miscellaneous"
+  contents:
+  - sp_shiny_example

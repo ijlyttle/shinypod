@@ -27,10 +27,10 @@ These are containters for pre-formatted (verbatim) text.
 }
 \details{
 These functions are useful to help build
-\code{shiny::\link[shiny]{htmlOutput}} on the UI-side, to
-display html generated on the server-side using
-\code{shiny::\link[shiny]{renderUI}} with  \code{\link{text_html}}
-or \code{\link{tibble_html}}.
+\code{shiny::\link[shiny]{htmlOutput}} for the UI. To
+gernerate the HTML in your server function, use
+\code{\link{text_html}} or \code{\link{tibble_html}} within
+\code{shiny::\link[shiny]{renderUI}}.
 }
 \examples{
 library("shiny")

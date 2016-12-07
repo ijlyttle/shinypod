@@ -16,7 +16,7 @@ chracter, HTML fragment
 }
 \description{
 This is useful to compose an HTML fragment to put in an output built using
-\code{shiny::\link[shiny]{renderUI}}. This is a useful way to show the first
+\code{shiny::\link[shiny]{renderUI}}. It will use print the first
 few rows of a dataframe, verbatim.
 }
 \examples{

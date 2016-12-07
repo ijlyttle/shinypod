@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Creates HTML container for scrollable pre-formatted text — pre_scroll • shinypod</title>
+<title>Presentation server-function for upload-text module — upload_text_sb_server • shinypod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,77 +77,75 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Creates HTML container for scrollable pre-formatted text</h1>
+    <h1>Presentation server-function for upload-text module</h1>
     </div>
 
     
-    <p>Used as the <code>container</code> argument in <code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/htmlOutput'>htmlOutput</a></code>.
-These are containters for pre-formatted (verbatim) text.</p>
+    <p>This is the server function for a
+sidebar presentation of the upload-text module.</p>
     
 
-    <pre><span class='fu'>pre_scroll</span>(<span class='no'>...</span>)
-
-<span class='fu'>pre_scroll_vert</span>(<span class='no'>...</span>)</pre>
+    <pre><span class='fu'>upload_text_sb_server</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>...</dt>
-      <dd>expression used to fill the body of the containter</dd>
+      <dt>input</dt>
+      <dd><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/shinyServer'>shinyServer</a></code> input object</dd>
+      <dt>output</dt>
+      <dd><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/shinyServer'>shinyServer</a></code> output object</dd>
+      <dt>session</dt>
+      <dd><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/shinyServer'>shinyServer</a></code> session object</dd>
     </dl>
-    
-    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
-
-    <p><a href = 'http://stackoverflow.com/questions/10374171/how-to-make-twitter-bootstraps-pre-blocks-scroll-horizontally'>http://stackoverflow.com/questions/10374171/how-to-make-twitter-bootstraps-pre-blocks-scroll-horizontally</a></p>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><dl class='dl-horizontal'>
-  <dt><code>pre_scroll</code></dt><dd>container with horizontal scroll-bars</dd>
-  <dt><code>pre_scroll_vert</code></dt><dd>container with vertical scroll-bars</dd>
-</dl></p>
+    <p><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/reactive'>reactive</a></code> that returns the
+  character string read from the uploaded file</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>These functions are useful to help build
-<code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/htmlOutput'>htmlOutput</a></code> for the UI. To
-gernerate the HTML in your server function, use
-<code><a href='text_html.html'>text_html</a></code> or <code><a href='tibble_html.html'>tibble_html</a></code> within
-<code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/renderUI'>renderUI</a></code>.</p>
+    <p>The return value is a reactive that returns, as a character string,
+the contents of the uploaded file.</p>
+    <p>All the notifications provided by the foundation server-function,
+<code><a href='upload_text_server.html'>upload_text_server</a></code>, are passed along.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p><code><a href='text_html.html'>text_html</a></code>, <code><a href='tibble_html.html'>tibble_html</a></code></p>
+    <p><code><a href='upload_text_sb_side.html'>upload_text_sb_side</a></code>, <code><a href='upload_text_sb_side.html'>upload_text_sb_main</a></code>,
+  <code><a href='upload_text_server.html'>upload_text_server</a></code></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='st'>"shiny"</span>)
-<span class='fu'>library</span>(<span class='st'>"readr"</span>)
+<span class='fu'>library</span>(<span class='st'>"shinyjs"</span>)
+<span class='fu'>library</span>(<span class='st'>"shinypod"</span>)
+
+<span class='co'># also available by running sp_shiny_example("upload_text")</span>
 
 <span class='no'>ui</span> <span class='kw'>&lt;-</span> <span class='fu'>shinyUI</span>(
-
   <span class='fu'>fluidPage</span>(
+    <span class='fu'>useShinyjs</span>(),
+    <span class='fu'>titlePanel</span>(<span class='st'>"Upload Text"</span>),
     <span class='fu'>sidebarLayout</span>(
-      <span class='fu'>sidebarPanel</span>(),
+      <span class='fu'>sidebarPanel</span>(
+        <span class='fu'><a href='upload_text_sb_side.html'>upload_text_sb_side</a></span>(<span class='st'>"upload"</span>)
+      ),
       <span class='fu'>mainPanel</span>(
-        <span class='fu'>htmlOutput</span>(<span class='kw'>outputId</span> <span class='kw'>=</span> <span class='st'>"text_preview"</span>, <span class='kw'>container</span> <span class='kw'>=</span> <span class='no'>pre_scroll</span>)
+        <span class='fu'><a href='upload_text_sb_side.html'>upload_text_sb_main</a></span>(<span class='st'>"upload"</span>)
       )
     )
   )
 )
 
-<span class='no'>server</span> <span class='kw'>&lt;-</span> <span class='fu'>shinyServer</span>(<span class='kw'>function</span>(<span class='no'>input</span>, <span class='no'>output</span>){
+<span class='no'>server</span> <span class='kw'>&lt;-</span> <span class='fu'>shinyServer</span>(<span class='kw'>function</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>) {
 
-  <span class='no'>output</span>$<span class='no'>text_preview</span> <span class='kw'>&lt;-</span>
-    <span class='fu'>renderUI</span>(
-      <span class='fu'>system.file</span>(<span class='st'>"extdata"</span>, <span class='st'>"wx_ames.csv"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"shinypod"</span>) <span class='kw'>%&gt;%</span>
-      <span class='fu'>read_file</span>() <span class='kw'>%&gt;%</span>
-      <span class='fu'><a href='text_html.html'>text_html</a></span>()
-    )
+  <span class='co'># rct_text is a reactive that can be used elsewhere in a server function</span>
+  <span class='no'>rct_text</span> <span class='kw'>&lt;-</span> <span class='fu'>callModule</span>(<span class='kw'>module</span> <span class='kw'>=</span> <span class='no'>upload_text_sb_server</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='st'>"upload"</span>)
 
 })
 
 <span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># shinyApp(ui = ui, server = server)</span>
+<span class='co'>#   shinyApp(ui = ui, server = server)</span>
 <span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -155,8 +153,6 @@ gernerate the HTML in your server function, use
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#source">Source</a></li>
-
       <li><a href="#value">Value</a></li>
 
       <li><a href="#details">Details</a></li>

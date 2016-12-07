@@ -4,7 +4,7 @@ library("shinypod")
 
 shinyUI(
   fluidPage(
-    useShinyjs(debug = TRUE),
+    useShinyjs(),
     titlePanel("Upload Text"),
     sidebarLayout(
       sidebarPanel(

@@ -4,10 +4,10 @@
 #' These are containters for pre-formatted (verbatim) text.
 #'
 #' These functions are useful to help build
-#' \code{shiny::\link[shiny]{htmlOutput}} on the UI-side, to
-#' display html generated on the server-side using
-#' \code{shiny::\link[shiny]{renderUI}} with  \code{\link{text_html}}
-#' or \code{\link{tibble_html}}.
+#' \code{shiny::\link[shiny]{htmlOutput}} for the UI. To
+#' gernerate the HTML in your server function, use
+#' \code{\link{text_html}} or \code{\link{tibble_html}} within
+#' \code{shiny::\link[shiny]{renderUI}}.
 #'
 #' @param ... expression used to fill the body of the containter
 #'
@@ -71,7 +71,7 @@ pre_scroll_vert <- function(...){
 #' Converts dataframe into an HTML fragment
 #'
 #' This is useful to compose an HTML fragment to put in an output built using
-#' \code{shiny::\link[shiny]{renderUI}}. This is a useful way to show the first
+#' \code{shiny::\link[shiny]{renderUI}}. It will use print the first
 #' few rows of a dataframe, verbatim.
 #'
 #' @param df     data.frame, to display
@@ -181,7 +181,10 @@ text_html <- function(text, n_line = 6){
 
   # truncate h, if needed
   if (length(h) > n_line){
-    h <- c(h[seq(n_line)], "...")
+    h <- c(
+      h[seq(n_line)],
+      paste0("... (", length(h) - n_line, " lines truncated)")
+    )
   }
 
   h <- paste(h, collapse = "<br/>")

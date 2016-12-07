@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Server function for upload-text Shiny module — upload_text_server • shinypod</title>
+<title>Access the Shiny output elements — sp_output.sp_ui • shinypod</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -77,66 +77,25 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Server function for upload-text Shiny module</h1>
+    <h1>Access the Shiny output elements</h1>
     </div>
 
     
-    <p>It is unlikely that you would call this function directly
-from your Shiny app. Instead, this function would be called
-by the server module that you call from your Shiny app,
-for example  <code><a href='upload_text_sb_server.html'>upload_text_sb_server</a></code>.</p>
+    <p>Access the Shiny output elements</p>
     
 
-    <pre><span class='fu'>upload_text_server</span>(<span class='no'>input</span>, <span class='no'>output</span>, <span class='no'>session</span>)</pre>
+    <pre><span class='co'># S3 method for sp_ui</span>
+<span class='fu'>sp_output</span>(<span class='no'>sp_ui</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
-      <dt>input</dt>
-      <dd><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/shinyServer'>shinyServer</a></code> input object</dd>
-      <dt>output</dt>
-      <dd><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/shinyServer'>shinyServer</a></code> output object</dd>
-      <dt>session</dt>
-      <dd><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/shinyServer'>shinyServer</a></code> session object</dd>
+      <dt>sp_ui</dt>
+      <dd><code><a href='sp_ui.html'>sp_ui</a></code> object</dd>
     </dl>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code><a href='sp_srv.html'>sp_srv</a></code> object with members:
-<dl class='dl-horizontal'>
-  <dt>rct_result</dt><dd><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/reactive'>reactive</a></code>,
-    returns the character string read from the file
-  </dd>
-  <dt>rct_state</dt><dd><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/reactive'>reactive</a></code>,
-    returns list of logical values indicating the state
-    of information available within the server function:
-    <dl class='dl-horizontal'>
-      <dt>has_file</dt><dd>indicates if a file has been uploaded</dd>
-    </dl></p>
-    <p></dd>
-  <dt>rct_notification</dt><dd><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/reactive'>reactive</a></code>,
-    returns list of arguments that can be passed to
-    <code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/showNotification'>showNotification</a></code>:
-    <dl class='dl-horizontal'>
-      <dt>ui</dt><dd>character, content of the message</dd>
-      <dt>type</dt><dd>character, type of the message, i.e. &quot;message&quot;</dd>
-    </dl></p>
-    <p></dd>
-</dl></p>
-    
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The component <code>rct_notification</code> makes the following notifications
-available:</p>
-    <p><ul>
-<li>a &quot;message&quot; notification upon successful file-upload,
-    containing the name and size of the file</p>
-    <p></li>
-</ul></p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <p><code><a href='upload_text_sb_server.html'>upload_text_sb_server</a></code>,
-  <code><a href='upload_text_ui.html'>upload_text_ui</a></code></p>
+    <p><code>shiny::<a href='http://www.rdocumentation.org/packages/shiny/topics/tag'>tagList</a></code> containing Shiny outputs</p>
     
 
   </div>
@@ -146,10 +105,6 @@ available:</p>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#details">Details</a></li>
-
-      <li><a href="#see-also">See also</a></li>
           </ul>
 
   </div>

@@ -1,4 +1,3 @@
-
 #' Evaluates the validity of a reactive expression
 #'
 #' The difference between this function and \code{shiny::\link[shiny]{isTruthy}}
