@@ -1,79 +1,63 @@
-#' Sidebar layout for read_delim module
+#' Presentation UI-elements for read-delim module
 #'
-#' These functions return the ui elements for a side panel and a main panel.
+#' This is essentially a wrapper around
+#' \code{readr::\link[readr]{read_delim}}.
+#' These functions are used to create the UI elements for a
+#' sidebar presentation of the read-delim module.
 #'
-#' Generally, the side elements are the inputs; the main elements are the outputs.
 #'
-#' @family read_delim module functions
+#' \describe{
+#'   \item{read_delim_sb_side}{}
+#'   \item{read_delim_sb_main}{}
+#' }
 #'
-#' @param id character, used to identify a namespace
+#' @param id    character, id for the module
 #'
-#' @return a \code{shiny::\link[shiny]{tagList}} containing UI elements
+#' @return
+#' \describe{
+#'   \item{read_delim_sb_side}{
+#'     \code{shiny::\link[shiny]{tagList}} of containing elements
+#'     to put in a \code{shiny::\link[shiny]{sidebarPanel}}
+#'   }
+#'   \item{read_delim_sb_main}{
+#'     \code{shiny::\link[shiny]{tagList}} of containing elements
+#'     to put in a \code{shiny::\link[shiny]{mainPanel}}
+#'   }
+#' }
 #'
-#' @examples
-#' library("shiny")
-#' shinyUI(
-#'   fluidPage(
-#'     shinyjs::useShinyjs(),
-#'     sidebarLayout(
-#'       sidebarPanel(read_delim_sidebar_side("foo")),
-#'       mainPanel(read_delim_sidebar_main("foo"))
-#'     )
-#'   )
-#' )
-#'
+#' @seealso \code{\link{read_delim_ui}}, \code{\link{read_delim_sb_server}}
 #' @export
-#
-read_delim_sidebar_side <- function(id){
+#'
+read_delim_sb_side <- function(id){
 
   ns <- shiny::NS(id)
 
-  sidebar_elems <- read_delim_ui_input(id)
+  input_list <- sp_input(read_delim_ui(id))
 
-  sidebar_elems
-}
-
-#' @rdname read_delim_sidebar_side
-#' @export
-#
-read_delim_sidebar_main <- function(id){
-
-  main_elems <- read_delim_ui_output(id)
-
-  main_elems
-}
-
-#' @rdname read_delim_server
-#' @export
-#
-read_delim_sidebar_server <- function(
-  input, output, session,
-  text, delim = ",", decimal_mark = "."
-){
-
-  ## reactives ##
-  ###############
-
-  list_rct <- read_delim_server(input, output, session, text)
-
-  rct_data <- list_rct$rct_result
-  rct_input_state <- list_rct$rct_input_state
-  rct_status_content <- list_rct$rct_status_content
-
-  ## observers ##
-  ###############
-
-  # shows and hides controls based on the availabilty and nature of data
-  shiny::observe({
-    # outputs
-    shinyjs::toggle(
-      "data_preview",
-      condition = shinypod::isValidy(rct_data())
+  button_time <-
+    shiny::actionButton(
+      inputId = "button_time",
+      label = "Datetime-parsing options"
     )
-  })
 
-  # change the class of the status window
-  shinypod::observe_class_swap(id = "status", rct_status_content()$class)
+  button_advanced <-
+    shiny::actionButton(
+      inputId = "button_time",
+      label = "Advanced options"
+    )
 
-  rct_data
+  shiny::tagList(
+    input_list$delim,
+    input_list$decimal_mark,
+    input_list$grouping_mark,
+    button_time,
+    button_advanced
+  )
+}
+
+#' @rdname read_delim_sb_side
+#' @export
+read_delim_sb_main <- function(id){
+
+  sp_output(read_delim_ui(id))
 }

@@ -1,26 +1,33 @@
 library("shiny")
 library("shinyjs")
 library("shinypod")
-library("dygraphs")
-library("htmltools")
+
+# selection of files to provide
+choice_file <-
+  system.file("extdata", package = "shinypod") %>%
+  list.files(pattern = "\\.csv", full.names = TRUE)
+
+names(choice_file) <- basename(choice_file)
 
 shinyUI(
   fluidPage(
     useShinyjs(),
-    titlePanel("CSV parser"),
+    titlePanel("read_delim"),
     sidebarLayout(
       sidebarPanel(
-        upload_text_sidebar_side("text"),
-        tags$hr(),
-        read_delim_sidebar_side("data"),
-        tags$hr(),
-        dygraph_sidebar_side("dygraph")
+        selectizeInput(
+          inputId = "sample_text",
+          label = "Sample text",
+          choices = choice_file
+        ),
+        read_delim_sb_side("data")
       ),
       mainPanel(
-        upload_text_sidebar_main("text"),
-        read_delim_sidebar_main("data"),
-        dygraph_sidebar_main("dygraph"),
-        dygraphOutput("dyg")
+        htmlOutput(
+          outputId = "text_preview",
+          container = shinypod::pre_scroll
+        ),
+        read_delim_sb_main("data")
       )
     )
   )
