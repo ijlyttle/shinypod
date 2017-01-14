@@ -72,7 +72,6 @@ read_delim_ui <- function(id){
       choices = c(Comma = ",", Point = ".")
     )
 
-
   ### output ###
   ##############
 

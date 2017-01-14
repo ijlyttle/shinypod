@@ -1,17 +1,11 @@
 library("shiny")
 library("shinypod")
-library("readr")
 
 shinyServer(function(input, output, session) {
 
-  rct_text <- reactive(
-    read_file(input$sample_text)
-  )
+  # get text
+  rct_text <- callModule(sample_delim_server, id = "delim")
 
-  output$text_preview <-
-    renderUI(
-      rct_text() %>%
-      shinypod::text_html()
-    )
+  # parse text into dataframe
 
 })
