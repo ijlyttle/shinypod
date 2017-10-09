@@ -17,4 +17,3 @@ html fragment
 \description{
 convert text into an html fragment
 }
-

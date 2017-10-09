@@ -48,4 +48,4 @@ Other read_delim module functions: \code{\link{read_delim_ui_input}},
   \code{\link{read_delim_ui_misc}},
   \code{\link{read_delim_ui_output}}
 }
-
+\concept{read_delim module functions}

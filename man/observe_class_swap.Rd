@@ -30,4 +30,3 @@ changing the class of the html element.
 
 This is based on \code{shiny::renderText()}
 }
-

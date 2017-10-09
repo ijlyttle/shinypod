@@ -23,4 +23,3 @@ reactive that returns the expression
 \description{
 combines handling of reactive and validating the contents
 }
-

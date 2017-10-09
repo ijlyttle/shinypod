@@ -21,4 +21,3 @@ This return value is a list with members \code{class} and \code{message}. The \c
 \link{observe_class_swap} to change the appearance of an output. The \code{message} can be used as the
 text displayed by the output.
 }
-

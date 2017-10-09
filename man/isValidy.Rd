@@ -16,4 +16,3 @@ logical, returns \code{TRUE} if shiny validation passes
 Useful if you need to return \code{TRUE}/\code{FALSE} on the validity of a
 shiny reactive expression
 }
-

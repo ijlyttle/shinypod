@@ -38,4 +38,3 @@ the month of January 2014. Data obtained from Weather Undergound's API,
 using the \code{rwunderground} package.
 }
 \keyword{datasets}
-

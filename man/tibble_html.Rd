@@ -15,4 +15,3 @@ html fragment
 \description{
 convert a tbl_df printout into an html fragment
 }
-

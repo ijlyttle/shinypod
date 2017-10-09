@@ -28,4 +28,3 @@ update its selection when its choices change.
   update_selected("d", c("a", "b", "c"), index = 1)
 
 }
-

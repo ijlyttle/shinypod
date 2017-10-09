@@ -35,4 +35,4 @@ Other read_delim module functions: \code{\link{read_delim_server}},
   \code{\link{read_delim_ui_misc}},
   \code{\link{read_delim_ui_output}}
 }
-
+\concept{read_delim module functions}

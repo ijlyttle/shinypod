@@ -15,4 +15,3 @@ pre_scroll(...)
 \description{
 This is used as the \code{container} argument in  \code{shiny::\link[shiny]{htmlOutput}}
 }
-

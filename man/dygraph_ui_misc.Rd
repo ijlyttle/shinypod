@@ -29,4 +29,4 @@ Other dygraph module functions: \code{\link{dygraph_server}},
   \code{\link{dygraph_ui_input}},
   \code{\link{dygraph_ui_output}}
 }
-
+\concept{dygraph module functions}

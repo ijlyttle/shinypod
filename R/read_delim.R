@@ -55,7 +55,7 @@ read_delim_ui_input <- function(id){
     )
 
   # specify timezones
-  tz_choice <- c("UTC", lubridate::olson_time_zones())
+  tz_choice <- c("UTC", OlsonNames())
 
   # timezone to parse
   ui_input$tz_parse <-
@@ -239,7 +239,7 @@ read_delim_server <- function(
   rct_tz_parse <- reactive({
 
     result <- input$tz_parse
-    if (!result %in% c("UTC", lubridate::olson_time_zones())){
+    if (!result %in% c("UTC", OlsonNames())){
       result <- "UTC"
     }
 
@@ -249,7 +249,7 @@ read_delim_server <- function(
   rct_tz_display <- reactive({
 
     result <- input$tz_display
-    if (!result %in% c("UTC", lubridate::olson_time_zones())){
+    if (!result %in% c("UTC", OlsonNames())){
       result <- "UTC"
     }
 

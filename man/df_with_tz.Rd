@@ -21,4 +21,3 @@ Sets the timezone of all time-based columns in a dataframe
 df_with_tz(wx_ames, tz = "UTC")
 
 }
-

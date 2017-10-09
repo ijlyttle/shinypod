@@ -19,4 +19,3 @@ character vector
 Get the names of all the columns of the dataframe
 that inherit from the supplied class name
 }
-

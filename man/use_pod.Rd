@@ -25,4 +25,3 @@ both for the functional layer, in \code{foo_pod.R}, and a presentation layer, in
 This assumes that you are working in a directory in an R package; the files will be written to
 the \code{R} directory.
 }
-

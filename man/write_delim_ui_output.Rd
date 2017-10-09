@@ -30,4 +30,4 @@ The purpose is to specify the UI elements - another set of functions can be used
 Other write_delim module functions: \code{\link{write_delim_server}},
   \code{\link{write_delim_ui_input}}
 }
-
+\concept{write_delim module functions}
